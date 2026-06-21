@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block title %}Edit Profile - KUSS Portal{% endblock %}
+{% block content %}
+    <section class="page-header">
+        <h1><i class="fa-solid fa-user-pen"></i> Edit Profile</h1>
+        <p>Update your personal information.</p>
+    </section>
+
+    <section class="section container">
+        <div class="form-container">
+            <h2>Profile Settings</h2>
+            <p class="subtitle">Changes you make here will be reflected on your dashboard.</p>
+
+            {% if form.errors %}
+                <div style="background: #ffebee; color: #c62828; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #ef9a9a;">
+                    <strong>Please fix the following errors:</strong>
+                    <ul style="margin-top: 10px; padding-left: 20px;">
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <li><strong>{{ field }}:</strong> {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn-submit"><i class="fa-solid fa-check"></i> Save Changes</button>
+            </form>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <a href="{% url 'dashboard' %}" style="color: var(--teal); font-weight: 600;">
+                    <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+                </a>
+            </div>
+        </div>
+    </section>
+{% endblock %}

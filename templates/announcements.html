@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}Announcements - KUSS{% endblock %}
+{% block content %}
+    <section class="page-header"><h1>Announcements & Documents</h1></section>
+    <section class="section container">
+        {% if announcements %}
+            <div class="announcement-list">
+                {% for doc in announcements %}
+                    <div class="announcement-card">
+                        <div class="announcement-details">
+                            <h3>{{ doc.title }}</h3>
+                            <p>{{ doc.description|default:"Official society document." }}</p>
+                            <small>Published: {{ doc.created_at|date:"F d, Y" }}</small>
+                        </div>
+                        <a href="{{ doc.document.url }}" class="btn-download" download>Download File</a>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state"><h3>No announcements yet.</h3></div>
+        {% endif %}
+    </section>
+{% endblock %}

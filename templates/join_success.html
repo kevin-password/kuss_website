@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Application Received - KUSS{% endblock %}
+
+{% block content %}
+    <section class="page-header" style="background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);">
+        <h1>Application Received!</h1>
+        <p>Welcome to the future of surgical excellence.</p>
+    </section>
+
+    <section class="section container" style="text-align: center; max-width: 700px;">
+        <div style="font-size: 5rem; color: var(--teal); margin-bottom: 20px;">
+            <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <h2 class="section-title">Thank You for Joining KUSS!</h2>
+        <p class="section-text">
+            Your membership application has been successfully submitted to our database. 
+            <br><br>
+            <strong>Final Step:</strong> Please complete your registration by sending your payment proof directly to the Treasurer via WhatsApp. 
+            <br>
+            <small style="color: var(--text-light);">(Click the button below, then attach your payment screenshot in the chat).</small>
+        </p>
+        
+        <!-- WHATSAPP BUTTON -->
+        <!-- The {{ treasurer_phone }} variable automatically pulls the number from the Admin Panel! -->
+        <a href="https://wa.me/{{ treasurer_phone }}?text=Hello%20Treasurer%2C%20I%20have%20just%20submitted%20my%20KUSS%20membership%20application%20on%20the%20website.%20Please%20find%20my%20payment%20proof%20attached." 
+           class="btn btn-primary" 
+           style="background-color: #25D366; display: inline-flex; align-items: center; gap: 10px; font-size: 1.1rem; padding: 15px 30px; margin-top: 10px;">
+            <i class="fa-brands fa-whatsapp"></i> Send Proof to Treasurer
+        </a>
+
+        <br><br>
+        <a href="{% url 'home' %}" class="btn btn-outline" style="margin-top: 20px; border-color: var(--navy); color: var(--navy);">Return to Homepage</a>
+    </section>
+{% endblock %}

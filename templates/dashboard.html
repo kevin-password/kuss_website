@@ -1,0 +1,127 @@
+{% extends 'base.html' %}
+{% block title %}Dashboard - KUSS Portal{% endblock %}
+{% block content %}
+
+    <!-- DASHBOARD HEADER -->
+    <section style="background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); padding: 50px 20px; color: white;">
+        <div class="container" style="display: flex; align-items: center; gap: 30px; flex-wrap: wrap;">
+            {% if member.profile_picture %}
+                <img src="{{ member.profile_picture.url }}" alt="Profile" style="width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 4px solid var(--teal-light);">
+            {% else %}
+                <div style="width: 90px; height: 90px; border-radius: 50%; background: var(--teal); display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: bold; border: 4px solid var(--teal-light);">
+                    {{ member.first_name.0 }}{{ member.last_name.0 }}
+                </div>
+            {% endif %}
+            <div>
+                <h1 style="font-family: 'Playfair Display', serif; font-size: 2rem; margin-bottom: 5px;">Welcome, {{ member.first_name }}!</h1>
+                <p style="color: var(--teal-light); font-weight: 600;">{{ member.get_membership_type_display }}</p>
+                <p style="color: #8892b0; font-size: 0.9rem;">Member since {{ member.date_joined|date:"F Y" }}</p>
+            </div>
+            <div style="margin-left: auto; display: flex; gap: 10px;">
+                <a href="{% url 'profile' %}" class="btn btn-outline" style="font-size: 0.9rem; padding: 8px 20px;">
+                    <i class="fa-solid fa-pen"></i> Edit Profile
+                </a>
+                <a href="{% url 'logout' %}" class="btn" style="background: rgba(255,255,255,0.1); color: white; font-size: 0.9rem; padding: 8px 20px;">
+                    <i class="fa-solid fa-right-from-bracket"></i> Logout
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section container">
+
+        <!-- MEMBERSHIP STATUS CARD -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 50px;">
+            <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: var(--shadow); border-top: 4px solid {% if member.is_active %}var(--teal){% else %}#d9534f{% endif %};">
+                <h3 style="color: var(--navy); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px;">
+                    <i class="fa-solid fa-id-card" style="color: var(--teal);"></i> Membership Status
+                </h3>
+                <p style="font-size: 1.5rem; font-weight: 700; color: {% if member.is_active %}var(--teal){% else %}#d9534f{% endif %};">
+                    {% if member.is_active %}Active{% else %}Inactive{% endif %}
+                </p>
+                <p style="color: var(--text-light); margin-top: 5px;">{{ member.get_membership_type_display }}</p>
+                {% if member.registration_number %}
+                    <p style="color: var(--text-light); font-size: 0.9rem; margin-top: 10px;">Reg: {{ member.registration_number }}</p>
+                {% endif %}
+            </div>
+
+            <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: var(--shadow); border-top: 4px solid var(--teal);">
+                <h3 style="color: var(--navy); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px;">
+                    <i class="fa-solid fa-user-tag" style="color: var(--teal);"></i> Your Roles
+                </h3>
+                {% if member_roles %}
+                    {% for role in member_roles %}
+                        <p style="color: var(--navy); font-weight: 600;">{{ role.get_role_display }}</p>
+                    {% endfor %}
+                {% else %}
+                    <p style="color: var(--text-light);">General Member</p>
+                {% endif %}
+            </div>
+
+            <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: var(--shadow); border-top: 4px solid var(--teal);">
+                <h3 style="color: var(--navy); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 15px;">
+                    <i class="fa-solid fa-envelope" style="color: var(--teal);"></i> Contact
+                </h3>
+                <p style="color: var(--text-dark);">{{ member.email }}</p>
+                <p style="color: var(--text-dark);">{{ member.phone_number }}</p>
+            </div>
+        </div>
+
+        <!-- UPCOMING EVENTS -->
+        <h2 class="section-title" style="text-align: left; font-size: 1.8rem;">
+            <i class="fa-solid fa-calendar-days" style="color: var(--teal);"></i> Upcoming Events
+        </h2>
+        {% if upcoming_events %}
+            {% for event in upcoming_events %}
+                <div class="event-card">
+                    <h4>{{ event.title }}</h4>
+                    <div class="event-meta">
+                        <i class="fa-solid fa-calendar"></i> {{ event.date|date:"M d, Y" }}
+                        {% if event.time %} | <i class="fa-solid fa-clock"></i> {{ event.time|time:"h:i A" }}{% endif %}
+                        | <i class="fa-solid fa-location-dot"></i> {{ event.venue }}
+                    </div>
+                    <p style="color: var(--text-light);">{{ event.description|truncatewords:30 }}</p>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p style="color: var(--text-light); margin-bottom: 40px;">No upcoming events at this time.</p>
+        {% endif %}
+
+        <!-- LATEST NEWS & ANNOUNCEMENTS -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 40px; margin-top: 50px;">
+            <div>
+                <h2 class="section-title" style="text-align: left; font-size: 1.8rem;">
+                    <i class="fa-solid fa-newspaper" style="color: var(--teal);"></i> Latest News
+                </h2>
+                {% for post in latest_news %}
+                    <div style="background: var(--light-gray); padding: 20px; border-radius: 8px; margin-bottom: 15px;">
+                        <h4 style="color: var(--navy);">{{ post.title }}</h4>
+                        <small style="color: var(--teal);">{{ post.created_at|date:"M d, Y" }}</small>
+                        <p style="color: var(--text-light); margin-top: 8px;">{{ post.content|truncatewords:20 }}</p>
+                    </div>
+                {% empty %}
+                    <p style="color: var(--text-light);">No news yet.</p>
+                {% endfor %}
+            </div>
+            <div>
+                <h2 class="section-title" style="text-align: left; font-size: 1.8rem;">
+                    <i class="fa-solid fa-bullhorn" style="color: var(--teal);"></i> Announcements
+                </h2>
+                {% for doc in latest_announcements %}
+                    <div style="background: var(--light-gray); padding: 20px; border-radius: 8px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <h4 style="color: var(--navy);">{{ doc.title }}</h4>
+                            <small style="color: var(--teal);">{{ doc.created_at|date:"M d, Y" }}</small>
+                        </div>
+                        <a href="{{ doc.document.url }}" class="btn-download" style="font-size: 0.85rem; padding: 8px 15px;" download>
+                            <i class="fa-solid fa-download"></i> Download
+                        </a>
+                    </div>
+                {% empty %}
+                    <p style="color: var(--text-light);">No announcements yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+    </section>
+{% endblock %}

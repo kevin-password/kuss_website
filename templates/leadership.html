@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Leadership - KUSS{% endblock %}
+{% block content %}
+    <section class="page-header"><h1>Our Leadership</h1><p>The Executive & Board of Governors.</p></section>
+    <section class="section container">
+        {% if leaders %}
+            <div class="leaders-grid">
+                {% for leadership in leaders %}
+                    <div class="leader-card">
+                        {% if leadership.member.profile_picture %}
+                            <img src="{{ leadership.member.profile_picture.url }}" alt="{{ leadership.member.first_name }}" class="leader-img">
+                        {% else %}
+                            <div class="leader-img">{{ leadership.member.first_name.0 }}{{ leadership.member.last_name.0 }}</div>
+                        {% endif %}
+                        <div class="leader-info">
+                            <h3 class="leader-name">{{ leadership.member.first_name }} {{ leadership.member.last_name }}</h3>
+                            <p class="leader-role">{{ leadership.get_role_display }}</p>
+                            <p style="color: var(--text-light);">{{ leadership.member.bio|default:"Dedicated member of the KUSS Executive." }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state"><h3>Leadership information coming soon.</h3></div>
+        {% endif %}
+    </section>
+{% endblock %}

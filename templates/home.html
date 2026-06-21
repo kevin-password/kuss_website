@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+
+{% block title %}Home - KUSS{% endblock %}
+
+{% block content %}
+    <section class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Advancing Surgical Excellence</h1>
+            <p class="hero-subtitle">Equipping the next generation of holistic surgeons at Kabale University through education, research, and mentorship.</p>
+            <div>
+                <a href="{% url 'about' %}" class="btn btn-primary">Discover Our Mission</a>
+                <a href="{% url 'join' %}" class="btn btn-outline">Become a Member</a>
+            </div>
+        </div>
+    </section>
+
+    <section class="section container">
+        <h2 class="section-title">The Pillars of KUSS</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="pillar-icon"><i class="fa-solid fa-book-medical"></i></div>
+                <h3>Surgical Education</h3>
+                <p>Providing hands-on workshops, seminars, and skills sessions to expose medical students to the surgical field.</p>
+            </div>
+            <div class="feature-card">
+                <div class="pillar-icon"><i class="fa-solid fa-microscope"></i></div>
+                <h3>Research & Innovation</h3>
+                <p>Fostering a culture of inquiry through our Journal Club and supporting student-led research.</p>
+            </div>
+            <div class="feature-card">
+                <div class="pillar-icon"><i class="fa-solid fa-user-doctor"></i></div>
+                <h3>Mentorship & Advocacy</h3>
+                <p>Bridging the gap between students and established surgeons through structured mentorship.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="section" style="background-color: var(--light-gray);">
+        <div class="container">
+            <h2 class="section-title">Upcoming Events</h2>
+            {% if upcoming_events %}
+                <div class="features-grid">
+                    {% for event in upcoming_events %}
+                        <div class="event-card">
+                            <h4>{{ event.title }}</h4>
+                            <div class="event-meta"><i class="fa-solid fa-calendar"></i> {{ event.date|date:"M d, Y" }} | <i class="fa-solid fa-location-dot"></i> {{ event.venue }}</div>
+                            <p>{{ event.description|truncatewords:25 }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="section-text">No upcoming events scheduled. Check back soon!</p>
+            {% endif %}
+        </div>
+    </section>
+
+    <section class="section container">
+        <h2 class="section-title">Latest News</h2>
+        {% if latest_news %}
+            <div class="news-preview-grid">
+                {% for post in latest_news %}
+                    <div class="preview-card">
+                        {% if post.image %}<img src="{{ post.image.url }}" alt="{{ post.title }}" class="preview-img">{% endif %}
+                        <div class="preview-content">
+                            <span class="preview-date">{{ post.created_at|date:"F d, Y" }}</span>
+                            <h3 class="preview-title">{{ post.title }}</h3>
+                            <p style="color: var(--text-light);">{{ post.content|truncatewords:20 }}</p>
+                            <a href="{% url 'news' %}" class="read-more">Read More <i class="fa-solid fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state"><h3>News updates coming soon!</h3></div>
+        {% endif %}
+    </section>
+{% endblock %}

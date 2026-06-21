@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block title %}Member Login - KUSS{% endblock %}
+{% block content %}
+    <section class="page-header">
+        <h1><i class="fa-solid fa-right-to-bracket"></i> Member Portal Login</h1>
+        <p>Access your KUSS Member Dashboard.</p>
+    </section>
+
+    <section class="section container">
+        <div class="form-container">
+            <h2>Welcome Back</h2>
+            <p class="subtitle">Enter your email and password to access your dashboard.</p>
+            
+            {% if error %}
+                <div style="background: #ffebee; color: #c62828; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #ef9a9a;">
+                    <i class="fa-solid fa-circle-exclamation"></i> {{ error }}
+                </div>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn-submit"><i class="fa-solid fa-arrow-right-to-bracket"></i> Log In</button>
+            </form>
+            
+            <p style="text-align: center; margin-top: 20px; color: var(--text-light); font-size: 0.9rem;">
+                Don't have a password yet? Contact the <a href="{% url 'leadership' %}" style="color: var(--teal); font-weight: 600;">General Secretary</a> to activate your portal access.
+            </p>
+        </div>
+    </section>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}News - KUSS{% endblock %}
+{% block content %}
+    <section class="page-header"><h1>Latest News & Events</h1></section>
+    <section class="section container">
+        {% if news_posts %}
+            <div class="news-preview-grid">
+                {% for post in news_posts %}
+                    <div class="preview-card">
+                        {% if post.image %}<img src="{{ post.image.url }}" alt="{{ post.title }}" class="preview-img">{% endif %}
+                        <div class="preview-content">
+                            <span class="preview-date">{{ post.created_at|date:"F d, Y" }}</span>
+                            <h3 class="preview-title">{{ post.title }}</h3>
+                            <p style="color: var(--text-light);">{{ post.content }}</p>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <div class="empty-state"><h3>No news yet.</h3></div>
+        {% endif %}
+    </section>
+{% endblock %}
