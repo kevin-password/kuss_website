@@ -1,35 +1,84 @@
 {% extends 'base.html' %}
-
-{% block title %}Application Received - KUSS{% endblock %}
+{% block title %}Registration Successful - KUSS{% endblock %}
 
 {% block content %}
-    <section class="page-header" style="background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);">
-        <h1>Application Received!</h1>
-        <p>Welcome to the future of surgical excellence.</p>
-    </section>
-
-    <section class="section container" style="text-align: center; max-width: 700px;">
-        <div style="font-size: 5rem; color: var(--teal); margin-bottom: 20px;">
-            <i class="fa-solid fa-circle-check"></i>
-        </div>
-        <h2 class="section-title">Thank You for Joining KUSS!</h2>
-        <p class="section-text">
-            Your membership application has been successfully submitted to our database. 
-            <br><br>
-            <strong>Final Step:</strong> Please complete your registration by sending your payment proof directly to the Treasurer via WhatsApp. 
-            <br>
-            <small style="color: var(--text-light);">(Click the button below, then attach your payment screenshot in the chat).</small>
-        </p>
+<section class="section container">
+    <div class="form-container" style="text-align: center; padding: 60px 40px;">
         
-        <!-- WHATSAPP BUTTON -->
-        <!-- The {{ treasurer_phone }} variable automatically pulls the number from the Admin Panel! -->
-        <a href="https://wa.me/{{ treasurer_phone }}?text=Hello%20Treasurer%2C%20I%20have%20just%20submitted%20my%20KUSS%20membership%20application%20on%20the%20website.%20Please%20find%20my%20payment%20proof%20attached." 
-           class="btn btn-primary" 
-           style="background-color: #25D366; display: inline-flex; align-items: center; gap: 10px; font-size: 1.1rem; padding: 15px 30px; margin-top: 10px;">
-            <i class="fa-brands fa-whatsapp"></i> Send Proof to Treasurer
-        </a>
+        <!-- Success Icon -->
+        <div style="width: 80px; height: 80px; background: var(--teal); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px;">
+            <i class="fa-solid fa-check" style="font-size: 3rem; color: white;"></i>
+        </div>
+        
+        <!-- Title -->
+        <h2 style="color: var(--navy); margin-bottom: 20px; font-family: 'Playfair Display', serif;">Registration Successful!</h2>
+        
+        <!-- Main Success Message -->
+        <p style="color: var(--text-light); font-size: 1.1rem; line-height: 1.8; margin-bottom: 40px;">
+            {% if settings and settings.success_message %}
+                {{ settings.success_message|linebreaksbr }}
+            {% else %}
+                Thank you for joining KUSS! Your membership application has been received.
+            {% endif %}
+        </p>
 
-        <br><br>
-        <a href="{% url 'home' %}" class="btn btn-outline" style="margin-top: 20px; border-color: var(--navy); color: var(--navy);">Return to Homepage</a>
-    </section>
+        <!-- DYNAMIC CONTENT SECTIONS - Shows only what's filled in Admin Panel -->
+        
+        <!-- Treasurer/Payment Info -->
+        {% if settings and settings.treasurer_phone %}
+        <div style="background: #e8f5e9; border-left: 5px solid var(--teal); padding: 25px; border-radius: 8px; margin-bottom: 25px; text-align: left;">
+            <h3 style="color: var(--navy); margin-bottom: 10px;">
+                <i class="fa-solid fa-money-bill-wave" style="color: var(--teal);"></i> Payment Instructions
+            </h3>
+            <p style="color: var(--text-dark); line-height: 1.8;">
+                {% if settings.payment_instructions %}
+                    {{ settings.payment_instructions|linebreaksbr }}
+                {% else %}
+                    Please send your membership fees to the Treasurer:
+                {% endif %}
+            </p>
+            <p style="font-size: 1.2rem; font-weight: 700; color: var(--teal); margin-top: 10px;">
+                <i class="fa-solid fa-phone"></i> {{ settings.treasurer_phone }} 
+                {% if settings.treasurer_name %} ({{ settings.treasurer_name }}){% endif %}
+            </p>
+        </div>
+        {% endif %}
+
+        <!-- WhatsApp IT Support -->
+        {% if settings and settings.whatsapp_number %}
+        <div style="background: #f1f8e9; border-left: 5px solid #25D366; padding: 25px; border-radius: 8px; margin-bottom: 25px; text-align: left;">
+            <h3 style="color: var(--navy); margin-bottom: 10px;">
+                <i class="fa-brands fa-whatsapp" style="color: #25D366;"></i> Need Help?
+            </h3>
+            <p style="color: var(--text-dark); line-height: 1.8; margin-bottom: 15px;">
+                {% if settings.it_support_message %}
+                    {{ settings.it_support_message }}
+                {% else %}
+                    Contact IT support for member portal passwords and technical assistance.
+                {% endif %}
+            </p>
+            <a href="https://wa.me/{{ settings.whatsapp_number|cut:'+' }}?text={{ settings.it_support_message|default:'Hello, I need help with my KUSS member portal account.'|urlencode }}" 
+               target="_blank" 
+               style="display: inline-flex; align-items: center; gap: 10px; background: #25D366; color: white; padding: 12px 25px; border-radius: 25px; font-weight: 600; text-decoration: none;">
+                <i class="fa-brands fa-whatsapp" style="font-size: 1.3rem;"></i>
+                <span>Contact IT via WhatsApp</span>
+            </a>
+        </div>
+        {% endif %}
+
+        <!-- Custom Button -->
+        <div style="margin-top: 40px;">
+            {% if settings and settings.success_button_url and settings.success_button_url != 'home' and settings.success_button_url != 'dashboard' and settings.success_button_url != 'login' and settings.success_button_url != 'about' and settings.success_button_url != 'news' and settings.success_button_url != 'leadership' and settings.success_button_url != 'join' %}
+                <a href="{{ settings.success_button_url }}" class="btn btn-primary" style="font-size: 1.1rem; padding: 15px 40px;">
+                    {{ settings.success_button_text|default:"Continue" }}
+                </a>
+            {% else %}
+                <a href="{% url settings.success_button_url|default:'home' %}" class="btn btn-primary" style="font-size: 1.1rem; padding: 15px 40px;">
+                    {{ settings.success_button_text|default:"Return to Home" }}
+                </a>
+            {% endif %}
+        </div>
+
+    </div>
+</section>
 {% endblock %}
