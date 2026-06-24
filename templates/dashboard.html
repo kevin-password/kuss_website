@@ -30,6 +30,39 @@
 
     <section class="section container">
 
+
+        <!-- NOTIFICATIONS SECTION -->
+{% if notifications %}
+<section class="section container" style="padding-top: 40px;">
+    <h2 style="color: var(--navy); margin-bottom: 20px;">
+        <i class="fa-solid fa-bell" style="color: var(--teal);"></i> Notifications
+        <span style="background: #f44336; color: white; padding: 2px 10px; border-radius: 12px; font-size: 0.8rem; margin-left: 10px;">{{ notifications|length }}</span>
+    </h2>
+    
+    <div style="display: flex; flex-direction: column; gap: 15px;">
+        {% for notification in notifications %}
+        <div style="background: {% if notification.notification_type == 'PAYMENT_REMINDER' %}#fff3e0{% else %}var(--light-gray){% endif %}; padding: 20px; border-radius: 10px; border-left: 5px solid {% if notification.notification_type == 'PAYMENT_REMINDER' %}#ff9800{% else %}var(--teal){% endif %}; box-shadow: var(--shadow);">
+            <h3 style="color: var(--navy); margin-bottom: 10px; display: flex; align-items: center; gap: 10px;">
+                {% if notification.notification_type == 'PAYMENT_REMINDER' %}
+                    <i class="fa-solid fa-money-bill-wave" style="color: #ff9800;"></i>
+                {% else %}
+                    <i class="fa-solid fa-bell" style="color: var(--teal);"></i>
+                {% endif %}
+                {{ notification.title }}
+                {% if not notification.is_read %}
+                    <span style="background: #f44336; color: white; padding: 2px 8px; border-radius: 10px; font-size: 0.7rem;">NEW</span>
+                {% endif %}
+            </h3>
+            <p style="color: var(--text-dark); line-height: 1.6; margin-bottom: 10px;">{{ notification.message }}</p>
+            <p style="color: var(--text-light); font-size: 0.85rem;">
+                <i class="fa-solid fa-clock"></i> {{ notification.created_at|date:"M d, Y at H:i" }}
+            </p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
         <!-- MEMBERSHIP STATUS CARD -->
         <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; margin-bottom: 50px;">
             <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: var(--shadow); border-top: 4px solid {% if member.is_active %}var(--teal){% else %}#d9534f{% endif %};">
