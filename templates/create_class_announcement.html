@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Create Class Announcement - KUSS{% endblock %}
+{% block content %}
+<section class="page-header"><h1>Create Class Announcement</h1></section>
+<section class="section container">
+    <div class="form-container">
+        <p style="background: #e3f2fd; padding: 15px; border-radius: 6px; margin-bottom: 20px; color: #1976d2;">
+            <i class="fa-solid fa-info-circle"></i> This announcement will be tagged as a class announcement.
+        </p>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div style="margin-bottom: 20px;">
+                <label>Title</label>
+                <input type="text" name="title" required placeholder="e.g., Class Meeting Reminder" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;">
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label>Message</label>
+                <textarea name="description" rows="6" required placeholder="Write your announcement message here..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;"></textarea>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label>Attachment (optional)</label>
+                <input type="file" name="document" style="width: 100%; padding: 10px;">
+            </div>
+            <button type="submit" class="btn-submit">Publish Announcement</button>
+        </form>
+    </div>
+</section>
+{% endblock %}
