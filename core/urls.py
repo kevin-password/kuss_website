@@ -1,4 +1,5 @@
 # core/urls.py
+from django.views.generic import TemplateView
 from django.urls import path
 from . import views
 
@@ -10,6 +11,10 @@ urlpatterns = [
     path('leadership/', views.leadership_view, name='leadership'),
     path('join/', views.join_view, name='join'),
     path('join/success/', views.join_success_view, name='join_success'),
+
+        # SEO files
+    path('sitemap.xml', TemplateView.as_view(template_name='sitemap.xml', content_type='text/xml'), name='sitemap'),
+    path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain'), name='robots'),
     
     # MEMBER PORTAL ROUTES
     path('login/', views.login_view, name='login'),
