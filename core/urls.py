@@ -16,4 +16,19 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('profile/', views.profile_view, name='profile'),
+
+
+
+
+    path('treasurer/login/', views.treasurer_login, name='treasurer_login'),
+    path('treasurer/logout/', views.treasurer_logout, name='treasurer_logout'),
+    path('treasurer/dashboard/', views.treasurer_dashboard, name='treasurer_dashboard'),
+    path('treasurer/transactions/', views.transaction_list, name='transaction_list'),
+    path('treasurer/transactions/add/', views.add_transaction, name='add_transaction'),
+    path('treasurer/toggle/<int:member_id>/', views.toggle_subscription, name='toggle_subscription'),
+    path('treasurer/export/transactions/', views.export_transactions, name='export_transactions'),
+    path('treasurer/export/members/', views.export_members, name='export_members'),
+
+
+    
 ]
