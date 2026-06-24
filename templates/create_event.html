@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block title %}Create Event - KUSS{% endblock %}
+{% block content %}
+<section class="page-header"><h1>Create Event</h1></section>
+<section class="section container">
+    <div class="form-container">
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div style="margin-bottom: 20px;">
+                <label>Event Title</label>
+                <input type="text" name="title" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;">
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label>Description</label>
+                <textarea name="description" rows="4" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;"></textarea>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
+                <div>
+                    <label>Date</label>
+                    <input type="date" name="date" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;">
+                </div>
+                <div>
+                    <label>Venue</label>
+                    <input type="text" name="venue" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;">
+                </div>
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label>Flyer/Poster (optional)</label>
+                <input type="file" name="flyer" accept="image/*,.pdf" style="width: 100%; padding: 10px;">
+            </div>
+            <button type="submit" class="btn-submit">Create Event</button>
+        </form>
+    </div>
+</section>
+{% endblock %}
