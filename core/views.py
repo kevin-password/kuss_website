@@ -163,6 +163,7 @@ def dashboard_view(request):
     latest_news = NewsPost.objects.all()[:3]
     latest_announcements = Announcement.objects.all()[:3]
     member_roles = Leadership.objects.filter(member=member, is_current=True)
+    
     # Get notifications for this member
     notifications = Notification.objects.filter(member=member).order_by('-created_at')[:10]
     
