@@ -470,6 +470,10 @@ def leadership_portal(request):
     if has_role(member, ['COMM_RES']):
         context['research_news'] = NewsPost.objects.all()[:10]
 
+        # Data for Mentorship Chair
+    if has_role(member, ['COMM_MEN']):
+        context['mentorship_members'] = Member.objects.filter(is_active=True)[:20]
+
     # Data for Class Rep
     if has_role(member, ['CLASS_REP']):
         context['class_members'] = Member.objects.filter(is_active=True, membership_type='FULL')[:50]
