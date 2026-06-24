@@ -103,6 +103,75 @@
         </div>
     </div>
 
+<!-- MEMBER SUBSCRIPTION MANAGEMENT -->
+<div style="background: white; padding: 30px; border-radius: 10px; box-shadow: var(--shadow); margin-bottom: 30px;">
+    <h2 style="color: var(--navy); margin-bottom: 20px;">
+        <i class="fa-solid fa-users" style="color: var(--teal);"></i> Member Subscriptions
+    </h2>
+    
+    <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+                <tr style="background: var(--light-gray);">
+                    <th style="padding: 12px; text-align: left;">Member Name</th>
+                    <th style="padding: 12px; text-align: left;">Email</th>
+                    <th style="padding: 12px; text-align: left;">Membership Type</th>
+                    <th style="padding: 12px; text-align: center;">Status</th>
+                    <th style="padding: 12px; text-align: center;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in all_members %}
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 12px;">{{ m.first_name }} {{ m.last_name }}</td>
+                    <td style="padding: 12px;">{{ m.email }}</td>
+                    <td style="padding: 12px;">{{ m.get_membership_type_display }}</td>
+                    <td style="padding: 12px; text-align: center;">
+                        {% if m.subscription and m.subscription.is_paid %}
+                            <span style="background: #4caf50; color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">
+                                ✓ Paid
+                            </span>
+                        {% else %}
+                            <span style="background: #ff9800; color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">
+                                ✗ Unpaid
+                            </span>
+                        {% endif %}
+                    </td>
+                    <td style="padding: 12px; text-align: center;">
+                        <form method="POST" action="{% url 'toggle_subscription' m.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="toggle_paid">
+                            <button type="submit" style="background: var(--teal); color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; margin-right: 5px; font-size: 0.85rem;">
+                                {% if m.subscription and m.subscription.is_paid %}
+                                    Mark Unpaid
+                                {% else %}
+                                    Mark Paid
+                                {% endif %}
+                            </button>
+                        </form>
+                        <form method="POST" action="{% url 'toggle_subscription' m.id %}" style="display: inline;">
+                            {% csrf_token %}
+                            <input type="hidden" name="action" value="send_reminder">
+                            <button type="submit" style="background: #25D366; color: white; border: none; padding: 6px 12px; border-radius: 5px; cursor: pointer; font-size: 0.85rem;">
+                                <i class="fa-solid fa-bell"></i> Send Reminder
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" style="padding: 20px; text-align: center; color: var(--text-light);">No members found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+
+    
     <!-- Recent Transactions -->
     <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: var(--shadow);">
         <h2 style="color: var(--navy); margin-bottom: 20px;">Recent Transactions</h2>
