@@ -81,32 +81,63 @@
         </div>
     </div>
 
-    <!-- All Class Members -->
-    <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: var(--shadow); margin-bottom: 30px;">
-        <h2 style="color: var(--navy); margin-bottom: 20px;">All Class Members ({{ total_class_members }})</h2>
-        <div style="overflow-x: auto; max-height: 500px; overflow-y: auto;">
-            <table style="width: 100%; border-collapse: collapse;">
-                <thead style="position: sticky; top: 0; background: var(--light-gray);">
-                    <tr>
-                        <th style="padding: 12px; text-align: left;">Name</th>
-                        <th style="padding: 12px; text-align: left;">Email</th>
-                        <th style="padding: 12px; text-align: left;">Phone</th>
-                        <th style="padding: 12px; text-align: left;">Joined</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for m in class_members %}
-                    <tr style="border-bottom: 1px solid #eee;">
-                        <td style="padding: 12px;">{{ m.first_name }} {{ m.last_name }}</td>
-                        <td style="padding: 12px;">{{ m.email }}</td>
-                        <td style="padding: 12px;">{{ m.phone_number }}</td>
-                        <td style="padding: 12px;">{{ m.date_joined|date:"M d, Y" }}</td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+<!-- All Class Members - Email public, phone hidden -->
+<div style="background: white; padding: 30px; border-radius: 10px; box-shadow: var(--shadow); margin-bottom: 30px;">
+    <h2 style="color: var(--navy); margin-bottom: 20px;">All Class Members ({{ total_class_members }})</h2>
+    <div style="overflow-x: auto; max-height: 500px; overflow-y: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead style="position: sticky; top: 0; background: var(--light-gray);">
+                <tr>
+                    <th style="padding: 12px; text-align: left;">Name</th>
+                    <th style="padding: 12px; text-align: left;">Email</th>
+                    <th style="padding: 12px; text-align: left;">Phone</th>
+                    <th style="padding: 12px; text-align: left;">Joined</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in class_members %}
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 12px;">{{ m.first_name }} {{ m.last_name }}</td>
+                    <td style="padding: 12px;">
+                        <a href="mailto:{{ m.email }}" style="color: var(--teal);">{{ m.email }}</a>
+                    </td>
+                    <!-- Phone shown because class rep is logged in -->
+                    <td style="padding: 12px;">{{ m.phone_number }}</td>
+                    <td style="padding: 12px;">{{ m.date_joined|date:"M d, Y" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
+</div><!-- All Class Members - Email public, phone hidden -->
+<div style="background: white; padding: 30px; border-radius: 10px; box-shadow: var(--shadow); margin-bottom: 30px;">
+    <h2 style="color: var(--navy); margin-bottom: 20px;">All Class Members ({{ total_class_members }})</h2>
+    <div style="overflow-x: auto; max-height: 500px; overflow-y: auto;">
+        <table style="width: 100%; border-collapse: collapse;">
+            <thead style="position: sticky; top: 0; background: var(--light-gray);">
+                <tr>
+                    <th style="padding: 12px; text-align: left;">Name</th>
+                    <th style="padding: 12px; text-align: left;">Email</th>
+                    <th style="padding: 12px; text-align: left;">Phone</th>
+                    <th style="padding: 12px; text-align: left;">Joined</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in class_members %}
+                <tr style="border-bottom: 1px solid #eee;">
+                    <td style="padding: 12px;">{{ m.first_name }} {{ m.last_name }}</td>
+                    <td style="padding: 12px;">
+                        <a href="mailto:{{ m.email }}" style="color: var(--teal);">{{ m.email }}</a>
+                    </td>
+                    <!-- Phone shown because class rep is logged in -->
+                    <td style="padding: 12px;">{{ m.phone_number }}</td>
+                    <td style="padding: 12px;">{{ m.date_joined|date:"M d, Y" }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
     <!-- Upcoming Events -->
     <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: var(--shadow);">
