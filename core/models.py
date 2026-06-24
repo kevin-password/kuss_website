@@ -1,5 +1,8 @@
 # core/models.py
 from django.db import models
+from django.db.models import Sum, Count, Q
+from decimal import Decimal
+
 
 class Member(models.Model):
     MEMBERSHIP_CHOICES = [
@@ -174,3 +177,144 @@ class SiteSettings(models.Model):
     def load(cls):
         obj, created = cls.objects.get_or_create(pk=1)
         return obj
+
+
+# ============================================
+# NEW FINANCIAL MANAGEMENT MODELS
+# ============================================
+
+class Subscription(models.Model):
+    member = models.OneToOneField(Member, on_delete=models.CASCADE, related_name='subscription')
+    is_paid = models.BooleanField(default=False, help_text="Check if member has paid their subscription")
+    payment_date = models.DateField(blank=True, null=True, help_text="Date when subscription was paid")
+    amount_paid = models.DecimalField(max_digits=10, decimal_places=2, default=0, help_text="Amount paid in UGX")
+    notes = models.TextField(blank=True, null=True, help_text="Any notes about the payment")
+    last_reminder_sent = models.DateTimeField(blank=True, null=True)
+    
+    class Meta:
+        verbose_name = "Subscription"
+        verbose_name_plural = "Subscriptions"
+    
+    def __str__(self):
+        status = "Paid" if self.is_paid else "Unpaid"
+        return f"{self.member.first_name} {self.member.last_name} - {status}"
+
+
+class Notification(models.Model):
+    NOTIFICATION_TYPES = [
+        ('PAYMENT_REMINDER', 'Payment Reminder'),
+        ('GENERAL', 'General Notification'),
+    ]
+    
+    member = models.ForeignKey(Member, on_delete=models.CASCADE, related_name='notifications')
+    notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES, default='GENERAL')
+    title = models.CharField(max_length=200)
+    message = models.TextField()
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.member.first_name} - {self.title}"
+
+
+class TransactionCategory(models.Model):
+    CATEGORY_TYPES = [
+        ('INCOME', 'Income'),
+        ('EXPENSE', 'Expense'),
+    ]
+    
+    name = models.CharField(max_length=100)
+    category_type = models.CharField(max_length=10, choices=CATEGORY_TYPES)
+    description = models.TextField(blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    
+    class Meta:
+        verbose_name_plural = "Transaction Categories"
+        ordering = ['category_type', 'name']
+    
+    def __str__(self):
+        return f"{self.name} ({self.get_category_type_display()})"
+
+
+class Transaction(models.Model):
+    TRANSACTION_TYPES = [
+        ('INCOME', 'Income'),
+        ('EXPENSE', 'Expense'),
+    ]
+    
+    transaction_type = models.CharField(max_length=10, choices=TRANSACTION_TYPES)
+    category = models.ForeignKey(TransactionCategory, on_delete=models.SET_NULL, null=True, related_name='transactions')
+    amount = models.DecimalField(max_digits=12, decimal_places=2)
+    description = models.TextField()
+    reference_number = models.CharField(max_length=50, blank=True, null=True, help_text="Receipt number, transaction ID, etc.")
+    date = models.DateField()
+    recorded_by = models.ForeignKey(Member, on_delete=models.SET_NULL, null=True, related_name='recorded_transactions')
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-date', '-created_at']
+    
+    def __str__(self):
+        return f"{self.get_transaction_type_display()}: {self.amount} - {self.description[:50]}"
+
+
+class Budget(models.Model):
+    category = models.ForeignKey(TransactionCategory, on_delete=models.CASCADE, related_name='budgets')
+    year = models.IntegerField()
+    month = models.IntegerField(blank=True, null=True, help_text="Leave blank for annual budget")
+    planned_amount = models.DecimalField(max_digits=12, decimal_places=2)
+    notes = models.TextField(blank=True, null=True)
+    
+    class Meta:
+        unique_together = ['category', 'year', 'month']
+        ordering = ['-year', '-month']
+    
+    def __str__(self):
+        period = f"{self.year}-{self.month:02d}" if self.month else str(self.year)
+        return f"{self.category.name} - {period}: {self.planned_amount}"
+    
+    @property
+    def actual_amount(self):
+        transactions = self.category.transactions.filter(
+            date__year=self.year
+        )
+        if self.month:
+            transactions = transactions.filter(date__month=self.month)
+        
+        return transactions.aggregate(total=Sum('amount'))['total'] or Decimal('0')
+    
+    @property
+    def variance(self):
+        return self.planned_amount - self.actual_amount
+    
+    @property
+    def variance_percentage(self):
+        if self.planned_amount == 0:
+            return 0
+        return ((self.planned_amount - self.actual_amount) / self.planned_amount) * 100
+
+
+class FinancialReport(models.Model):
+    REPORT_TYPES = [
+        ('MONTHLY', 'Monthly Summary'),
+        ('QUARTERLY', 'Quarterly Summary'),
+        ('ANNUAL', 'Annual Summary'),
+        ('CUSTOM', 'Custom Period'),
+    ]
+    
+    title = models.CharField(max_length=200)
+    report_type = models.CharField(max_length=20, choices=REPORT_TYPES)
+    start_date = models.DateField()
+    end_date = models.DateField()
+    generated_by = models.ForeignKey(Member, on_delete=models.SET_NULL, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"{self.title} ({self.start_date} to {self.end_date})"
