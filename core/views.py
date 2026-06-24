@@ -477,12 +477,15 @@ def leadership_portal(request):
     return render(request, 'leadership_portal.html', context)
 
 def create_news_post(request):
-    """Publicity Secretary and Research Chair can create news."""
+    """Publicity Secretary, Research Chair, and all Committee Chairs can create news."""
     member = get_member_from_session(request)
-    if not member or not has_role(member, ['EXEC_PUB_SEC', 'COMM_RES', 'EXEC_CHAIR', 'EXEC_GEN_SEC']):
+    if not member or not has_role(member, [
+        'EXEC_PUB_SEC', 'COMM_RES', 'COMM_EDU', 'COMM_MEN',
+        'EXEC_CHAIR', 'EXEC_VICE_CHAIR', 'EXEC_GEN_SEC'
+    ]):
         messages.error(request, 'Not authorized.')
         return redirect('leadership_portal')
-
+    
     if request.method == 'POST':
         NewsPost.objects.create(
             title=request.POST.get('title'),
@@ -492,16 +495,19 @@ def create_news_post(request):
         )
         messages.success(request, 'News post created successfully!')
         return redirect('leadership_portal')
-
+    
     return render(request, 'create_news.html', {'member': member})
 
 def create_announcement(request):
-    """General Secretary and Publicity Secretary can create announcements."""
+    """General Secretary, Publicity Secretary, and all Committee Chairs can create announcements."""
     member = get_member_from_session(request)
-    if not member or not has_role(member, ['EXEC_GEN_SEC', 'EXEC_PUB_SEC', 'EXEC_CHAIR']):
+    if not member or not has_role(member, [
+        'EXEC_GEN_SEC', 'EXEC_PUB_SEC', 'EXEC_CHAIR', 'EXEC_VICE_CHAIR',
+        'COMM_EDU', 'COMM_RES', 'COMM_MEN'
+    ]):
         messages.error(request, 'Not authorized.')
         return redirect('leadership_portal')
-
+    
     if request.method == 'POST':
         Announcement.objects.create(
             title=request.POST.get('title'),
@@ -510,16 +516,19 @@ def create_announcement(request):
         )
         messages.success(request, 'Announcement created successfully!')
         return redirect('leadership_portal')
-
+    
     return render(request, 'create_announcement.html', {'member': member})
 
 def create_event(request):
-    """Education Chair and executives can create events."""
+    """All Committee Chairs and executives can create events."""
     member = get_member_from_session(request)
-    if not member or not has_role(member, ['COMM_EDU', 'EXEC_CHAIR', 'EXEC_VICE_CHAIR', 'EXEC_GEN_SEC', 'EXEC_PUB_SEC']):
+    if not member or not has_role(member, [
+        'COMM_EDU', 'COMM_RES', 'COMM_MEN',
+        'EXEC_CHAIR', 'EXEC_VICE_CHAIR', 'EXEC_GEN_SEC', 'EXEC_PUB_SEC'
+    ]):
         messages.error(request, 'Not authorized.')
         return redirect('leadership_portal')
-
+    
     if request.method == 'POST':
         Event.objects.create(
             title=request.POST.get('title'),
@@ -531,7 +540,7 @@ def create_event(request):
         )
         messages.success(request, 'Event created successfully!')
         return redirect('leadership_portal')
-
+    
     return render(request, 'create_event.html', {'member': member})
 
 def export_members_csv(request):
