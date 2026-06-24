@@ -73,15 +73,27 @@ class MembershipTierAdmin(admin.ModelAdmin):
 class SiteSettingsAdmin(admin.ModelAdmin):
     list_display = ('site_name', 'contact_email', 'contact_phone')
     fieldsets = (
-        ('General', {
+        ('General Site Information', {
             'fields': ('site_name', 'logo', 'motto')
         }),
         ('Contact Information', {
             'fields': ('contact_email', 'contact_phone', 'contact_location')
         }),
-        ('Social Media', {
+        ('Social Media Links', {
             'fields': ('facebook_url', 'twitter_url', 'instagram_url', 'linkedin_url'),
             'description': 'Enter full URLs (e.g., https://facebook.com/kuss)'
+        }),
+        ('WhatsApp & IT Support', {
+            'fields': ('whatsapp_number', 'it_support_message'),
+            'description': 'Configure IT support contact for member portal issues'
+        }),
+        ('Treasurer & Payment Information', {
+            'fields': ('treasurer_name', 'treasurer_phone', 'payment_instructions'),
+            'description': 'Display payment instructions on the Join page'
+        }),
+        ('Join Success Page Customization', {
+            'fields': ('success_message', 'success_button_text', 'success_button_url'),
+            'description': 'Customize what users see after successful registration'
         }),
     )
     
@@ -89,3 +101,6 @@ class SiteSettingsAdmin(admin.ModelAdmin):
         if SiteSettings.objects.exists():
             return False
         return super().has_add_permission(request)
+    
+    def has_delete_permission(self, request, obj=None):
+        return False
