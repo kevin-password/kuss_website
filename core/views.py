@@ -41,6 +41,20 @@ def is_treasurer(member):
         is_current=True
     ).exists()
 
+def is_leader(member):
+    """Check if member has any current leadership role."""
+    return Leadership.objects.filter(member=member, is_current=True).exists()
+
+def get_leader_roles(member):
+    """Get all current leadership roles for a member."""
+    return list(Leadership.objects.filter(member=member, is_current=True).values_list('role', flat=True))
+
+def has_role(member, role_codes):
+    """Check if member has any of the specified roles."""
+    if isinstance(role_codes, str):
+        role_codes = [role_codes]
+    return Leadership.objects.filter(member=member, role__in=role_codes, is_current=True).exists()
+
 # ==========================================
 # PUBLIC VIEWS
 # ==========================================
@@ -119,6 +133,9 @@ def login_view(request):
                     # If member is a Treasurer, redirect to Treasurer dashboard
                     if is_treasurer(member):
                         return redirect('treasurer_dashboard')
+                    # If member is any other leader, redirect to leadership portal
+                    elif is_leader(member):
+                        return redirect('leadership_portal')
                     else:
                         return redirect('dashboard')
                 else:
@@ -184,7 +201,7 @@ def profile_view(request):
     })
 
 # ==========================================
-# TREASURER PORTAL VIEWS (Uses normal member session)
+# TREASURER PORTAL VIEWS
 # ==========================================
 
 def treasurer_dashboard(request):
@@ -329,10 +346,6 @@ def toggle_subscription(request, member_id):
             
     return redirect('treasurer_dashboard')
 
-# ==========================================
-# EXPORT VIEWS
-# ==========================================
-
 def export_transactions(request):
     member = get_member_from_session(request)
     if not member or not is_treasurer(member):
@@ -397,20 +410,6 @@ def export_members(request):
 # LEADERSHIP PORTAL VIEWS
 # ==========================================
 
-def is_leader(member):
-    """Check if member has any current leadership role."""
-    return Leadership.objects.filter(member=member, is_current=True).exists()
-
-def get_leader_roles(member):
-    """Get all current leadership roles for a member."""
-    return list(Leadership.objects.filter(member=member, is_current=True).values_list('role', flat=True))
-
-def has_role(member, role_codes):
-    """Check if member has any of the specified roles."""
-    if isinstance(role_codes, str):
-        role_codes = [role_codes]
-    return Leadership.objects.filter(member=member, role__in=role_codes, is_current=True).exists()
-
 def leadership_portal(request):
     """Main portal for all leaders (except Treasurer who has their own dashboard)."""
     member = get_member_from_session(request)
@@ -463,11 +462,6 @@ def leadership_portal(request):
     
     return render(request, 'leadership_portal.html', context)
 
-
-# ==========================================
-# ROLE-SPECIFIC ACTION VIEWS
-# ==========================================
-
 def create_news_post(request):
     """Publicity Secretary and Research Chair can create news."""
     member = get_member_from_session(request)
@@ -487,7 +481,6 @@ def create_news_post(request):
     
     return render(request, 'create_news.html', {'member': member})
 
-
 def create_announcement(request):
     """General Secretary and Publicity Secretary can create announcements."""
     member = get_member_from_session(request)
@@ -505,7 +498,6 @@ def create_announcement(request):
         return redirect('leadership_portal')
     
     return render(request, 'create_announcement.html', {'member': member})
-
 
 def create_event(request):
     """Education Chair and executives can create events."""
@@ -527,7 +519,6 @@ def create_event(request):
         return redirect('leadership_portal')
     
     return render(request, 'create_event.html', {'member': member})
-
 
 def export_members_csv(request):
     """General Secretary and Chair can export member list."""
