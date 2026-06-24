@@ -236,10 +236,17 @@
                         <i class="fa-solid fa-user-circle"></i> My Portal
                     </a></li>
                     
-                    <!-- Show Treasurer Dashboard ONLY if user is a Treasurer -->
+                    <!-- Show Treasurer Dashboard if user is a Treasurer -->
                     {% if is_treasurer %}
                     <li><a href="{% url 'treasurer_dashboard' %}" class="nav-link" style="color: #ff9800; font-weight: 700;">
                         <i class="fa-solid fa-coins"></i> Treasurer
+                    </a></li>
+                    {% endif %}
+                    
+                    <!-- Show Leadership Portal for all leaders -->
+                    {% if is_leader %}
+                    <li><a href="{% url 'leadership_portal' %}" class="nav-link" style="color: #ffd700; font-weight: 700;">
+                        <i class="fa-solid fa-shield-halved"></i> Leadership
                     </a></li>
                     {% endif %}
                     
