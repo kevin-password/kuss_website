@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /login/
+Disallow: /logout/
+Disallow: /dashboard/
+Disallow: /profile/
+Disallow: /treasurer/
+Disallow: /leadership-portal/
+Disallow: /class-rep/
+
+Sitemap: https://kabsurgicalsociety.pythonanywhere.com/sitemap.xml
