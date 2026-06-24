@@ -81,16 +81,22 @@
         </div>
         {% endif %}
 
-        <!-- Education Chair Tools -->
+              <!-- Education Chair Tools -->
         {% if 'COMM_EDU' in roles %}
         <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: var(--shadow); border-left: 5px solid #2196f3;">
             <h3 style="color: var(--navy); margin-bottom: 15px;">
                 <i class="fa-solid fa-graduation-cap" style="color: #2196f3;"></i> Education Tools
             </h3>
-            <p style="color: var(--text-light); margin-bottom: 20px;">Manage educational events</p>
+            <p style="color: var(--text-light); margin-bottom: 20px;">Manage educational events and communications</p>
             <div style="display: flex; flex-direction: column; gap: 10px;">
                 <a href="{% url 'create_event' %}" class="btn btn-outline" style="margin-left: 0; text-align: center;">
                     <i class="fa-solid fa-calendar-plus"></i> Create Workshop/Event
+                </a>
+                <a href="{% url 'create_announcement' %}" class="btn btn-outline" style="margin-left: 0; text-align: center;">
+                    <i class="fa-solid fa-bullhorn"></i> Create Announcement
+                </a>
+                <a href="{% url 'create_news' %}" class="btn btn-outline" style="margin-left: 0; text-align: center;">
+                    <i class="fa-solid fa-newspaper"></i> Post Educational Update
                 </a>
             </div>
         </div>
@@ -102,15 +108,20 @@
             <h3 style="color: var(--navy); margin-bottom: 15px;">
                 <i class="fa-solid fa-microscope" style="color: #9c27b0;"></i> Research Tools
             </h3>
-            <p style="color: var(--text-light); margin-bottom: 20px;">Manage research content</p>
+            <p style="color: var(--text-light); margin-bottom: 20px;">Manage research content and communications</p>
             <div style="display: flex; flex-direction: column; gap: 10px;">
                 <a href="{% url 'create_news' %}" class="btn btn-outline" style="margin-left: 0; text-align: center;">
                     <i class="fa-solid fa-newspaper"></i> Post Research Update
                 </a>
+                <a href="{% url 'create_event' %}" class="btn btn-outline" style="margin-left: 0; text-align: center;">
+                    <i class="fa-solid fa-calendar-plus"></i> Create Research Event
+                </a>
+                <a href="{% url 'create_announcement' %}" class="btn btn-outline" style="margin-left: 0; text-align: center;">
+                    <i class="fa-solid fa-bullhorn"></i> Create Announcement
+                </a>
             </div>
         </div>
         {% endif %}
-
 
                 <!-- Mentorship Chair Tools -->
         {% if 'COMM_MEN' in roles %}
