@@ -115,7 +115,12 @@ def login_view(request):
                 member = Member.objects.get(email=email, is_active=True)
                 if member.password and check_password(password, member.password):
                     request.session['member_id'] = member.id
-                    return redirect('dashboard')
+                    
+                    # If member is a Treasurer, redirect to Treasurer dashboard
+                    if is_treasurer(member):
+                        return redirect('treasurer_dashboard')
+                    else:
+                        return redirect('dashboard')
                 else:
                     error = "Invalid password. Please contact the General Secretary to set your password."
             except Member.DoesNotExist:
@@ -141,9 +146,10 @@ def dashboard_view(request):
     latest_news = NewsPost.objects.all()[:3]
     latest_announcements = Announcement.objects.all()[:3]
     member_roles = Leadership.objects.filter(member=member, is_current=True)
-    
-    # Get latest notifications for the member
     notifications = Notification.objects.filter(member=member)[:10]
+    
+    # Check if this member is a Treasurer
+    member_is_treasurer = is_treasurer(member)
     
     return render(request, 'dashboard.html', {
         'member': member,
@@ -152,6 +158,7 @@ def dashboard_view(request):
         'latest_announcements': latest_announcements,
         'member_roles': member_roles,
         'notifications': notifications,
+        'is_treasurer': member_is_treasurer,
         'settings': settings
     })
 
@@ -177,37 +184,15 @@ def profile_view(request):
     })
 
 # ==========================================
-# TREASURER PORTAL VIEWS
+# TREASURER PORTAL VIEWS (Uses normal member session)
 # ==========================================
 
-def treasurer_login(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
-        password = request.POST.get('password')
-        
-        try:
-            member = Member.objects.get(email=email)
-            if is_treasurer(member) and member.password and check_password(password, member.password):
-                request.session['treasurer_id'] = member.id
-                return redirect('treasurer_dashboard')
-            messages.error(request, 'Invalid credentials or not authorized as Treasurer.')
-        except Member.DoesNotExist:
-            messages.error(request, 'Invalid credentials.')
-            
-    return render(request, 'treasurer_login.html')
-
-def treasurer_logout(request):
-    if 'treasurer_id' in request.session:
-        del request.session['treasurer_id']
-    return redirect('home')
-
 def treasurer_dashboard(request):
-    treasurer_id = request.session.get('treasurer_id')
-    if not treasurer_id:
-        return redirect('treasurer_login')
+    member = get_member_from_session(request)
+    if not member:
+        return redirect('login')
     
-    treasurer = get_object_or_404(Member, id=treasurer_id)
-    if not is_treasurer(treasurer):
+    if not is_treasurer(member):
         messages.error(request, 'You are not authorized to access the Treasurer dashboard.')
         return redirect('dashboard')
     
@@ -240,7 +225,7 @@ def treasurer_dashboard(request):
     paid_members = Subscription.objects.filter(is_paid=True, member__is_active=True).count()
     
     return render(request, 'treasurer_dashboard.html', {
-        'treasurer': treasurer,
+        'member': member,
         'total_income': total_income,
         'total_expenses': total_expenses,
         'cash_at_hand': cash_at_hand,
@@ -256,9 +241,9 @@ def treasurer_dashboard(request):
     })
 
 def transaction_list(request):
-    treasurer_id = request.session.get('treasurer_id')
-    if not treasurer_id or not is_treasurer(get_object_or_404(Member, id=treasurer_id)):
-        return redirect('treasurer_login')
+    member = get_member_from_session(request)
+    if not member or not is_treasurer(member):
+        return redirect('login')
     
     transactions = Transaction.objects.select_related('category', 'recorded_by').all()
     categories = TransactionCategory.objects.filter(is_active=True)
@@ -277,16 +262,16 @@ def transaction_list(request):
     if date_to: transactions = transactions.filter(date__lte=date_to)
     
     return render(request, 'treasurer_transactions.html', {
+        'member': member,
         'transactions': transactions,
         'categories': categories,
         'filters': {'type': t_type, 'category': cat_id, 'date_from': date_from, 'date_to': date_to}
     })
 
 def add_transaction(request):
-    treasurer_id = request.session.get('treasurer_id')
-    if not treasurer_id: return redirect('treasurer_login')
-    treasurer = get_object_or_404(Member, id=treasurer_id)
-    if not is_treasurer(treasurer): return redirect('dashboard')
+    member = get_member_from_session(request)
+    if not member or not is_treasurer(member):
+        return redirect('login')
     
     if request.method == 'POST':
         Transaction.objects.create(
@@ -296,21 +281,24 @@ def add_transaction(request):
             description=request.POST.get('description'),
             reference_number=request.POST.get('reference_number'),
             date=request.POST.get('date'),
-            recorded_by=treasurer
+            recorded_by=member
         )
         messages.success(request, 'Transaction recorded successfully.')
         return redirect('transaction_list')
     
     categories = TransactionCategory.objects.filter(is_active=True)
-    return render(request, 'treasurer_add_transaction.html', {'categories': categories})
+    return render(request, 'treasurer_add_transaction.html', {
+        'member': member,
+        'categories': categories
+    })
 
 def toggle_subscription(request, member_id):
-    treasurer_id = request.session.get('treasurer_id')
-    if not treasurer_id: return redirect('treasurer_login')
-    if not is_treasurer(get_object_or_404(Member, id=treasurer_id)): return redirect('dashboard')
+    member = get_member_from_session(request)
+    if not member or not is_treasurer(member):
+        return redirect('login')
     
-    member = get_object_or_404(Member, id=member_id)
-    sub, _ = Subscription.objects.get_or_create(member=member)
+    target_member = get_object_or_404(Member, id=member_id)
+    sub, _ = Subscription.objects.get_or_create(member=target_member)
     
     if request.method == 'POST':
         action = request.POST.get('action')
@@ -319,25 +307,25 @@ def toggle_subscription(request, member_id):
             if sub.is_paid:
                 sub.payment_date = timezone.now().date()
                 for tier in MembershipTier.objects.all():
-                    if tier.name.lower() in member.membership_type.lower():
+                    if tier.name.lower() in target_member.membership_type.lower():
                         sub.amount_paid = tier.subscription_fee
                         break
             else:
                 sub.payment_date = None
                 sub.amount_paid = Decimal('0')
             sub.save()
-            messages.success(request, f'Subscription updated for {member.first_name} {member.last_name}')
+            messages.success(request, f'Subscription updated for {target_member.first_name} {target_member.last_name}')
             
         elif action == 'send_reminder':
             Notification.objects.create(
-                member=member,
+                member=target_member,
                 notification_type='PAYMENT_REMINDER',
                 title='Subscription Fee Reminder',
-                message=f'Dear {member.first_name}, this is a reminder to pay your subscription fees. Please check the Treasurer portal or contact us for payment details.'
+                message=f'Dear {target_member.first_name}, this is a reminder to pay your subscription fees. Please check the Treasurer portal or contact us for payment details.'
             )
             sub.last_reminder_sent = timezone.now()
             sub.save()
-            messages.success(request, f'Reminder sent to {member.first_name} {member.last_name}')
+            messages.success(request, f'Reminder sent to {target_member.first_name} {target_member.last_name}')
             
     return redirect('treasurer_dashboard')
 
@@ -346,9 +334,9 @@ def toggle_subscription(request, member_id):
 # ==========================================
 
 def export_transactions(request):
-    treasurer_id = request.session.get('treasurer_id')
-    if not treasurer_id: return redirect('treasurer_login')
-    if not is_treasurer(get_object_or_404(Member, id=treasurer_id)): return redirect('dashboard')
+    member = get_member_from_session(request)
+    if not member or not is_treasurer(member):
+        return redirect('login')
     
     transactions = Transaction.objects.select_related('category', 'recorded_by').all()
     
@@ -379,9 +367,9 @@ def export_transactions(request):
     return response
 
 def export_members(request):
-    treasurer_id = request.session.get('treasurer_id')
-    if not treasurer_id: return redirect('treasurer_login')
-    if not is_treasurer(get_object_or_404(Member, id=treasurer_id)): return redirect('dashboard')
+    member = get_member_from_session(request)
+    if not member or not is_treasurer(member):
+        return redirect('login')
     
     members = Member.objects.filter(is_active=True).select_related('subscription')
     
