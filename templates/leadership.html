@@ -19,6 +19,7 @@
                             
                             <!-- Contact Information -->
                             <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                                <!-- Email ALWAYS public -->
                                 {% if leadership.member.email %}
                                     <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 8px; word-break: break-word;">
                                         <i class="fa-solid fa-envelope" style="color: var(--teal); margin-right: 5px;"></i>
@@ -28,12 +29,20 @@
                                     </p>
                                 {% endif %}
                                 
-                                {% if leadership.member.phone_number %}
-                                    <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 8px;">
-                                        <i class="fa-solid fa-phone" style="color: var(--teal); margin-right: 5px;"></i>
-                                        <a href="tel:{{ leadership.member.phone_number }}" style="color: var(--teal); text-decoration: none;">
-                                            {{ leadership.member.phone_number }}
-                                        </a>
+                                <!-- Phone ONLY for logged-in members -->
+                                {% if request.session.member_id %}
+                                    {% if leadership.member.phone_number %}
+                                        <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 8px;">
+                                            <i class="fa-solid fa-phone" style="color: var(--teal); margin-right: 5px;"></i>
+                                            <a href="tel:{{ leadership.member.phone_number }}" style="color: var(--teal); text-decoration: none;">
+                                                {{ leadership.member.phone_number }}
+                                            </a>
+                                        </p>
+                                    {% endif %}
+                                {% else %}
+                                    <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 8px; font-style: italic;">
+                                        <i class="fa-solid fa-lock" style="color: var(--text-light); margin-right: 5px;"></i>
+                                        <a href="{% url 'login' %}" style="color: var(--teal); text-decoration: none; font-weight: 600;">Login</a> to view phone
                                     </p>
                                 {% endif %}
                             </div>
