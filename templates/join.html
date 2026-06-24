@@ -13,7 +13,7 @@
             <h2>Membership Application</h2>
             <p class="subtitle">Please review Chapter Two of the Constitution for eligibility and fees before applying.</p>
             
-            <!-- PAYMENT INSTRUCTIONS BOX -->
+            <!-- PAYMENT INSTRUCTIONS BOX - Phone hidden from Google -->
             {% if settings and settings.treasurer_phone %}
             <div style="background: #e8f5e9; border-left: 5px solid var(--teal); padding: 25px; border-radius: 8px; margin-bottom: 30px;">
                 <h3 style="color: var(--navy); margin-bottom: 10px;">
@@ -26,14 +26,49 @@
                         Please send your membership fees to the Treasurer:
                     {% endif %}
                 </p>
-                <p style="font-size: 1.2rem; font-weight: 700; color: var(--teal); margin-top: 10px;">
-                    <i class="fa-solid fa-phone"></i> {{ settings.treasurer_phone }} 
-                    {% if settings.treasurer_name %} ({{ settings.treasurer_name }}){% endif %}
-                </p>
+                
+                <!-- Treasurer contact - Click to reveal (prevents Google indexing) -->
+                <div style="margin-top: 15px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #c8e6c9;">
+                    <p style="color: var(--text-dark); margin-bottom: 10px;">
+                        <strong>Treasurer Contact:</strong>
+                        {% if settings.treasurer_name %}
+                            {{ settings.treasurer_name }}
+                        {% endif %}
+                    </p>
+                    
+                    {% if request.session.member_id %}
+                        <!-- Show phone to logged-in members -->
+                        <p style="font-size: 1.1rem; font-weight: 700; color: var(--teal); margin: 0;">
+                            <i class="fa-solid fa-phone"></i> {{ settings.treasurer_phone }}
+                        </p>
+                    {% else %}
+                        <!-- Click to reveal for non-members -->
+                        <button onclick="revealTreasurerPhone()" id="treasurerPhoneBtn"
+                           style="display: inline-flex; align-items: center; gap: 8px; background: var(--teal); color: white; padding: 10px 20px; border-radius: 6px; font-weight: 600; border: none; cursor: pointer; transition: all 0.3s ease;">
+                            <i class="fa-solid fa-lock"></i>
+                            <span>Click to View Phone Number</span>
+                        </button>
+                        <p style="color: var(--text-light); font-size: 0.85rem; margin-top: 8px; margin-bottom: 0;">
+                            <i class="fa-solid fa-info-circle"></i> You can also <a href="{% url 'login' %}" style="color: var(--teal); font-weight: 600;">login</a> to view contact details
+                        </p>
+                    {% endif %}
+                </div>
             </div>
+
+            <!-- JavaScript to reveal phone (prevents Google from indexing) -->
+            <script>
+            function revealTreasurerPhone() {
+                var phone = "{{ settings.treasurer_phone }}";
+                var btn = document.getElementById('treasurerPhoneBtn');
+                btn.innerHTML = '<i class="fa-solid fa-phone"></i> ' + phone;
+                btn.style.background = 'var(--navy)';
+                btn.style.cursor = 'default';
+                btn.onclick = null;
+            }
+            </script>
             {% endif %}
 
-            <!-- THIS IS THE NEW ERROR BOX -->
+            <!-- ERROR BOX -->
             {% if form.errors %}
                 <div style="background: #ffebee; color: #c62828; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #ef9a9a;">
                     <strong>Please fix the following errors:</strong>
@@ -47,7 +82,7 @@
                 </div>
             {% endif %}
 
-            <!-- enctype="multipart/form-data" is REQUIRED for the profile picture -->
+            <!-- Registration Form -->
             <form method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 
