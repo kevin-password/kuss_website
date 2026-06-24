@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}KUSS - Kabale University Surgical Society{% endblock %}</title>
 
-
+    <!-- Google Site Verification -->
     <meta name="google-site-verification" content="PaCdWodGCPc74Qev4otrbIs9sewiCja5MJgPMFPI9us" />
+
     <!-- SEO Meta Tags -->
-    
     <meta name="description" content="Kabale University Surgical Society (KUSS) - Official website for medical students at Kabale University. Join us for surgical education, research, and mentorship.">
     <meta name="keywords" content="KUSS, Kabale University, Surgical Society, medical students, surgery, Uganda, medical school, surgical education, medical research, Kabale, KUSS Uganda, Kabale surgery">
     <meta name="author" content="Kabale University Surgical Society">
@@ -36,33 +36,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/media/KUSS_LOGO.png">
 
-    <!-- Structured Data for Organization -->
-       <!-- Structured Data for Organization -->
-    <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "EducationalOrganization",
-        "name": "Kabale University Surgical Society",
-        "alternateName": "KUSS",
-        "url": "https://kabsurgicalsociety.pythonanywhere.com",
-        "logo": "https://kabsurgicalsociety.pythonanywhere.com/media/KUSS_LOGO.png",
-        "description": "Official website of the Kabale University Surgical Society - Promoting surgical excellence among medical students at Kabale University, Uganda",
-        "address": {
-            "@type": "PostalAddress",
-            "addressLocality": "Kabale",
-            "addressRegion": "Western Uganda",
-            "addressCountry": "UG"
-        },
-        "foundingDate": "2024",
-        "slogan": "Supra et Ultra - Above and Beyond",
-        "department": "Department of Surgery",
-        "parentOrganization": {
-            "@type": "CollegeOrUniversity",
-            "name": "Kabale University",
-            "url": "https://www.kab.ac.ug"
-        }
-    }
-    </script>    <!-- Structured Data for Organization -->
+    <!-- Structured Data for Organization (ONLY ONCE) -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -89,9 +63,6 @@
     }
     </script>
 
-
-
-    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
@@ -385,21 +356,29 @@
                     </div>
                 {% endif %}
 
-                <!-- WHATSAPP IT SUPPORT BUTTON -->
+                <!-- WHATSAPP IT SUPPORT BUTTON - Click to reveal (prevents Google indexing) -->
                 {% if settings and settings.whatsapp_number %}
                 <div style="margin-top: 25px;">
-                    <a href="https://wa.me/{{ settings.whatsapp_number|cut:'+' }}?text={{ settings.it_support_message|default:'Hello, I need help with my KUSS member portal account.'|urlencode }}" 
-                       target="_blank" 
-                       style="display: inline-flex; align-items: center; gap: 10px; background: #25D366; color: white; padding: 12px 20px; border-radius: 25px; font-weight: 600; text-decoration: none; transition: all 0.3s ease;">
+                    <button onclick="revealWhatsApp()" id="whatsappBtn"
+                       style="display: inline-flex; align-items: center; gap: 10px; background: #25D366; color: white; padding: 12px 20px; border-radius: 25px; font-weight: 600; border: none; cursor: pointer; transition: all 0.3s ease;">
                         <i class="fa-brands fa-whatsapp" style="font-size: 1.3rem;"></i>
                         <span>Contact IT Support</span>
-                    </a>
+                    </button>
                     {% if settings.it_support_message %}
                         <p style="color: #8892b0; font-size: 0.85rem; margin-top: 8px;">
                             {{ settings.it_support_message }}
                         </p>
                     {% endif %}
                 </div>
+
+                <script>
+                function revealWhatsApp() {
+                    var whatsappNumber = "{{ settings.whatsapp_number|cut:'+' }}";
+                    var message = "{{ settings.it_support_message|default:'Hello, I need help with my KUSS member portal account.'|urlencode }}";
+                    var url = "https://wa.me/" + whatsappNumber + "?text=" + message;
+                    window.open(url, '_blank');
+                }
+                </script>
                 {% endif %}
             </div>
             <div>
@@ -414,9 +393,12 @@
                 <h4>Contact Us</h4>
                 {% if settings %}
                     <p><i class="fa-solid fa-envelope" style="color: var(--teal-light); margin-right: 8px;"></i> {{ settings.contact_email }}</p>
-                    {% if settings.contact_phone %}
+                    
+                    <!-- Phone ONLY shown to logged-in members -->
+                    {% if request.session.member_id and settings.contact_phone %}
                         <p><i class="fa-solid fa-phone" style="color: var(--teal-light); margin-right: 8px;"></i> {{ settings.contact_phone }}</p>
                     {% endif %}
+                    
                     <p><i class="fa-solid fa-location-dot" style="color: var(--teal-light); margin-right: 8px;"></i> {{ settings.contact_location }}</p>
                 {% else %}
                     <p><i class="fa-solid fa-envelope" style="color: var(--teal-light); margin-right: 8px;"></i> kabsurgicalsociety@gmail.com</p>
