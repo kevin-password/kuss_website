@@ -17,6 +17,12 @@ urlpatterns = [
     path('dashboard/', views.dashboard_view, name='dashboard'),
     path('profile/', views.profile_view, name='profile'),
 
+    # Class Rep portal
+    path('class-rep/dashboard/', views.class_rep_dashboard, name='class_rep_dashboard'),
+    path('class-rep/announcement/create/', views.create_class_announcement, name='create_class_announcement'),
+    path('class-rep/event/create/', views.create_class_event, name='create_class_event'),
+    path('class-rep/members/export/', views.export_class_members, name='export_class_members'),
+
 
 
 
