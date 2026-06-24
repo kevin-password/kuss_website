@@ -132,21 +132,29 @@
         </div>
         {% endif %}
 
-        <!-- Class Rep Tools -->
-        {% if 'CLASS_REP' in roles %}
-        <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: var(--shadow); border-left: 5px solid #4caf50;">
-            <h3 style="color: var(--navy); margin-bottom: 15px;">
-                <i class="fa-solid fa-user-group" style="color: #4caf50;"></i> Class Representative
-            </h3>
-            <p style="color: var(--text-light); margin-bottom: 20px;">View and support class members</p>
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-                <a href="{% url 'leadership' %}" class="btn btn-outline" style="margin-left: 0; text-align: center;">
-                    <i class="fa-solid fa-users"></i> View All Members
-                </a>
-            </div>
-        </div>
-        {% endif %}
+      <!-- Class Rep Tools -->
+{% if 'CLASS_REP' in roles %}
+<div style="background: white; padding: 30px; border-radius: 10px; box-shadow: var(--shadow); border-left: 5px solid #4caf50;">
+    <h3 style="color: var(--navy); margin-bottom: 15px;">
+        <i class="fa-solid fa-user-group" style="color: #4caf50;"></i> Class Representative Tools
+    </h3>
+    <p style="color: var(--text-light); margin-bottom: 20px;">Manage your class members and communications</p>
+    <div style="display: flex; flex-direction: column; gap: 10px;">
+        <a href="{% url 'class_rep_dashboard' %}" class="btn btn-primary" style="margin-left: 0; text-align: center;">
+            <i class="fa-solid fa-chart-line"></i> Class Dashboard
+        </a>
+        <a href="{% url 'create_class_announcement' %}" class="btn btn-outline" style="margin-left: 0; text-align: center;">
+            <i class="fa-solid fa-bullhorn"></i> Create Class Announcement
+        </a>
+        <a href="{% url 'create_class_event' %}" class="btn btn-outline" style="margin-left: 0; text-align: center;">
+            <i class="fa-solid fa-calendar-plus"></i> Create Class Event
+        </a>
+        <a href="{% url 'export_class_members' %}" class="btn btn-outline" style="margin-left: 0; text-align: center;">
+            <i class="fa-solid fa-file-csv"></i> Export Class Members
+        </a>
     </div>
+</div>
+{% endif %}
 
     <!-- Recent Members -->
     {% if 'EXEC_CHAIR' in roles or 'EXEC_VICE_CHAIR' in roles or 'EXEC_GEN_SEC' in roles or 'BOARD_CHAIR' in roles %}
