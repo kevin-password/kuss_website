@@ -392,3 +392,165 @@ def export_members(request):
             m.subscription.payment_date if paid else ''
         ])
     return response
+
+# ==========================================
+# LEADERSHIP PORTAL VIEWS
+# ==========================================
+
+def is_leader(member):
+    """Check if member has any current leadership role."""
+    return Leadership.objects.filter(member=member, is_current=True).exists()
+
+def get_leader_roles(member):
+    """Get all current leadership roles for a member."""
+    return list(Leadership.objects.filter(member=member, is_current=True).values_list('role', flat=True))
+
+def has_role(member, role_codes):
+    """Check if member has any of the specified roles."""
+    if isinstance(role_codes, str):
+        role_codes = [role_codes]
+    return Leadership.objects.filter(member=member, role__in=role_codes, is_current=True).exists()
+
+def leadership_portal(request):
+    """Main portal for all leaders (except Treasurer who has their own dashboard)."""
+    member = get_member_from_session(request)
+    if not member:
+        return redirect('login')
+    
+    if not is_leader(member):
+        messages.error(request, 'You do not have leadership access.')
+        return redirect('dashboard')
+    
+    roles = get_leader_roles(member)
+    settings = SiteSettings.load()
+    
+    # Gather data based on roles
+    context = {
+        'member': member,
+        'roles': roles,
+        'role_display': [Leadership(role=r).get_role_display() for r in roles],
+        'settings': settings,
+    }
+    
+    # Data for Executive roles
+    if has_role(member, ['EXEC_CHAIR', 'EXEC_VICE_CHAIR', 'EXEC_GEN_SEC', 'EXEC_PUB_SEC', 
+                         'BOARD_CHAIR', 'BOARD_TREASURER', 'BOARD_STUDENT_REP', 'BOARD_UNI_ADMIN', 'PATRON']):
+        context['total_members'] = Member.objects.filter(is_active=True).count()
+        context['recent_members'] = Member.objects.filter(is_active=True).order_by('-date_joined')[:10]
+        context['all_leaders'] = Leadership.objects.filter(is_current=True).select_related('member')
+        context['upcoming_events'] = Event.objects.filter(is_upcoming=True)[:5]
+    
+    # Data for General Secretary
+    if has_role(member, ['EXEC_GEN_SEC']):
+        context['all_members'] = Member.objects.filter(is_active=True).order_by('last_name')
+    
+    # Data for Publicity Secretary
+    if has_role(member, ['EXEC_PUB_SEC']):
+        context['news_posts'] = NewsPost.objects.all()[:10]
+        context['announcements'] = Announcement.objects.all()[:10]
+    
+    # Data for Education Chair
+    if has_role(member, ['COMM_EDU']):
+        context['events'] = Event.objects.all().order_by('-date')[:10]
+    
+    # Data for Research Chair
+    if has_role(member, ['COMM_RES']):
+        context['research_news'] = NewsPost.objects.all()[:10]
+    
+    # Data for Class Rep
+    if has_role(member, ['CLASS_REP']):
+        context['class_members'] = Member.objects.filter(is_active=True, membership_type='FULL')[:50]
+    
+    return render(request, 'leadership_portal.html', context)
+
+
+# ==========================================
+# ROLE-SPECIFIC ACTION VIEWS
+# ==========================================
+
+def create_news_post(request):
+    """Publicity Secretary and Research Chair can create news."""
+    member = get_member_from_session(request)
+    if not member or not has_role(member, ['EXEC_PUB_SEC', 'COMM_RES', 'EXEC_CHAIR', 'EXEC_GEN_SEC']):
+        messages.error(request, 'Not authorized.')
+        return redirect('leadership_portal')
+    
+    if request.method == 'POST':
+        NewsPost.objects.create(
+            title=request.POST.get('title'),
+            content=request.POST.get('content'),
+            image=request.FILES.get('image'),
+            author=member
+        )
+        messages.success(request, 'News post created successfully!')
+        return redirect('leadership_portal')
+    
+    return render(request, 'create_news.html', {'member': member})
+
+
+def create_announcement(request):
+    """General Secretary and Publicity Secretary can create announcements."""
+    member = get_member_from_session(request)
+    if not member or not has_role(member, ['EXEC_GEN_SEC', 'EXEC_PUB_SEC', 'EXEC_CHAIR']):
+        messages.error(request, 'Not authorized.')
+        return redirect('leadership_portal')
+    
+    if request.method == 'POST':
+        Announcement.objects.create(
+            title=request.POST.get('title'),
+            description=request.POST.get('description'),
+            document=request.FILES.get('document')
+        )
+        messages.success(request, 'Announcement created successfully!')
+        return redirect('leadership_portal')
+    
+    return render(request, 'create_announcement.html', {'member': member})
+
+
+def create_event(request):
+    """Education Chair and executives can create events."""
+    member = get_member_from_session(request)
+    if not member or not has_role(member, ['COMM_EDU', 'EXEC_CHAIR', 'EXEC_VICE_CHAIR', 'EXEC_GEN_SEC', 'EXEC_PUB_SEC']):
+        messages.error(request, 'Not authorized.')
+        return redirect('leadership_portal')
+    
+    if request.method == 'POST':
+        Event.objects.create(
+            title=request.POST.get('title'),
+            description=request.POST.get('description'),
+            date=request.POST.get('date'),
+            venue=request.POST.get('venue'),
+            flyer=request.FILES.get('flyer'),
+            is_upcoming=True
+        )
+        messages.success(request, 'Event created successfully!')
+        return redirect('leadership_portal')
+    
+    return render(request, 'create_event.html', {'member': member})
+
+
+def export_members_csv(request):
+    """General Secretary and Chair can export member list."""
+    member = get_member_from_session(request)
+    if not member or not has_role(member, ['EXEC_GEN_SEC', 'EXEC_CHAIR', 'EXEC_VICE_CHAIR']):
+        messages.error(request, 'Not authorized.')
+        return redirect('leadership_portal')
+    
+    members = Member.objects.filter(is_active=True).order_by('last_name')
+    
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="kuss_members_{datetime.now().strftime("%Y%m%d")}.csv"'
+    
+    writer = csv.writer(response)
+    writer.writerow(['Name', 'Email', 'Phone', 'Membership Type', 'Reg Number', 'Date Joined'])
+    
+    for m in members:
+        writer.writerow([
+            f"{m.first_name} {m.last_name}",
+            m.email,
+            m.phone_number,
+            m.get_membership_type_display(),
+            m.registration_number or '',
+            m.date_joined.strftime('%Y-%m-%d')
+        ])
+    return response
