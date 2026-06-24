@@ -22,10 +22,8 @@
             {% endif %}
         </p>
 
-        <!-- DYNAMIC CONTENT SECTIONS - Shows only what's filled in Admin Panel -->
-        
-        <!-- Treasurer/Payment Info -->
-        {% if settings and settings.treasurer_phone %}
+        <!-- Treasurer/Payment Info - Email public, phone hidden -->
+        {% if settings %}
         <div style="background: #e8f5e9; border-left: 5px solid var(--teal); padding: 25px; border-radius: 8px; margin-bottom: 25px; text-align: left;">
             <h3 style="color: var(--navy); margin-bottom: 10px;">
                 <i class="fa-solid fa-money-bill-wave" style="color: var(--teal);"></i> Payment Instructions
@@ -34,17 +32,45 @@
                 {% if settings.payment_instructions %}
                     {{ settings.payment_instructions|linebreaksbr }}
                 {% else %}
-                    Please send your membership fees to the Treasurer:
+                    Please contact the Treasurer for payment details.
                 {% endif %}
             </p>
-            <p style="font-size: 1.2rem; font-weight: 700; color: var(--teal); margin-top: 10px;">
-                <i class="fa-solid fa-phone"></i> {{ settings.treasurer_phone }} 
-                {% if settings.treasurer_name %} ({{ settings.treasurer_name }}){% endif %}
-            </p>
+            
+            <!-- Treasurer Contact - Email public, phone hidden -->
+            <div style="margin-top: 15px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #c8e6c9;">
+                <p style="color: var(--text-dark); margin-bottom: 10px;">
+                    <strong>Treasurer:</strong>
+                    {% if settings.treasurer_name %}
+                        {{ settings.treasurer_name }}
+                    {% endif %}
+                </p>
+                
+                <!-- Email ALWAYS public -->
+                <p style="margin-bottom: 10px;">
+                    <i class="fa-solid fa-envelope" style="color: var(--teal); margin-right: 8px;"></i>
+                    <a href="mailto:{{ settings.contact_email }}" style="color: var(--teal); font-weight: 600;">
+                        {{ settings.contact_email }}
+                    </a>
+                </p>
+                
+                <!-- Phone ONLY for logged-in members -->
+                {% if request.session.member_id %}
+                    {% if settings.treasurer_phone %}
+                        <p style="font-size: 1.1rem; font-weight: 700; color: var(--teal); margin: 0;">
+                            <i class="fa-solid fa-phone"></i> {{ settings.treasurer_phone }}
+                        </p>
+                    {% endif %}
+                {% else %}
+                    <p style="color: var(--text-light); font-size: 0.9rem; margin: 0;">
+                        <i class="fa-solid fa-lock"></i> 
+                        <a href="{% url 'login' %}" style="color: var(--teal); font-weight: 600;">Login</a> to view phone number
+                    </p>
+                {% endif %}
+            </div>
         </div>
         {% endif %}
 
-        <!-- WhatsApp IT Support -->
+        <!-- WhatsApp IT Support - Click to reveal (prevents Google indexing) -->
         {% if settings and settings.whatsapp_number %}
         <div style="background: #f1f8e9; border-left: 5px solid #25D366; padding: 25px; border-radius: 8px; margin-bottom: 25px; text-align: left;">
             <h3 style="color: var(--navy); margin-bottom: 10px;">
@@ -57,13 +83,22 @@
                     Contact IT support for member portal passwords and technical assistance.
                 {% endif %}
             </p>
-            <a href="https://wa.me/{{ settings.whatsapp_number|cut:'+' }}?text={{ settings.it_support_message|default:'Hello, I need help with my KUSS member portal account.'|urlencode }}" 
-               target="_blank" 
-               style="display: inline-flex; align-items: center; gap: 10px; background: #25D366; color: white; padding: 12px 25px; border-radius: 25px; font-weight: 600; text-decoration: none;">
+            <button onclick="revealWhatsApp()" id="whatsappBtn"
+               style="display: inline-flex; align-items: center; gap: 10px; background: #25D366; color: white; padding: 12px 25px; border-radius: 25px; font-weight: 600; border: none; cursor: pointer; font-size: 1rem; transition: all 0.3s ease;">
                 <i class="fa-brands fa-whatsapp" style="font-size: 1.3rem;"></i>
                 <span>Contact IT via WhatsApp</span>
-            </a>
+            </button>
         </div>
+
+        <!-- WhatsApp JavaScript - Number NOT in HTML, only revealed on click -->
+        <script>
+        function revealWhatsApp() {
+            var whatsappNumber = "{{ settings.whatsapp_number|cut:'+' }}";
+            var message = "Hello, I need help with my KUSS member portal account.";
+            var url = "https://wa.me/" + whatsappNumber + "?text=" + encodeURIComponent(message);
+            window.open(url, '_blank');
+        }
+        </script>
         {% endif %}
 
         <!-- Custom Button -->
