@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% block title %}All Transactions - KUSS{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <h1><i class="fa-solid fa-list"></i> All Transactions</h1>
+    <p>View and filter all financial transactions</p>
+</section>
+
+<section class="section container">
+    <!-- Filter Form -->
+    <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: var(--shadow); margin-bottom: 30px;">
+        <h3 style="color: var(--navy); margin-bottom: 15px;"><i class="fa-solid fa-filter"></i> Filter Transactions</h3>
+        <form method="GET" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+            <div>
+                <label>Type</label>
+                <select name="type" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                    <option value="">All Types</option>
+                    <option value="INCOME" {% if filters.type == 'INCOME' %}selected{% endif %}>Income</option>
+                    <option value="EXPENSE" {% if filters.type == 'EXPENSE' %}selected{% endif %}>Expense</option>
+                </select>
+            </div>
+            <div>
+                <label>Category</label>
+                <select name="category" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                    <option value="">All Categories</option>
+                    {% for cat in categories %}
+                        <option value="{{ cat.id }}" {% if filters.category == cat.id|stringformat:"s" %}selected{% endif %}>{{ cat.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label>From Date</label>
+                <input type="date" name="date_from" value="{{ filters.date_from|default:'' }}" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+            </div>
+            <div>
+                <label>To Date</label>
+                <input type="date" name="date_to" value="{{ filters.date_to|default:'' }}" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+            </div>
+            <div style="display: flex; align-items: flex-end; gap: 10px;">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fa-solid fa-search"></i> Filter
+                </button>
+                <a href="{% url 'transaction_list' %}" class="btn btn-outline">Clear</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Export Button -->
+    <div style="margin-bottom: 20px; text-align: right;">
+        <a href="{% url 'export_transactions' %}{% if filters.type %}?type={{ filters.type }}{% endif %}{% if filters.date_from %}&date_from={{ filters.date_from }}{% endif %}{% if filters.date_to %}&date_to={{ filters.date_to }}{% endif %}" 
+           class="btn btn-primary">
+            <i class="fa-solid fa-file-csv"></i> Export Filtered Results
+        </a>
+    </div>
+
+    <!-- Transactions Table -->
+    <div style="background: white; border-radius: 10px; box-shadow: var(--shadow); overflow: hidden;">
+        <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr style="background: var(--navy); color: white;">
+                        <th style="padding: 15px; text-align: left;">Date</th>
+                        <th style="padding: 15px; text-align: left;">Type</th>
+                        <th style="padding: 15px; text-align: left;">Category</th>
+                        <th style="padding: 15px; text-align: right;">Amount (UGX)</th>
+                        <th style="padding: 15px; text-align: left;">Description</th>
+                        <th style="padding: 15px; text-align: left;">Reference</th>
+                        <th style="padding: 15px; text-align: left;">Recorded By</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in transactions %}
+                    <tr style="border-bottom: 1px solid #eee;">
+                        <td style="padding: 12px;">{{ t.date|date:"M d, Y" }}</td>
+                        <td style="padding: 12px;">
+                            <span style="background: {% if t.transaction_type == 'INCOME' %}#4caf50{% else %}#f44336{% endif %}; color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.85rem;">
+                                {{ t.get_transaction_type_display }}
+                            </span>
+                        </td>
+                        <td style="padding: 12px;">{{ t.category.name|default:"N/A" }}</td>
+                        <td style="padding: 12px; text-align: right; font-weight: 600;">{{ t.amount|floatformat:0 }}</td>
+                        <td style="padding: 12px;">{{ t.description|truncatewords:10 }}</td>
+                        <td style="padding: 12px; color: var(--text-light);">{{ t.reference_number|default:"-" }}</td>
+                        <td style="padding: 12px;">
+                            {% if t.recorded_by %}
+                                {{ t.recorded_by.first_name }} {{ t.recorded_by.last_name }}
+                            {% else %}
+                                System
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="7" style="padding: 30px; text-align: center; color: var(--text-light);">
+                            <i class="fa-solid fa-inbox" style="font-size: 2rem; margin-bottom: 10px; display: block;"></i>
+                            No transactions found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div style="margin-top: 30px; text-align: center;">
+        <a href="{% url 'treasurer_dashboard' %}" class="btn btn-outline">
+            <i class="fa-solid fa-arrow-left"></i> Back to Dashboard
+        </a>
+    </div>
+</section>
+{% endblock %}
