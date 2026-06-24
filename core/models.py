@@ -134,14 +134,30 @@ class SiteSettings(models.Model):
     logo = models.FileField(upload_to='site_logos/', blank=True, null=True, help_text="Upload the official KUSS logo")
     motto = models.CharField(max_length=200, default="Supra et Ultra - Above and Beyond")
     
+    # Contact Info
     contact_email = models.EmailField(default="info@kuss.ac.ug")
     contact_phone = models.CharField(max_length=20, blank=True, null=True, help_text="e.g., +256 700 123 456")
     contact_location = models.CharField(max_length=200, default="Kabale, Uganda")
     
+    # Social Media
     facebook_url = models.URLField(blank=True, null=True, help_text="Full URL to Facebook page")
     twitter_url = models.URLField(blank=True, null=True, help_text="Full URL to X/Twitter profile")
     instagram_url = models.URLField(blank=True, null=True, help_text="Full URL to Instagram profile")
     linkedin_url = models.URLField(blank=True, null=True, help_text="Full URL to LinkedIn page")
+    
+    # WhatsApp & IT Support
+    whatsapp_number = models.CharField(max_length=20, blank=True, null=True, help_text="WhatsApp number with country code, e.g., +256772123456")
+    it_support_message = models.TextField(blank=True, null=True, default="For member portal passwords and technical support, contact IT via WhatsApp")
+    
+    # Treasurer & Payment Info
+    treasurer_name = models.CharField(max_length=100, blank=True, null=True, help_text="Name of the current Treasurer")
+    treasurer_phone = models.CharField(max_length=20, blank=True, null=True, help_text="Treasurer's phone/Mobile Money number for fees")
+    payment_instructions = models.TextField(blank=True, null=True, help_text="Bank account details, Mobile Money instructions, etc.")
+    
+    # Join Success Page Customization
+    success_message = models.TextField(blank=True, null=True, default="Thank you for joining KUSS! Your membership application has been received. We will review your details and contact you soon.")
+    success_button_text = models.CharField(max_length=50, blank=True, null=True, default="Return to Home")
+    success_button_url = models.CharField(max_length=200, blank=True, null=True, default="home", help_text="URL name (e.g., 'home', 'dashboard') or full URL")
     
     class Meta:
         verbose_name = "Site Settings"
