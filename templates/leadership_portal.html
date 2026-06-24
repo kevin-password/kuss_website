@@ -81,7 +81,7 @@
         </div>
         {% endif %}
 
-              <!-- Education Chair Tools -->
+        <!-- Education Chair Tools -->
         {% if 'COMM_EDU' in roles %}
         <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: var(--shadow); border-left: 5px solid #2196f3;">
             <h3 style="color: var(--navy); margin-bottom: 15px;">
@@ -123,7 +123,7 @@
         </div>
         {% endif %}
 
-                <!-- Mentorship Chair Tools -->
+        <!-- Mentorship Chair Tools -->
         {% if 'COMM_MEN' in roles %}
         <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: var(--shadow); border-left: 5px solid #00bcd4;">
             <h3 style="color: var(--navy); margin-bottom: 15px;">
@@ -165,31 +165,32 @@
         </div>
         {% endif %}
 
-      <!-- Class Rep Tools -->
-{% if 'CLASS_REP' in roles %}
-<div style="background: white; padding: 30px; border-radius: 10px; box-shadow: var(--shadow); border-left: 5px solid #4caf50;">
-    <h3 style="color: var(--navy); margin-bottom: 15px;">
-        <i class="fa-solid fa-user-group" style="color: #4caf50;"></i> Class Representative Tools
-    </h3>
-    <p style="color: var(--text-light); margin-bottom: 20px;">Manage your class members and communications</p>
-    <div style="display: flex; flex-direction: column; gap: 10px;">
-        <a href="{% url 'class_rep_dashboard' %}" class="btn btn-primary" style="margin-left: 0; text-align: center;">
-            <i class="fa-solid fa-chart-line"></i> Class Dashboard
-        </a>
-        <a href="{% url 'create_class_announcement' %}" class="btn btn-outline" style="margin-left: 0; text-align: center;">
-            <i class="fa-solid fa-bullhorn"></i> Create Class Announcement
-        </a>
-        <a href="{% url 'create_class_event' %}" class="btn btn-outline" style="margin-left: 0; text-align: center;">
-            <i class="fa-solid fa-calendar-plus"></i> Create Class Event
-        </a>
-        <a href="{% url 'export_class_members' %}" class="btn btn-outline" style="margin-left: 0; text-align: center;">
-            <i class="fa-solid fa-file-csv"></i> Export Class Members
-        </a>
+        <!-- Class Rep Tools -->
+        {% if 'CLASS_REP' in roles %}
+        <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: var(--shadow); border-left: 5px solid #4caf50;">
+            <h3 style="color: var(--navy); margin-bottom: 15px;">
+                <i class="fa-solid fa-user-group" style="color: #4caf50;"></i> Class Representative Tools
+            </h3>
+            <p style="color: var(--text-light); margin-bottom: 20px;">Manage your class members and communications</p>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <a href="{% url 'class_rep_dashboard' %}" class="btn btn-primary" style="margin-left: 0; text-align: center;">
+                    <i class="fa-solid fa-chart-line"></i> Class Dashboard
+                </a>
+                <a href="{% url 'create_class_announcement' %}" class="btn btn-outline" style="margin-left: 0; text-align: center;">
+                    <i class="fa-solid fa-bullhorn"></i> Create Class Announcement
+                </a>
+                <a href="{% url 'create_class_event' %}" class="btn btn-outline" style="margin-left: 0; text-align: center;">
+                    <i class="fa-solid fa-calendar-plus"></i> Create Class Event
+                </a>
+                <a href="{% url 'export_class_members' %}" class="btn btn-outline" style="margin-left: 0; text-align: center;">
+                    <i class="fa-solid fa-file-csv"></i> Export Class Members
+                </a>
+            </div>
+        </div>
+        {% endif %}
     </div>
-</div>
-{% endif %}
 
-    <!-- Recent Members -->
+    <!-- Recent Members - Email public, phone hidden -->
     {% if 'EXEC_CHAIR' in roles or 'EXEC_VICE_CHAIR' in roles or 'EXEC_GEN_SEC' in roles or 'BOARD_CHAIR' in roles %}
     <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: var(--shadow); margin-bottom: 30px;">
         <h2 style="color: var(--navy); margin-bottom: 20px;">Recent Members</h2>
@@ -199,6 +200,7 @@
                     <tr style="background: var(--light-gray);">
                         <th style="padding: 12px; text-align: left;">Name</th>
                         <th style="padding: 12px; text-align: left;">Email</th>
+                        <th style="padding: 12px; text-align: left;">Phone</th>
                         <th style="padding: 12px; text-align: left;">Type</th>
                         <th style="padding: 12px; text-align: left;">Joined</th>
                     </tr>
@@ -207,12 +209,16 @@
                     {% for m in recent_members %}
                     <tr style="border-bottom: 1px solid #eee;">
                         <td style="padding: 12px;">{{ m.first_name }} {{ m.last_name }}</td>
-                        <td style="padding: 12px;">{{ m.email }}</td>
+                        <td style="padding: 12px;">
+                            <a href="mailto:{{ m.email }}" style="color: var(--teal);">{{ m.email }}</a>
+                        </td>
+                        <!-- Phone shown because this is a logged-in leader portal -->
+                        <td style="padding: 12px;">{{ m.phone_number|default:"-" }}</td>
                         <td style="padding: 12px;">{{ m.get_membership_type_display }}</td>
                         <td style="padding: 12px;">{{ m.date_joined|date:"M d, Y" }}</td>
                     </tr>
                     {% empty %}
-                    <tr><td colspan="4" style="padding: 20px; text-align: center; color: var(--text-light);">No members yet.</td></tr>
+                    <tr><td colspan="5" style="padding: 20px; text-align: center; color: var(--text-light);">No members yet.</td></tr>
                     {% endfor %}
                 </tbody>
             </table>
@@ -220,7 +226,7 @@
     </div>
     {% endif %}
 
-    <!-- Current Leadership -->
+    <!-- Current Leadership - Email public, phone shown to logged-in leaders -->
     {% if all_leaders %}
     <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: var(--shadow);">
         <h2 style="color: var(--navy); margin-bottom: 20px;">Current Leadership Team</h2>
@@ -229,7 +235,22 @@
             <div style="background: var(--light-gray); padding: 15px; border-radius: 8px; border-left: 3px solid var(--teal);">
                 <strong style="color: var(--navy);">{{ leader.member.first_name }} {{ leader.member.last_name }}</strong>
                 <p style="color: var(--teal); font-size: 0.85rem; margin-top: 5px;">{{ leader.get_role_display }}</p>
-                <p style="color: var(--text-light); font-size: 0.8rem; margin-top: 5px;">{{ leader.member.email }}</p>
+                
+                <!-- Email ALWAYS visible -->
+                <p style="color: var(--text-light); font-size: 0.8rem; margin-top: 5px; margin-bottom: 5px;">
+                    <i class="fa-solid fa-envelope" style="margin-right: 5px;"></i>
+                    <a href="mailto:{{ leader.member.email }}" style="color: var(--teal);">
+                        {{ leader.member.email }}
+                    </a>
+                </p>
+                
+                <!-- Phone visible to logged-in leaders (which they all are) -->
+                {% if leader.member.phone_number %}
+                <p style="color: var(--text-light); font-size: 0.8rem; margin: 0;">
+                    <i class="fa-solid fa-phone" style="margin-right: 5px;"></i>
+                    {{ leader.member.phone_number }}
+                </p>
+                {% endif %}
             </div>
             {% endfor %}
         </div>
