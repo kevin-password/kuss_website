@@ -163,7 +163,8 @@ def dashboard_view(request):
     latest_news = NewsPost.objects.all()[:3]
     latest_announcements = Announcement.objects.all()[:3]
     member_roles = Leadership.objects.filter(member=member, is_current=True)
-    notifications = Notification.objects.filter(member=member)[:10]
+    # Get notifications for this member
+    notifications = Notification.objects.filter(member=member).order_by('-created_at')[:10]
     
     # Check if this member is a Treasurer
     member_is_treasurer = is_treasurer(member)
