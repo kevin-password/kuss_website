@@ -4,6 +4,64 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}KUSS - Kabale University Surgical Society{% endblock %}</title>
+
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Kabale University Surgical Society (KUSS) - Official website for medical students at Kabale University. Join us for surgical education, research, and mentorship.">
+    <meta name="keywords" content="KUSS, Kabale University, Surgical Society, medical students, surgery, Uganda, medical school, surgical education, medical research, Kabale, KUSS Uganda, Kabale surgery">
+    <meta name="author" content="Kabale University Surgical Society">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
+
+    <!-- Open Graph Meta Tags (for social media sharing) -->
+    <meta property="og:title" content="KUSS - Kabale University Surgical Society">
+    <meta property="og:description" content="Official website of the Kabale University Surgical Society. Join us for surgical excellence.">
+    <meta property="og:image" content="{{ settings.logo.url|default:'/media/KUSS_LOGO.png' }}">
+    <meta property="og:url" content="https://kabsurgicalsociety.pythonanywhere.com">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="KUSS">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="KUSS - Kabale University Surgical Society">
+    <meta name="twitter:description" content="Official website of the Kabale University Surgical Society.">
+    <meta name="twitter:image" content="{{ settings.logo.url|default:'/media/KUSS_LOGO.png' }}">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://kabsurgicalsociety.pythonanywhere.com{{ request.path }}">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/media/KUSS_LOGO.png">
+
+    <!-- Structured Data for Organization -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "EducationalOrganization",
+        "name": "Kabale University Surgical Society",
+        "alternateName": "KUSS",
+        "url": "https://kabsurgicalsociety.pythonanywhere.com",
+        "logo": "https://kabsurgicalsociety.pythonanywhere.com/media/KUSS_LOGO.png",
+        "description": "Official website of the Kabale University Surgical Society - Promoting surgical excellence among medical students at Kabale University",
+        "address": {
+            "@type": "PostalAddress",
+            "addressLocality": "Kabale",
+            "addressRegion": "Western Uganda",
+            "addressCountry": "UG"
+        },
+        "sameAs": [
+            "{{ settings.facebook_url|default:'' }}",
+            "{{ settings.twitter_url|default:'' }}",
+            "{{ settings.instagram_url|default:'' }}",
+            "{{ settings.linkedin_url|default:'' }}"
+        ]
+    }
+    </script>
+
+
+
+    
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
