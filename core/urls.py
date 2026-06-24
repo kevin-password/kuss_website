@@ -20,8 +20,7 @@ urlpatterns = [
 
 
 
-    path('treasurer/login/', views.treasurer_login, name='treasurer_login'),
-    path('treasurer/logout/', views.treasurer_logout, name='treasurer_logout'),
+    
     path('treasurer/dashboard/', views.treasurer_dashboard, name='treasurer_dashboard'),
     path('treasurer/transactions/', views.transaction_list, name='transaction_list'),
     path('treasurer/transactions/add/', views.add_transaction, name='add_transaction'),
