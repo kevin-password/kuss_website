@@ -7,9 +7,14 @@
         <div class="hero-content">
             <h1 class="hero-title">Advancing Surgical Excellence</h1>
             <p class="hero-subtitle">Equipping the next generation of holistic surgeons at Kabale University through education, research, and mentorship.</p>
-            <div>
+            
+            <!-- UPDATED BUTTONS SECTION -->
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; margin-top: 10px;">
                 <a href="{% url 'about' %}" class="btn btn-primary">Discover Our Mission</a>
                 <a href="{% url 'join' %}" class="btn btn-outline">Become a Member</a>
+                <a href="{% url 'login' %}" class="btn btn-outline" style="background: rgba(255,255,255,0.1); border-color: var(--teal-light); color: var(--teal-light);">
+                    <i class="fa-solid fa-right-to-bracket"></i> Member Login
+                </a>
             </div>
         </div>
     </section>
