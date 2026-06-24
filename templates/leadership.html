@@ -15,7 +15,28 @@
                         <div class="leader-info">
                             <h3 class="leader-name">{{ leadership.member.first_name }} {{ leadership.member.last_name }}</h3>
                             <p class="leader-role">{{ leadership.get_role_display }}</p>
-                            <p style="color: var(--text-light);">{{ leadership.member.bio|default:"Dedicated member of the KUSS Executive." }}</p>
+                            <p style="color: var(--text-light); margin-bottom: 15px;">{{ leadership.member.bio|default:"Dedicated member of the KUSS Executive." }}</p>
+                            
+                            <!-- Contact Information -->
+                            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
+                                {% if leadership.member.email %}
+                                    <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 8px; word-break: break-word;">
+                                        <i class="fa-solid fa-envelope" style="color: var(--teal); margin-right: 5px;"></i>
+                                        <a href="mailto:{{ leadership.member.email }}" style="color: var(--teal); text-decoration: none;">
+                                            {{ leadership.member.email }}
+                                        </a>
+                                    </p>
+                                {% endif %}
+                                
+                                {% if leadership.member.phone_number %}
+                                    <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 8px;">
+                                        <i class="fa-solid fa-phone" style="color: var(--teal); margin-right: 5px;"></i>
+                                        <a href="tel:{{ leadership.member.phone_number }}" style="color: var(--teal); text-decoration: none;">
+                                            {{ leadership.member.phone_number }}
+                                        </a>
+                                    </p>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 {% endfor %}
