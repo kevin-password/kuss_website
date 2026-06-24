@@ -1103,3 +1103,270 @@ def export_members_csv(request):
             m.date_joined.strftime('%Y-%m-%d')
         ])
     return response
+    # ==========================================
+# CLASS REP SPECIFIC VIEWS
+# ==========================================
+
+def class_rep_dashboard(request):
+    """Enhanced dashboard for Class Representatives."""
+    member = get_member_from_session(request)
+    if not member or not has_role(member, ['CLASS_REP']):
+        messages.error(request, 'Not authorized.')
+        return redirect('dashboard')
+    
+    settings = SiteSettings.load()
+    
+    # Get all class members (Full Members only)
+    class_members = Member.objects.filter(
+        is_active=True, 
+        membership_type='FULL'
+    ).order_by('last_name', 'first_name')
+    
+    # Statistics
+    total_class_members = class_members.count()
+    members_this_month = class_members.filter(
+        date_joined__month=datetime.now().month,
+        date_joined__year=datetime.now().year
+    ).count()
+    
+    # Recent joiners
+    recent_members = class_members.order_by('-date_joined')[:10]
+    
+    # Class events
+    class_events = Event.objects.filter(is_upcoming=True).order_by('date')[:10]
+    
+    # Class announcements
+    class_announcements = Announcement.objects.all()[:10]
+    
+    context = {
+        'member': member,
+        'class_members': class_members,
+        'total_class_members': total_class_members,
+        'members_this_month': members_this_month,
+        'recent_members': recent_members,
+        'class_events': class_events,
+        'class_announcements': class_announcements,
+        'settings': settings,
+    }
+    
+    return render(request, 'class_rep_dashboard.html', context)
+
+
+def create_class_announcement(request):
+    """Class Reps can create announcements for their class."""
+    member = get_member_from_session(request)
+    if not member or not has_role(member, ['CLASS_REP']):
+        messages.error(request, 'Not authorized.')
+        return redirect('dashboard')
+    
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        
+        # Add class rep identifier to title
+        full_title = f"[Class Announcement] {title}"
+        
+        Announcement.objects.create(
+            title=full_title,
+            description=description,
+            document=request.FILES.get('document')
+        )
+        messages.success(request, 'Class announcement created successfully!')
+        return redirect('class_rep_dashboard')
+    
+    return render(request, 'create_class_announcement.html', {'member': member})
+
+
+def create_class_event(request):
+    """Class Reps can create events for their class."""
+    member = get_member_from_session(request)
+    if not member or not has_role(member, ['CLASS_REP']):
+        messages.error(request, 'Not authorized.')
+        return redirect('dashboard')
+    
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        date = request.POST.get('date')
+        venue = request.POST.get('venue')
+        
+        # Add class identifier to title
+        full_title = f"[Class Event] {title}"
+        
+        Event.objects.create(
+            title=full_title,
+            description=description,
+            date=date,
+            venue=venue,
+            flyer=request.FILES.get('flyer'),
+            is_upcoming=True
+        )
+        messages.success(request, 'Class event created successfully!')
+        return redirect('class_rep_dashboard')
+    
+    return render(request, 'create_class_event.html', {'member': member})
+
+
+def export_class_members(request):
+    """Class Reps can export their class member list."""
+    member = get_member_from_session(request)
+    if not member or not has_role(member, ['CLASS_REP']):
+        messages.error(request, 'Not authorized.')
+        return redirect('dashboard')
+    
+    class_members = Member.objects.filter(
+        is_active=True,
+        membership_type='FULL'
+    ).order_by('last_name')
+    
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="class_members_{datetime.now().strftime("%Y%m%d")}.csv"'
+    
+    writer = csv.writer(response)
+    writer.writerow(['Name', 'Email', 'Phone', 'Registration Number', 'Date Joined'])
+    
+    for m in class_members:
+        writer.writerow([
+            f"{m.first_name} {m.last_name}",
+            m.email,
+            m.phone_number,
+            m.registration_number or '',
+            m.date_joined.strftime('%Y-%m-%d')
+        ])
+    return response
+    
+
+
+
+
+# ==========================================
+# CLASS REP SPECIFIC VIEWS
+# ==========================================
+
+def class_rep_dashboard(request):
+    """Enhanced dashboard for Class Representatives."""
+    member = get_member_from_session(request)
+    if not member or not has_role(member, ['CLASS_REP']):
+        messages.error(request, 'Not authorized.')
+        return redirect('dashboard')
+    
+    settings = SiteSettings.load()
+    
+    # Get all class members (Full Members only)
+    class_members = Member.objects.filter(
+        is_active=True, 
+        membership_type='FULL'
+    ).order_by('last_name', 'first_name')
+    
+    # Statistics
+    total_class_members = class_members.count()
+    members_this_month = class_members.filter(
+        date_joined__month=datetime.now().month,
+        date_joined__year=datetime.now().year
+    ).count()
+    
+    # Recent joiners
+    recent_members = class_members.order_by('-date_joined')[:10]
+    
+    # Class events
+    class_events = Event.objects.filter(is_upcoming=True).order_by('date')[:10]
+    
+    # Class announcements
+    class_announcements = Announcement.objects.all()[:10]
+    
+    context = {
+        'member': member,
+        'class_members': class_members,
+        'total_class_members': total_class_members,
+        'members_this_month': members_this_month,
+        'recent_members': recent_members,
+        'class_events': class_events,
+        'class_announcements': class_announcements,
+        'settings': settings,
+    }
+    
+    return render(request, 'class_rep_dashboard.html', context)
+
+
+def create_class_announcement(request):
+    """Class Reps can create announcements for their class."""
+    member = get_member_from_session(request)
+    if not member or not has_role(member, ['CLASS_REP']):
+        messages.error(request, 'Not authorized.')
+        return redirect('dashboard')
+    
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        
+        # Add class rep identifier to title
+        full_title = f"[Class Announcement] {title}"
+        
+        Announcement.objects.create(
+            title=full_title,
+            description=description,
+            document=request.FILES.get('document')
+        )
+        messages.success(request, 'Class announcement created successfully!')
+        return redirect('class_rep_dashboard')
+    
+    return render(request, 'create_class_announcement.html', {'member': member})
+
+
+def create_class_event(request):
+    """Class Reps can create events for their class."""
+    member = get_member_from_session(request)
+    if not member or not has_role(member, ['CLASS_REP']):
+        messages.error(request, 'Not authorized.')
+        return redirect('dashboard')
+    
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        date = request.POST.get('date')
+        venue = request.POST.get('venue')
+        
+        # Add class identifier to title
+        full_title = f"[Class Event] {title}"
+        
+        Event.objects.create(
+            title=full_title,
+            description=description,
+            date=date,
+            venue=venue,
+            flyer=request.FILES.get('flyer'),
+            is_upcoming=True
+        )
+        messages.success(request, 'Class event created successfully!')
+        return redirect('class_rep_dashboard')
+    
+    return render(request, 'create_class_event.html', {'member': member})
+
+
+def export_class_members(request):
+    """Class Reps can export their class member list."""
+    member = get_member_from_session(request)
+    if not member or not has_role(member, ['CLASS_REP']):
+        messages.error(request, 'Not authorized.')
+        return redirect('dashboard')
+    
+    class_members = Member.objects.filter(
+        is_active=True,
+        membership_type='FULL'
+    ).order_by('last_name')
+    
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = f'attachment; filename="class_members_{datetime.now().strftime("%Y%m%d")}.csv"'
+    
+    writer = csv.writer(response)
+    writer.writerow(['Name', 'Email', 'Phone', 'Registration Number', 'Date Joined'])
+    
+    for m in class_members:
+        writer.writerow([
+            f"{m.first_name} {m.last_name}",
+            m.email,
+            m.phone_number,
+            m.registration_number or '',
+            m.date_joined.strftime('%Y-%m-%d')
+        ])
+    return response
