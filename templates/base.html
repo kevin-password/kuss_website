@@ -271,6 +271,23 @@
                         {% endif %}
                     </div>
                 {% endif %}
+
+                <!-- NEW WHATSAPP IT SUPPORT BUTTON -->
+                {% if settings and settings.whatsapp_number %}
+                <div style="margin-top: 25px;">
+                    <a href="https://wa.me/{{ settings.whatsapp_number|cut:'+' }}?text={{ settings.it_support_message|default:'Hello, I need help with my KUSS member portal account.'|urlencode }}" 
+                       target="_blank" 
+                       style="display: inline-flex; align-items: center; gap: 10px; background: #25D366; color: white; padding: 12px 20px; border-radius: 25px; font-weight: 600; text-decoration: none; transition: all 0.3s ease;">
+                        <i class="fa-brands fa-whatsapp" style="font-size: 1.3rem;"></i>
+                        <span>Contact IT Support</span>
+                    </a>
+                    {% if settings.it_support_message %}
+                        <p style="color: #8892b0; font-size: 0.85rem; margin-top: 8px;">
+                            {{ settings.it_support_message }}
+                        </p>
+                    {% endif %}
+                </div>
+                {% endif %}
             </div>
             <div>
                 <h4>Quick Links</h4>
