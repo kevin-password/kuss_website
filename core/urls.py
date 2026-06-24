@@ -28,6 +28,12 @@ urlpatterns = [
     path('treasurer/export/transactions/', views.export_transactions, name='export_transactions'),
     path('treasurer/export/members/', views.export_members, name='export_members'),
 
+    path('leadership-portal/', views.leadership_portal, name='leadership_portal'),
+    path('leadership-portal/news/create/', views.create_news_post, name='create_news'),
+    path('leadership-portal/announcement/create/', views.create_announcement, name='create_announcement'),
+    path('leadership-portal/event/create/', views.create_event, name='create_event'),
+    path('leadership-portal/members/export/', views.export_members_csv, name='export_members_csv'),
+
 
     
 ]
