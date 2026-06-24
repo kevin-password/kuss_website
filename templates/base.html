@@ -229,10 +229,28 @@
                 <li><a href="{% url 'announcements' %}" class="nav-link">Docs</a></li>
                 <li><a href="{% url 'leadership' %}" class="nav-link">Leadership</a></li>
                 <li><a href="{% url 'join' %}" class="nav-link nav-btn">Join Us</a></li>
+                
                 {% if request.session.member_id %}
-                    <li><a href="{% url 'dashboard' %}" class="nav-link" style="color: var(--teal-light); font-weight: 700;"><i class="fa-solid fa-user-circle"></i> Portal</a></li>
+                    <!-- User is logged in -->
+                    <li><a href="{% url 'dashboard' %}" class="nav-link" style="color: var(--teal-light); font-weight: 700;">
+                        <i class="fa-solid fa-user-circle"></i> My Portal
+                    </a></li>
+                    
+                    <!-- Show Treasurer Dashboard ONLY if user is a Treasurer -->
+                    {% if is_treasurer %}
+                    <li><a href="{% url 'treasurer_dashboard' %}" class="nav-link" style="color: #ff9800; font-weight: 700;">
+                        <i class="fa-solid fa-coins"></i> Treasurer
+                    </a></li>
+                    {% endif %}
+                    
+                    <li><a href="{% url 'logout' %}" class="nav-link">
+                        <i class="fa-solid fa-right-from-bracket"></i> Logout
+                    </a></li>
                 {% else %}
-                    <li><a href="{% url 'login' %}" class="nav-link"><i class="fa-solid fa-right-to-bracket"></i> Login</a></li>
+                    <!-- User is not logged in -->
+                    <li><a href="{% url 'login' %}" class="nav-link">
+                        <i class="fa-solid fa-right-to-bracket"></i> Login
+                    </a></li>
                 {% endif %}
             </ul>
         </div>
@@ -272,7 +290,7 @@
                     </div>
                 {% endif %}
 
-                <!-- NEW WHATSAPP IT SUPPORT BUTTON -->
+                <!-- WHATSAPP IT SUPPORT BUTTON -->
                 {% if settings and settings.whatsapp_number %}
                 <div style="margin-top: 25px;">
                     <a href="https://wa.me/{{ settings.whatsapp_number|cut:'+' }}?text={{ settings.it_support_message|default:'Hello, I need help with my KUSS member portal account.'|urlencode }}" 
