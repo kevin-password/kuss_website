@@ -4,7 +4,7 @@ from django.contrib.auth.hashers import make_password
 from .models import (
     Member, Leadership, NewsPost, Announcement, FoundingMember, 
     MembershipTier, Event, SiteSettings, Subscription, Notification,
-    TransactionCategory, Transaction, Budget, FinancialReport
+    TransactionCategory, Transaction, Budget, FinancialReport, ResearchLink
 )
 
 @admin.register(Member)
@@ -149,7 +149,6 @@ class FinancialReportAdmin(admin.ModelAdmin):
     list_display = ('title', 'report_type', 'start_date', 'end_date', 'generated_by', 'created_at')
     list_filter = ('report_type', 'created_at')
     date_hierarchy = 'created_at'
-
 
 @admin.register(ResearchLink)
 class ResearchLinkAdmin(admin.ModelAdmin):
