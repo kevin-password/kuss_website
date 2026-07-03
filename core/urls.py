@@ -41,6 +41,7 @@ urlpatterns = [
 
     path('leadership-portal/', views.leadership_portal, name='leadership_portal'),
     path('leadership-portal/news/create/', views.create_news_post, name='create_news'),
+    path('research/', views.research_links_view, name='research'),
     path('leadership-portal/announcement/create/', views.create_announcement, name='create_announcement'),
     path('leadership-portal/event/create/', views.create_event, name='create_event'),
     path('leadership-portal/members/export/', views.export_members_csv, name='export_members_csv'),
