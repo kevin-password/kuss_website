@@ -36,7 +36,7 @@
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="/media/KUSS_LOGO.png">
 
-    <!-- Structured Data for Organization (ONLY ONCE) -->
+    <!-- Structured Data for Organization -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
@@ -284,6 +284,7 @@
             <ul class="nav-menu" id="navMenu">
                 <li><a href="{% url 'home' %}" class="nav-link">Home</a></li>
                 <li><a href="{% url 'about' %}" class="nav-link">About</a></li>
+                <li><a href="{% url 'research' %}" class="nav-link">Research</a></li>
                 <li><a href="{% url 'news' %}" class="nav-link">News</a></li>
                 <li><a href="{% url 'announcements' %}" class="nav-link">Docs</a></li>
                 <li><a href="{% url 'leadership' %}" class="nav-link">Leadership</a></li>
@@ -356,7 +357,7 @@
                     </div>
                 {% endif %}
 
-                <!-- WHATSAPP IT SUPPORT BUTTON - Click to reveal (prevents Google indexing) -->
+                <!-- WHATSAPP IT SUPPORT BUTTON - Click to reveal -->
                 {% if settings and settings.whatsapp_number %}
                 <div style="margin-top: 25px;">
                     <button onclick="revealWhatsApp()" id="whatsappBtn"
@@ -385,8 +386,10 @@
                 <h4>Quick Links</h4>
                 <ul>
                     <li><a href="{% url 'about' %}">Our Constitution</a></li>
+                    <li><a href="{% url 'research' %}">Research Publications</a></li>
                     <li><a href="{% url 'news' %}">Latest News</a></li>
                     <li><a href="{% url 'leadership' %}">Meet the Executive</a></li>
+                    <li><a href="{% url 'privacy' %}" style="color: var(--teal-light);">Privacy Policy</a></li>
                 </ul>
             </div>
             <div>
