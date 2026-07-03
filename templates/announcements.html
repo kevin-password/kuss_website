@@ -12,7 +12,17 @@
                             <p>{{ doc.description|default:"Official society document." }}</p>
                             <small>Published: {{ doc.created_at|date:"F d, Y" }}</small>
                         </div>
-                        <a href="{{ doc.document.url }}" class="btn-download" download>Download File</a>
+                        
+                        <!-- Only show download button if document exists -->
+                        {% if doc.document %}
+                            <a href="{{ doc.document.url }}" class="btn-download" download>
+                                <i class="fa-solid fa-download"></i> Download File
+                            </a>
+                        {% else %}
+                            <span style="color: var(--text-light); font-style: italic; padding: 10px 20px;">
+                                <i class="fa-solid fa-circle-info"></i> No file attached
+                            </span>
+                        {% endif %}
                     </div>
                 {% endfor %}
             </div>
