@@ -149,3 +149,9 @@ class FinancialReportAdmin(admin.ModelAdmin):
     list_display = ('title', 'report_type', 'start_date', 'end_date', 'generated_by', 'created_at')
     list_filter = ('report_type', 'created_at')
     date_hierarchy = 'created_at'
+
+
+@admin.register(ResearchLink)
+class ResearchLinkAdmin(admin.ModelAdmin):
+    list_display = ['title', 'authors', 'journal', 'publication_date']
+    search_fields = ['title', 'authors', 'journal']
