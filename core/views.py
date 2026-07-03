@@ -701,3 +701,8 @@ def export_class_members(request):
             m.date_joined.strftime('%Y-%m-%d')
         ])
     return response
+
+
+def research_links_view(request):
+    papers = ResearchLink.objects.all()
+    return render(request, 'research_links.html', {'papers': papers})
