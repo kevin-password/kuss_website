@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}Research - KUSS{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <h1><i class="fa-solid fa-microscope"></i> Research Publications</h1>
+    <p>Research by KUSS members</p>
+</section>
+
+<section class="section container">
+    {% if papers %}
+        <div style="display: flex; flex-direction: column; gap: 20px;">
+            {% for paper in papers %}
+            <div style="background: white; padding: 25px; border-radius: 10px; box-shadow: var(--shadow); border-left: 5px solid var(--teal);">
+                <h3 style="color: var(--navy); margin-bottom: 10px;">
+                    <a href="{{ paper.link }}" target="_blank" style="color: var(--navy); text-decoration: none;">
+                        {{ paper.title }}
+                    </a>
+                </h3>
+                <p style="color: var(--text-light); margin-bottom: 10px;">
+                    <i class="fa-solid fa-users"></i> {{ paper.authors }}
+                </p>
+                {% if paper.journal %}
+                <p style="color: var(--text-light); margin-bottom: 10px;">
+                    <i class="fa-solid fa-book"></i> {{ paper.journal }}
+                </p>
+                {% endif %}
+                <p style="color: var(--text-light); margin-bottom: 15px;">
+                    <i class="fa-solid fa-calendar"></i> {{ paper.publication_date|date:"Y" }}
+                </p>
+                <a href="{{ paper.link }}" target="_blank" class="btn btn-primary">
+                    <i class="fa-solid fa-external-link"></i> View Paper
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <h3>No research papers yet.</h3>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}
