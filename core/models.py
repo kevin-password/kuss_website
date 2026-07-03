@@ -318,3 +318,22 @@ class FinancialReport(models.Model):
     
     def __str__(self):
         return f"{self.title} ({self.start_date} to {self.end_date})"
+
+
+
+
+
+class ResearchLink(models.Model):
+    """Simple links to external research papers."""
+    title = models.CharField(max_length=300)
+    authors = models.CharField(max_length=500)
+    link = models.URLField(help_text="Full URL to the paper")
+    journal = models.CharField(max_length=300, blank=True)
+    publication_date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    
+    class Meta:
+        ordering = ['-publication_date']
+    
+    def __str__(self):
+        return self.title
