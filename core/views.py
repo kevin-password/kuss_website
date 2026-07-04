@@ -13,9 +13,9 @@ from django.db.models.functions import TruncMonth
 from django.http import HttpResponse
 
 from .models import (
-    NewsPost, Announcement, Leadership, Member, FoundingMember,
+    NewsPost, Announcement, Leadership, Member, FoundingMember, 
     MembershipTier, Event, SiteSettings, Subscription, Notification,
-    Transaction, TransactionCategory
+    Transaction, TransactionCategory, ResearchLink
 )
 from .forms import MemberJoinForm, MemberLoginForm, MemberProfileForm
 
