@@ -703,6 +703,14 @@ def export_class_members(request):
     return response
 
 
+
 def research_links_view(request):
+    """Display all research paper links."""
     papers = ResearchLink.objects.all()
-    return render(request, 'research_links.html', {'papers': papers})
+    settings = SiteSettings.load()
+    return render(request, 'research_links.html', {'papers': papers, 'settings': settings})
+
+
+
+
+
