@@ -12,7 +12,7 @@ urlpatterns = [
     path('join/', views.join_view, name='join'),
     path('join/success/', views.join_success_view, name='join_success'),
     path('research/', views.research_links_view, name='research'),
-    path('privacy/', TemplateView.as_view(template_name='privacy.html'), name='privacy'),  # ← ADD THIS
+    path('privacy/', TemplateView.as_view(template_name='privacy.html'), name='privacy'),
     
     # Member portal
     path('login/', views.login_view, name='login'),
