@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% block title %}Privacy Policy - KUSS{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <h1><i class="fa-solid fa-shield-halved"></i> Privacy Policy</h1>
+    <p>How we protect your information</p>
+</section>
+
+<section class="section container">
+    <div style="max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 10px; box-shadow: var(--shadow);">
+        
+        <h2 style="color: var(--navy); margin-bottom: 20px;">1. Information We Collect</h2>
+        <p style="color: var(--text-dark); line-height: 1.8; margin-bottom: 25px;">
+            When you register as a KUSS member, we collect:
+        </p>
+        <ul style="padding-left: 20px; line-height: 2; color: var(--text-dark); margin-bottom: 30px;">
+            <li><strong>Personal Information:</strong> Full name, email address, phone number, registration number</li>
+            <li><strong>Academic Information:</strong> Year of study, program, membership type</li>
+            <li><strong>Profile Information:</strong> Profile picture, bio (optional)</li>
+            <li><strong>Financial Information:</strong> Payment records (accessible only to Treasurer)</li>
+        </ul>
+
+        <h2 style="color: var(--navy); margin-bottom: 20px;">2. How We Use Your Information</h2>
+        <ul style="padding-left: 20px; line-height: 2; color: var(--text-dark); margin-bottom: 30px;">
+            <li>Manage your membership and provide access to member portal</li>
+            <li>Send important notifications about events and activities</li>
+            <li>Process membership fee payments</li>
+            <li>Facilitate communication between members and leadership</li>
+        </ul>
+
+        <h2 style="color: var(--navy); margin-bottom: 20px;">3. Information Sharing</h2>
+        <p style="color: var(--text-dark); line-height: 1.8; margin-bottom: 25px;">
+            <strong>Public Information:</strong> Your name, email, and profile picture are visible to all KUSS members.
+        </p>
+        <p style="color: var(--text-dark); line-height: 1.8; margin-bottom: 25px;">
+            <strong>Private Information:</strong> Your phone number is only visible to logged-in KUSS members. It is never shared with external parties.
+        </p>
+        <p style="color: var(--text-dark); line-height: 1.8; margin-bottom: 30px;">
+            <strong>Financial Information:</strong> Payment records are only accessible to the Treasurer.
+        </p>
+
+        <h2 style="color: var(--navy); margin-bottom: 20px;">4. Data Security</h2>
+        <ul style="padding-left: 20px; line-height: 2; color: var(--text-dark); margin-bottom: 30px;">
+            <li>Passwords are encrypted and never stored in plain text</li>
+            <li>Phone numbers are hidden from public view and search engines</li>
+            <li>Access to sensitive data is restricted to authorized leaders only</li>
+            <li>HTTPS encryption protects all data transmission</li>
+        </ul>
+
+        <h2 style="color: var(--navy); margin-bottom: 20px;">5. Your Rights</h2>
+        <ul style="padding-left: 20px; line-height: 2; color: var(--text-dark); margin-bottom: 30px;">
+            <li>Access your personal data through your member portal</li>
+            <li>Update your profile information at any time</li>
+            <li>Request deletion of your account by contacting the General Secretary</li>
+            <li>Opt out of non-essential communications</li>
+        </ul>
+
+        <h2 style="color: var(--navy); margin-bottom: 20px;">6. Contact Us</h2>
+        <p style="color: var(--text-dark); line-height: 1.8; margin-bottom: 15px;">
+            For privacy questions, contact:
+        </p>
+        <div style="background: var(--light-gray); padding: 20px; border-radius: 8px; border-left: 4px solid var(--teal);">
+            <p style="margin-bottom: 10px;">
+                <i class="fa-solid fa-envelope" style="color: var(--teal); margin-right: 8px;"></i>
+                <a href="mailto:kabsurgicalsociety@gmail.com" style="color: var(--teal);">kabsurgicalsociety@gmail.com</a>
+            </p>
+        </div>
+
+        <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #eee; text-align: center;">
+            <p style="color: var(--text-light); font-size: 0.9rem;">
+                Last updated: {% now "F d, Y" %}
+            </p>
+        </div>
+    </div>
+</section>
+{% endblock %}
