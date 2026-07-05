@@ -29,6 +29,73 @@ class Member(models.Model):
         return f"{self.first_name} {self.last_name} ({self.get_membership_type_display()})"
 
 
+
+class Product(models.Model):
+    """Products available in KUSS marketplace."""
+    name = models.CharField(max_length=200)
+    description = models.TextField()
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    stock = models.IntegerField(default=0, help_text="Number of items available")
+    image = models.ImageField(upload_to='products/', blank=True, null=True)
+    category = models.CharField(max_length=100, blank=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return self.name
+    
+    def is_in_stock(self):
+        return self.stock > 0 and self.is_active
+
+class Order(models.Model):
+    """Orders placed by members."""
+    STATUS_CHOICES = [
+        ('PENDING', 'Pending'),
+        ('CONFIRMED', 'Confirmed'),
+        ('PAID', 'Paid'),
+        ('DELIVERED', 'Delivered'),
+        ('CANCELLED', 'Cancelled'),
+    ]
+    
+    member = models.ForeignKey(Member, on_delete=models.CASCADE, related_name='orders')
+    order_number = models.CharField(max_length=20, unique=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2, default=0)
+    notes = models.TextField(blank=True, help_text="Delivery instructions or notes")
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-created_at']
+    
+    def __str__(self):
+        return f"Order #{self.order_number} - {self.member.first_name}"
+    
+    def save(self, *args, **kwargs):
+        if not self.order_number:
+            # Generate unique order number
+            import random
+            self.order_number = f"KUSS-{random.randint(100000, 999999)}"
+        super().save(*args, **kwargs)
+
+class OrderItem(models.Model):
+    """Individual items in an order."""
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    quantity = models.IntegerField(default=1)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    def __str__(self):
+        return f"{self.quantity}x {self.product.name}"
+    
+    def get_total(self):
+        return self.quantity * self.price
+
+
 class Leadership(models.Model):
     ROLE_CHOICES = [
         ('PATRON', 'Patron'),
