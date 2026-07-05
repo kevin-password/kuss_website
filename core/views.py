@@ -20,7 +20,8 @@ from django.http import HttpResponse
 from .models import (
     NewsPost, Announcement, Leadership, Member, FoundingMember, 
     MembershipTier, Event, SiteSettings, Subscription, Notification,
-    Transaction, TransactionCategory, ResearchLink
+    Transaction, TransactionCategory, ResearchLink,
+    Product, Order, OrderItem  # Add this line
 )
 from .forms import MemberJoinForm, MemberLoginForm, MemberProfileForm
 
