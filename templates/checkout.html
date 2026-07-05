@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Checkout - KUSS{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <h1><i class="fa-solid fa-credit-card"></i> Checkout</h1>
+</section>
+
+<section class="section container">
+    <div style="max-width: 700px; margin: 0 auto; background: white; padding: 40px; border-radius: 10px; box-shadow: var(--shadow);">
+        <h2 style="color: var(--navy); margin-bottom: 30px;">Order Summary</h2>
+        
+        <div style="background: var(--light-gray); padding: 20px; border-radius: 8px; margin-bottom: 30px;">
+            {% for product_id, item in cart.items %}
+            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <span>{{ item.quantity }}x {{ item.name }}</span>
+                <span style="font-weight: 600;">UGX {% widthratio item.price 1 item.quantity %}</span>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <form method="POST">
+            {% csrf_token %}
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: 600; color: var(--navy); margin-bottom: 8px;">
+                    Delivery Notes (Optional)
+                </label>
+                <textarea name="notes" rows="4" placeholder="Any special instructions for delivery or pickup..." style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit;"></textarea>
+            </div>
+            
+            <div style="background: #e8f5e9; padding: 20px; border-radius: 8px; margin-bottom: 30px; border-left: 4px solid var(--teal);">
+                <p style="color: var(--text-dark); line-height: 1.8;">
+                    <strong>Payment Instructions:</strong><br>
+                    After placing your order, the Treasurer will contact you with payment details. 
+                    Your order will be processed once payment is confirmed.
+                </p>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 1.1rem;">
+                <i class="fa-solid fa-check-circle"></i> Place Order
+            </button>
+        </form>
+        
+        <a href="{% url 'view_cart' %}" class="btn btn-outline" style="width: 100%; text-align: center; margin-top: 15px;">
+            <i class="fa-solid fa-arrow-left"></i> Back to Cart
+        </a>
+    </div>
+</section>
+{% endblock %}
