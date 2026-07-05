@@ -997,5 +997,243 @@ def export_class_members(request):
 
 def research_links_view(request):
     papers = ResearchLink.objects.all()
+
+
+
+
+
+    # ==========================================
+# MARKETPLACE VIEWS
+# ==========================================
+
+def marketplace_view(request):
+    """Display all available products."""
+    products = Product.objects.filter(is_active=True, stock__gt=0)
+    settings = SiteSettings.load()
+    return render(request, 'marketplace.html', {
+        'products': products,
+        'settings': settings
+    })
+
+def product_detail_view(request, product_id):
+    """Display product details."""
+    product = get_object_or_404(Product, id=product_id, is_active=True)
+    settings = SiteSettings.load()
+    return render(request, 'product_detail.html', {
+        'product': product,
+        'settings': settings
+    })
+
+def add_to_cart(request, product_id):
+    """Add product to cart (stored in session)."""
+    product = get_object_or_404(Product, id=product_id, is_active=True)
+    
+    if not product.is_in_stock():
+        messages.error(request, 'Sorry, this product is out of stock.')
+        return redirect('marketplace')
+    
+    # Get cart from session
+    cart = request.session.get('cart', {})
+    product_id_str = str(product_id)
+    
+    # Add or update quantity
+    if product_id_str in cart:
+        cart[product_id_str]['quantity'] += 1
+    else:
+        cart[product_id_str] = {
+            'name': product.name,
+            'price': str(product.price),
+            'quantity': 1,
+            'image': product.image.url if product.image else None
+        }
+    
+    request.session['cart'] = cart
+    messages.success(request, f'{product.name} added to cart!')
+    return redirect('marketplace')
+
+def view_cart(request):
+    """Display shopping cart."""
+    cart = request.session.get('cart', {})
+    settings = SiteSettings.load()
+    
+    # Calculate totals
+    cart_items = []
+    total = Decimal('0')
+    
+    for product_id, item in cart.items():
+        quantity = item['quantity']
+        price = Decimal(item['price'])
+        subtotal = price * quantity
+        total += subtotal
+        
+        cart_items.append({
+            'product_id': product_id,
+            'name': item['name'],
+            'price': price,
+            'quantity': quantity,
+            'subtotal': subtotal,
+            'image': item.get('image')
+        })
+    
+    return render(request, 'cart.html', {
+        'cart_items': cart_items,
+        'total': total,
+        'settings': settings
+    })
+
+def remove_from_cart(request, product_id):
+    """Remove item from cart."""
+    cart = request.session.get('cart', {})
+    product_id_str = str(product_id)
+    
+    if product_id_str in cart:
+        del cart[product_id_str]
+        request.session['cart'] = cart
+        messages.success(request, 'Item removed from cart.')
+    
+    return redirect('view_cart')
+
+def update_cart_quantity(request, product_id):
+    """Update item quantity in cart."""
+    if request.method == 'POST':
+        quantity = int(request.POST.get('quantity', 1))
+        cart = request.session.get('cart', {})
+        product_id_str = str(product_id)
+        
+        if product_id_str in cart:
+            if quantity > 0:
+                cart[product_id_str]['quantity'] = quantity
+            else:
+                del cart[product_id_str]
+            request.session['cart'] = cart
+        
+    return redirect('view_cart')
+
+def checkout(request):
+    """Process order and create order record."""
+    member = get_member_from_session(request)
+    if not member:
+        messages.error(request, 'Please login to place an order.')
+        return redirect('login')
+    
+    cart = request.session.get('cart', {})
+    if not cart:
+        messages.error(request, 'Your cart is empty.')
+        return redirect('marketplace')
+    
+    if request.method == 'POST':
+        notes = request.POST.get('notes', '')
+        
+        # Create order
+        order = Order.objects.create(
+            member=member,
+            notes=notes
+        )
+        
+        # Add items to order and calculate total
+        total = Decimal('0')
+        for product_id, item in cart.items():
+            product = get_object_or_404(Product, id=product_id)
+            quantity = item['quantity']
+            price = Decimal(item['price'])
+            
+            OrderItem.objects.create(
+                order=order,
+                product=product,
+                quantity=quantity,
+                price=price
+            )
+            
+            # Update stock
+            product.stock -= quantity
+            product.save()
+            
+            total += price * quantity
+        
+        order.total_amount = total
+        order.save()
+        
+        # Clear cart
+        request.session['cart'] = {}
+        
+        # Send notification to tech guy
+        send_order_notification(order)
+        
+        messages.success(request, f'Order #{order.order_number} placed successfully! Total: UGX {total:,.0f}')
+        return redirect('order_success', order_id=order.id)
+    
+    return render(request, 'checkout.html', {'cart': cart})
+
+def order_success(request, order_id):
+    """Display order confirmation."""
+    order = get_object_or_404(Order, id=order_id)
+    settings = SiteSettings.load()
+    return render(request, 'order_success.html', {
+        'order': order,
+        'settings': settings
+    })
+
+def my_orders(request):
+    """Display member's order history."""
+    member = get_member_from_session(request)
+    if not member:
+        return redirect('login')
+    
+    orders = Order.objects.filter(member=member).prefetch_related('items__product')
+    settings = SiteSettings.load()
+    
+    return render(request, 'my_orders.html', {
+        'orders': orders,
+        'settings': settings
+    })
+
+def send_order_notification(order):
+    """Send notification about new order."""
+    settings = SiteSettings.load()
+    
+    # Create in-app notification for tech/admin
+    Notification.objects.create(
+        member=order.member,
+        notification_type='ORDER_PLACED',
+        title=f'New Order #{order.order_number}',
+        message=f'Your order has been placed successfully. Total: UGX {order.total_amount:,.0f}. Please proceed with payment.'
+    )
+    
+    # Send email/WhatsApp notification to tech guy
+    tech_message = f"""🛒 *NEW ORDER PLACED*
+
+━━━━━━━━━━━━━━━━━━━━━━━━
+*ORDER DETAILS*
+━━━━━━━━━━━━━━━━━━━━━━━━
+📋 Order #: {order.order_number}
+👤 Customer: {order.member.first_name} {order.member.last_name}
+📧 Email: {order.member.email}
+📱 Phone: {order.member.phone_number}
+💰 Total: UGX {order.total_amount:,.0f}
+📝 Notes: {order.notes or 'None'}
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+*ITEMS:*
+"""
+    
+    for item in order.items.all():
+        tech_message += f"• {item.quantity}x {item.product.name} - UGX {item.get_total():,.0f}\n"
+    
+    tech_message += f"""
+━━━━━━━━━━━━━━━━━━━━━━━━
+*ACTION REQUIRED:*
+• Contact customer to confirm order
+• Arrange payment collection
+• Update order status in admin panel
+
+🔐 Admin: https://kabsurgicalsociety.pythonanywhere.com/admin/
+
+— KUSS Automated System"""
+    
+    # Send via email (if configured) or WhatsApp
+    try:
+        send_email_via_sendgrid(TECH_EMAIL, f'🛒 New Order: {order.order_number}', tech_message)
+    except:
+        pass  # Fails silently if email not configured
     settings = SiteSettings.load()
     return render(request, 'research_links.html', {'papers': papers, 'settings': settings})
