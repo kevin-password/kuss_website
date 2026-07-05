@@ -3,6 +3,9 @@ import re
 import csv
 import random
 import string
+import requests
+import urllib.parse
+import traceback
 from decimal import Decimal
 from datetime import datetime
 
@@ -13,7 +16,6 @@ from django.utils import timezone
 from django.db.models import Sum, Count, F
 from django.db.models.functions import TruncMonth
 from django.http import HttpResponse
-from django.core.mail import send_mail
 
 from .models import (
     NewsPost, Announcement, Leadership, Member, FoundingMember, 
@@ -22,361 +24,282 @@ from .models import (
 )
 from .forms import MemberJoinForm, MemberLoginForm, MemberProfileForm
 
-# Email configuration
-TECH_EMAIL = 'tumusiimekevin3@gmail.com'
-FROM_EMAIL = 'KUSS <tumusiimekevin3@gmail.com>'
+# ==========================================
+# WHATSAPP (CallMeBot) CONFIGURATION
+# ==========================================
+CALLMEBOT_API_KEY = '6245479'  # Your CallMeBot API key
+TECH_WHATSAPP = '+256785365538'  # ⚠️ CHANGE THIS to your actual WhatsApp number (with +256)
 
 # ==========================================
-# EMAIL HELPER FUNCTIONS
+# WHATSAPP HELPER FUNCTIONS
 # ==========================================
 
-def send_welcome_email(member, password):
-    """Send welcome email with login credentials to new member."""
+def clean_phone_number(phone):
+    """Convert phone number to international format for CallMeBot."""
+    if not phone:
+        return None
+    
+    # Remove spaces, dashes, parentheses
+    clean = re.sub(r'[\s\-\(\)]', '', phone)
+    
+    # Add Uganda country code if missing
+    if clean.startswith('0'):
+        clean = '+256' + clean[1:]
+    elif clean.startswith('256'):
+        clean = '+' + clean
+    elif not clean.startswith('+'):
+        clean = '+256' + clean
+    
+    return clean
+
+def send_whatsapp(phone_number, message):
+    """Send WhatsApp message using CallMeBot API."""
+    clean_phone = clean_phone_number(phone_number)
+    
+    if not clean_phone:
+        print(f"❌ Invalid phone number: {phone_number}")
+        return False
+    
+    try:
+        # URL encode the message
+        encoded_message = urllib.parse.quote(message)
+        
+        # Build API URL
+        url = f"https://api.callmebot.com/whatsapp.php?phone={clean_phone.replace('+', '')}&text={encoded_message}&apikey={CALLMEBOT_API_KEY}"
+        
+        # Make request
+        response = requests.get(url, timeout=15)
+        
+        # Check response
+        if response.status_code == 200:
+            response_text = response.text.lower()
+            if 'error' in response_text or 'failed' in response_text:
+                print(f"❌ CallMeBot error for {clean_phone}: {response.text}")
+                return False
+            print(f"✅ WhatsApp sent to {clean_phone}")
+            return True
+        else:
+            print(f"❌ CallMeBot HTTP {response.status_code} for {clean_phone}")
+            return False
+            
+    except Exception as e:
+        print(f"❌ WhatsApp error: {e}")
+        traceback.print_exc()
+        return False
+
+def send_welcome_whatsapp(member, password):
+    """Send welcome WhatsApp with login credentials."""
+    print(f"📱 === Sending welcome WhatsApp to {member.phone_number} ===")
     settings = SiteSettings.load()
     
-    subject = 'Welcome to KUSS - Your Portal Login Details'
-    message = f'''Dear {member.first_name},
+    # Message to new member
+    member_message = f"""🎉 *Welcome to KUSS, {member.first_name}!*
 
-Welcome to the Kabale University Surgical Society (KUSS)!
+Your membership application has been received!
 
-Your membership application has been received successfully.
+━━━━━━━━━━━━━━━━━━━━━━━━
+*YOUR PORTAL LOGIN DETAILS*
+━━━━━━━━━━━━━━━━━━━━━━━━
+📧 Email: {member.email}
+🔑 Password: {password}
+🌐 Login: https://kabsurgicalsociety.pythonanywhere.com/login/
+━━━━━━━━━━━━━━━━━━━━━━━━
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-YOUR PORTAL LOGIN DETAILS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Email: {member.email}
-Password: {password}
-Login URL: https://kabsurgicalsociety.pythonanywhere.com/login/
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+⚠️ *IMPORTANT:* Change your password after first login!
 
-IMPORTANT: Please change your password after first login for security.
+*NEXT STEPS:*
+1️⃣ Login to your member portal
+2️⃣ Complete payment per Chapter 2 of Constitution
+3️⃣ Once payment confirmed, membership activated
 
-NEXT STEPS:
-1. Login to your member portal using the credentials above
-2. Complete your payment as per Chapter 2 of the Constitution
-3. Once payment is confirmed by the Treasurer, your membership will be fully activated
+💰 *PAYMENT DETAILS:*
+{settings.payment_instructions if settings.payment_instructions else 'Contact Treasurer for payment details.'}
 
-PAYMENT DETAILS:
-{settings.payment_instructions if settings.payment_instructions else 'Contact the Treasurer for payment details.'}
-
-Treasurer Contact:
+📞 *Treasurer:*
 {settings.treasurer_name if settings.treasurer_name else 'Treasurer'}
 {settings.treasurer_phone if settings.treasurer_phone else 'Contact via email'}
 
-If you have any questions, contact:
-- General Secretary: {settings.contact_email or 'kabsurgicalsociety@gmail.com'}
-- IT Support: {settings.whatsapp_number or 'Contact via email'}
+❓ Questions? Contact:
+- Gen Sec: {settings.contact_email or 'kabsurgicalsociety@gmail.com'}
 
-Supra et Ultra!
+*Supra et Ultra!* 🏥
 
-The KUSS Executive Committee
-Kabale University Surgical Society
-https://kabsurgicalsociety.pythonanywhere.com'''
+KUSS Executive Committee
+Kabale University Surgical Society"""
     
-    try:
-        send_mail(
-            subject=subject,
-            message=message,
-            from_email=FROM_EMAIL,
-            recipient_list=[member.email],
-            fail_silently=False,
-        )
-        print(f"✅ Welcome email sent to {member.email}")
-        
-        # Notify tech guy
-        send_mail(
-            subject=f'✅ New KUSS Member Registered: {member.first_name} {member.last_name}',
-            message=f'''A new member has registered on the KUSS website:
+    # Message to tech guy
+    tech_message = f"""✅ *NEW KUSS MEMBER REGISTERED*
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-MEMBER DETAILS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Name: {member.first_name} {member.last_name}
-Email: {member.email}
-Phone: {member.phone_number}
-Membership Type: {member.get_membership_type_display()}
-Registration Number: {member.registration_number or 'Not provided'}
-Date: {member.date_joined}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━
+*MEMBER DETAILS*
+━━━━━━━━━━━━━━━━━━━━━━━━
+👤 Name: {member.first_name} {member.last_name}
+📧 Email: {member.email}
+📱 Phone: {member.phone_number}
+🎓 Type: {member.get_membership_type_display()}
+🆔 Reg No: {member.registration_number or 'Not provided'}
+📅 Date: {member.date_joined}
+━━━━━━━━━━━━━━━━━━━━━━━━
 
-✅ Welcome email with login credentials has been sent automatically.
+✅ Welcome message with credentials sent.
 
-ACTION REQUIRED:
-- Monitor payment status in Treasurer Dashboard
-- Activate membership once payment is confirmed
+*ACTION REQUIRED:*
+• Monitor payment in Treasurer Dashboard
+• Activate membership once paid
 
-Admin Panel: https://kabsurgicalsociety.pythonanywhere.com/admin/
+🔐 Admin: https://kabsurgicalsociety.pythonanywhere.com/admin/
 
-— KUSS Automated System''',
-            from_email=FROM_EMAIL,
-            recipient_list=[TECH_EMAIL],
-            fail_silently=True,
-        )
-        return True
-    except Exception as e:
-        print(f"❌ Email sending failed: {e}")
-        return False
+— KUSS Automated System"""
+    
+    # Send to member
+    member_sent = send_whatsapp(member.phone_number, member_message)
+    
+    # Send to tech guy
+    tech_sent = send_whatsapp(TECH_WHATSAPP, tech_message)
+    
+    return member_sent and tech_sent
 
-def send_news_notification(news_post):
-    """Send email notification to all members when news is posted."""
-    members = Member.objects.filter(is_active=True).exclude(email='')
+def send_news_whatsapp(news_post):
+    """Send WhatsApp notification when news is posted."""
+    members = Member.objects.filter(is_active=True).exclude(phone_number='')
     
     if not members.exists():
         return
     
-    subject = f'📰 New News: {news_post.title}'
-    message = f'''Dear KUSS Member,
+    message = f"""📰 *NEW NEWS: {news_post.title}*
 
-A new news article has been posted on the KUSS website:
+━━━━━━━━━━━━━━━━━━━━━━━━
+{news_post.content[:400]}{'...' if len(news_post.content) > 400 else ''}
+━━━━━━━━━━━━━━━━━━━━━━━━
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-{news_post.title}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+👤 By: {news_post.author.first_name} {news_post.author.last_name}
+📅 {news_post.created_at.strftime('%B %d, %Y')}
 
-{news_post.content[:500]}{'...' if len(news_post.content) > 500 else ''}
+🔗 Read more: https://kabsurgicalsociety.pythonanywhere.com/news/
 
-Posted by: {news_post.author.first_name} {news_post.author.last_name}
-Date: {news_post.created_at.strftime('%B %d, %Y')}
-
-Read the full article: https://kabsurgicalsociety.pythonanywhere.com/news/
-
-Stay updated with the latest from KUSS!
-
-Supra et Ultra!
-
-The KUSS Executive Committee
-https://kabsurgicalsociety.pythonanywhere.com'''
+*Supra et Ultra!* 🏥
+KUSS Executive Committee"""
     
-    # Send to all members using BCC
-    recipient_emails = list(members.values_list('email', flat=True))
+    # Send to all members
+    sent_count = 0
+    for member in members:
+        if send_whatsapp(member.phone_number, message):
+            sent_count += 1
     
-    try:
-        send_mail(
-            subject=subject,
-            message=message,
-            from_email=FROM_EMAIL,
-            recipient_list=[],  # Empty To field
-            bcc=recipient_emails,  # Use BCC to protect privacy
-            fail_silently=True,
-        )
-        print(f"✅ News notification sent to {len(recipient_emails)} members")
-        
-        # Notify tech guy
-        send_mail(
-            subject=f'📰 News Posted: {news_post.title}',
-            message=f'''A new news article has been posted:
+    print(f"✅ News sent to {sent_count}/{members.count()} members")
+    
+    # Notify tech
+    tech_msg = f"📰 News posted: {news_post.title}\nSent to {sent_count} members"
+    send_whatsapp(TECH_WHATSAPP, tech_msg)
 
-Title: {news_post.title}
-Author: {news_post.author.first_name} {news_post.author.last_name}
-Date: {news_post.created_at}
-
-Notification sent to {len(recipient_emails)} members.
-
-View article: https://kabsurgicalsociety.pythonanywhere.com/news/
-
-— KUSS Automated System''',
-            from_email=FROM_EMAIL,
-            recipient_list=[TECH_EMAIL],
-            fail_silently=True,
-        )
-    except Exception as e:
-        print(f"❌ News notification failed: {e}")
-
-def send_announcement_notification(announcement):
-    """Send email notification to all members when announcement is made."""
-    members = Member.objects.filter(is_active=True).exclude(email='')
+def send_announcement_whatsapp(announcement):
+    """Send WhatsApp notification when announcement is made."""
+    members = Member.objects.filter(is_active=True).exclude(phone_number='')
     
     if not members.exists():
         return
     
-    subject = f'📢 New Announcement: {announcement.title}'
-    message = f'''Dear KUSS Member,
+    message = f"""📢 *NEW ANNOUNCEMENT: {announcement.title}*
 
-A new announcement has been posted:
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-{announcement.title}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+━━━━━━━━━━━━━━━━━━━━━━━━
 {announcement.description}
+━━━━━━━━━━━━━━━━━━━━━━━━
 
-Date: {announcement.created_at.strftime('%B %d, %Y')}
+📅 {announcement.created_at.strftime('%B %d, %Y')}
 
-View all announcements: https://kabsurgicalsociety.pythonanywhere.com/announcements/
+🔗 View all: https://kabsurgicalsociety.pythonanywhere.com/announcements/
 
-Please take note of this important information.
+*Please take note of this important information.*
 
-Supra et Ultra!
-
-The KUSS Executive Committee
-https://kabsurgicalsociety.pythonanywhere.com'''
+*Supra et Ultra!* 🏥
+KUSS Executive Committee"""
     
-    recipient_emails = list(members.values_list('email', flat=True))
+    sent_count = 0
+    for member in members:
+        if send_whatsapp(member.phone_number, message):
+            sent_count += 1
     
-    try:
-        send_mail(
-            subject=subject,
-            message=message,
-            from_email=FROM_EMAIL,
-            recipient_list=[],
-            bcc=recipient_emails,
-            fail_silently=True,
-        )
-        print(f"✅ Announcement notification sent to {len(recipient_emails)} members")
-        
-        # Notify tech guy
-        send_mail(
-            subject=f'📢 Announcement Posted: {announcement.title}',
-            message=f'''A new announcement has been posted:
+    print(f"✅ Announcement sent to {sent_count}/{members.count()} members")
+    
+    tech_msg = f"📢 Announcement posted: {announcement.title}\nSent to {sent_count} members"
+    send_whatsapp(TECH_WHATSAPP, tech_msg)
 
-Title: {announcement.title}
-Date: {announcement.created_at}
-
-Notification sent to {len(recipient_emails)} members.
-
-View announcement: https://kabsurgicalsociety.pythonanywhere.com/announcements/
-
-— KUSS Automated System''',
-            from_email=FROM_EMAIL,
-            recipient_list=[TECH_EMAIL],
-            fail_silently=True,
-        )
-    except Exception as e:
-        print(f"❌ Announcement notification failed: {e}")
-
-def send_event_notification(event):
-    """Send email notification to all members when event is created."""
-    members = Member.objects.filter(is_active=True).exclude(email='')
+def send_event_whatsapp(event):
+    """Send WhatsApp notification when event is created."""
+    members = Member.objects.filter(is_active=True).exclude(phone_number='')
     
     if not members.exists():
         return
     
-    subject = f'📅 New Event: {event.title}'
-    message = f'''Dear KUSS Member,
+    message = f"""📅 *NEW EVENT: {event.title}*
 
-A new event has been scheduled:
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-{event.title}
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
+━━━━━━━━━━━━━━━━━━━━━━━━
 {event.description}
+━━━━━━━━━━━━━━━━━━━━━━━━
 
-Date: {event.date.strftime('%B %d, %Y')}
-Venue: {event.venue}
+📆 *Date:* {event.date.strftime('%B %d, %Y')}
+📍 *Venue:* {event.venue}
 
-View all events: https://kabsurgicalsociety.pythonanywhere.com/
+🔗 View all: https://kabsurgicalsociety.pythonanywhere.com/
 
-Don't miss out! Mark your calendar and attend.
+*Don't miss out! Mark your calendar.*
 
-Supra et Ultra!
-
-The KUSS Executive Committee
-https://kabsurgicalsociety.pythonanywhere.com'''
+*Supra et Ultra!* 🏥
+KUSS Executive Committee"""
     
-    recipient_emails = list(members.values_list('email', flat=True))
+    sent_count = 0
+    for member in members:
+        if send_whatsapp(member.phone_number, message):
+            sent_count += 1
     
-    try:
-        send_mail(
-            subject=subject,
-            message=message,
-            from_email=FROM_EMAIL,
-            recipient_list=[],
-            bcc=recipient_emails,
-            fail_silently=True,
-        )
-        print(f"✅ Event notification sent to {len(recipient_emails)} members")
-        
-        # Notify tech guy
-        send_mail(
-            subject=f'📅 Event Created: {event.title}',
-            message=f'''A new event has been created:
+    print(f"✅ Event sent to {sent_count}/{members.count()} members")
+    
+    tech_msg = f"📅 Event created: {event.title}\nDate: {event.date}\nSent to {sent_count} members"
+    send_whatsapp(TECH_WHATSAPP, tech_msg)
 
-Title: {event.title}
-Date: {event.date}
-Venue: {event.venue}
-
-Notification sent to {len(recipient_emails)} members.
-
-View event: https://kabsurgicalsociety.pythonanywhere.com/
-
-— KUSS Automated System''',
-            from_email=FROM_EMAIL,
-            recipient_list=[TECH_EMAIL],
-            fail_silently=True,
-        )
-    except Exception as e:
-        print(f"❌ Event notification failed: {e}")
-
-def send_payment_reminder_email(member):
-    """Send payment reminder email to member."""
+def send_payment_reminder_whatsapp(member):
+    """Send payment reminder via WhatsApp."""
     settings = SiteSettings.load()
     
-    subject = '💰 Payment Reminder: KUSS Subscription Fees'
-    message = f'''Dear {member.first_name},
+    message = f"""💰 *PAYMENT REMINDER*
 
-This is a friendly reminder that your KUSS subscription fees are pending.
+Dear {member.first_name},
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-PAYMENT DETAILS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-Member: {member.first_name} {member.last_name}
-Email: {member.email}
-Membership Type: {member.get_membership_type_display()}
-Status: UNPAID
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Your KUSS subscription fees are pending.
 
-As per Chapter 2 of the KUSS Constitution, all members are required to pay their subscription fees to maintain active membership status.
+━━━━━━━━━━━━━━━━━━━━━━━━
+*PAYMENT DETAILS*
+━━━━━━━━━━━━━━━━━━━━━━━━
+👤 Member: {member.first_name} {member.last_name}
+🎓 Type: {member.get_membership_type_display()}
+❌ Status: *UNPAID*
+━━━━━━━━━━━━━━━━━━━━━━━━
 
-{settings.payment_instructions if settings.payment_instructions else 'Please contact the Treasurer for payment details.'}
+As per Chapter 2 of the KUSS Constitution, all members must pay subscription fees.
 
-Treasurer Contact:
+💰 *Payment Details:*
+{settings.payment_instructions if settings.payment_instructions else 'Contact Treasurer for details.'}
+
+📞 *Treasurer:*
 {settings.treasurer_name if settings.treasurer_name else 'Treasurer'}
 {settings.treasurer_phone if settings.treasurer_phone else 'Contact via email'}
 
-IMPORTANT:
-- Members with unpaid fees may lose voting rights and access to society activities
-- Please clear your dues at your earliest convenience
-- Once payment is confirmed, your membership will be fully activated
+⚠️ *IMPORTANT:*
+• Unpaid members may lose voting rights
+• Please clear dues soon
+• Once paid, membership fully activated
 
-If you have already made payment, please contact the Treasurer with your payment confirmation.
+If already paid, contact Treasurer with confirmation.
 
-Thank you for your prompt attention to this matter.
-
-Supra et Ultra!
-
-The KUSS Executive Committee
-Kabale University Surgical Society
-https://kabsurgicalsociety.pythonanywhere.com'''
+*Supra et Ultra!* 🏥
+KUSS Executive Committee"""
     
-    try:
-        send_mail(
-            subject=subject,
-            message=message,
-            from_email=FROM_EMAIL,
-            recipient_list=[member.email],
-            fail_silently=True,
-        )
-        print(f"✅ Payment reminder sent to {member.email}")
-        
-        # Notify tech guy
-        send_mail(
-            subject=f'💰 Payment Reminder Sent: {member.first_name} {member.last_name}',
-            message=f'''A payment reminder has been sent to:
-
-Member: {member.first_name} {member.last_name}
-Email: {member.email}
-Phone: {member.phone_number}
-
-— KUSS Automated System''',
-            from_email=FROM_EMAIL,
-            recipient_list=[TECH_EMAIL],
-            fail_silently=True,
-        )
-        return True
-    except Exception as e:
-        print(f"❌ Payment reminder email failed: {e}")
-        return False
+    member_sent = send_whatsapp(member.phone_number, message)
+    
+    tech_msg = f"💰 Payment reminder sent to:\n{member.first_name} {member.last_name}\n📱 {member.phone_number}"
+    send_whatsapp(TECH_WHATSAPP, tech_msg)
+    
+    return member_sent
 
 # ==========================================
 # HELPER FUNCTIONS
@@ -456,21 +379,33 @@ def leadership_view(request):
     return render(request, 'leadership.html', {'leaders': current_leaders, 'settings': settings})
 
 def join_view(request):
+    print("🔍 === join_view called ===")
     settings = SiteSettings.load()
     tiers = MembershipTier.objects.all()
     
     if request.method == 'POST':
+        print("🔍 POST request received")
         form = MemberJoinForm(request.POST, request.FILES)
+        print(f"🔍 Form submitted. Valid: {form.is_valid()}")
+        if not form.is_valid():
+            print(f"❌ Form errors: {form.errors}")
+        
         if form.is_valid():
+            print("✅ Form is valid, creating member...")
             member = form.save(commit=False)
             
             # Generate random password (10 characters)
             random_password = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+            print(f"🔑 Generated password: {random_password}")
+            
             member.password = make_password(random_password)
             member.save()
+            print(f"✅ Member saved: {member.email}")
             
-            # Send welcome email with credentials
-            send_welcome_email(member, random_password)
+            # Send welcome WhatsApp message
+            print("📱 Sending welcome WhatsApp...")
+            whatsapp_sent = send_welcome_whatsapp(member, random_password)
+            print(f"📱 WhatsApp result: {whatsapp_sent}")
             
             return redirect('join_success')
     else:
@@ -505,7 +440,6 @@ def login_view(request):
                 if member.password and check_password(password, member.password):
                     request.session['member_id'] = member.id
 
-                    # Redirect based on role
                     if is_treasurer(member):
                         return redirect('treasurer_dashboard')
                     elif has_role(member, ['CLASS_REP']):
@@ -539,11 +473,7 @@ def dashboard_view(request):
     latest_news = NewsPost.objects.all()[:3]
     latest_announcements = Announcement.objects.all()[:3]
     member_roles = Leadership.objects.filter(member=member, is_current=True)
-
-    # Get notifications for this member
     notifications = Notification.objects.filter(member=member).order_by('-created_at')[:10]
-
-    # Check if this member is a Treasurer
     member_is_treasurer = is_treasurer(member)
 
     return render(request, 'dashboard.html', {
@@ -593,33 +523,27 @@ def treasurer_dashboard(request):
 
     current_year = datetime.now().year
 
-    # Financial Summary
     total_income = Transaction.objects.filter(transaction_type='INCOME', date__year=current_year).aggregate(total=Sum('amount'))['total'] or Decimal('0')
     total_expenses = Transaction.objects.filter(transaction_type='EXPENSE', date__year=current_year).aggregate(total=Sum('amount'))['total'] or Decimal('0')
     cash_at_hand = total_income - total_expenses
 
-    # Monthly Data for Charts
     monthly_income = list(Transaction.objects.filter(transaction_type='INCOME', date__year=current_year)
                           .annotate(month=TruncMonth('date')).values('month').annotate(total=Sum('amount')).order_by('month'))
 
     monthly_expenses = list(Transaction.objects.filter(transaction_type='EXPENSE', date__year=current_year)
                             .annotate(month=TruncMonth('date')).values('month').annotate(total=Sum('amount')).order_by('month'))
 
-    # Category Breakdowns
     income_by_category = list(Transaction.objects.filter(transaction_type='INCOME', date__year=current_year)
                               .values('category__name').annotate(total=Sum('amount')).order_by('-total'))
 
     expense_by_category = list(Transaction.objects.filter(transaction_type='EXPENSE', date__year=current_year)
                                .values('category__name').annotate(total=Sum('amount')).order_by('-total'))
 
-    # Recent Transactions
     recent_transactions = Transaction.objects.select_related('category', 'recorded_by')[:10]
 
-    # Membership Subscription Stats
     total_members = Member.objects.filter(is_active=True).count()
     paid_members = Subscription.objects.filter(is_paid=True, member__is_active=True).count()
 
-    # Get all members for subscription management table
     all_members = Member.objects.filter(is_active=True).select_related('subscription').order_by('last_name')
 
     return render(request, 'treasurer_dashboard.html', {
@@ -647,7 +571,6 @@ def transaction_list(request):
     transactions = Transaction.objects.select_related('category', 'recorded_by').all()
     categories = TransactionCategory.objects.filter(is_active=True)
 
-    # Filtering
     t_type = request.GET.get('type')
     if t_type:
         transactions = transactions.filter(transaction_type=t_type)
@@ -725,15 +648,15 @@ def toggle_subscription(request, member_id):
                 member=target_member,
                 notification_type='PAYMENT_REMINDER',
                 title='Subscription Fee Reminder',
-                message=f'Dear {target_member.first_name}, this is a reminder to pay your subscription fees. Please check the Treasurer portal or contact us for payment details.'
+                message=f'Dear {target_member.first_name}, this is a reminder to pay your subscription fees.'
             )
             
-            # Send email notification
-            send_payment_reminder_email(target_member)
+            # Send WhatsApp reminder
+            send_payment_reminder_whatsapp(target_member)
             
             sub.last_reminder_sent = timezone.now()
             sub.save()
-            messages.success(request, f'Reminder sent to {target_member.first_name} {target_member.last_name} (Email + In-app notification)')
+            messages.success(request, f'Reminder sent to {target_member.first_name} {target_member.last_name} via WhatsApp')
 
     return redirect('treasurer_dashboard')
 
@@ -744,7 +667,6 @@ def export_transactions(request):
 
     transactions = Transaction.objects.select_related('category', 'recorded_by').all()
 
-    # Apply same filters as list view
     t_type = request.GET.get('type')
     if t_type:
         transactions = transactions.filter(transaction_type=t_type)
@@ -805,7 +727,6 @@ def export_members(request):
 # ==========================================
 
 def leadership_portal(request):
-    """Main portal for all leaders (except Treasurer who has their own dashboard)."""
     member = get_member_from_session(request)
     if not member:
         return redirect('login')
@@ -817,7 +738,6 @@ def leadership_portal(request):
     roles = get_leader_roles(member)
     settings = SiteSettings.load()
 
-    # Gather data based on roles
     context = {
         'member': member,
         'roles': roles,
@@ -825,7 +745,6 @@ def leadership_portal(request):
         'settings': settings,
     }
 
-    # Data for Executive roles
     if has_role(member, ['EXEC_CHAIR', 'EXEC_VICE_CHAIR', 'EXEC_GEN_SEC', 'EXEC_PUB_SEC',
                          'BOARD_CHAIR', 'BOARD_TREASURER', 'BOARD_STUDENT_REP', 'BOARD_UNI_ADMIN', 'PATRON']):
         context['total_members'] = Member.objects.filter(is_active=True).count()
@@ -833,35 +752,28 @@ def leadership_portal(request):
         context['all_leaders'] = Leadership.objects.filter(is_current=True).select_related('member')
         context['upcoming_events'] = Event.objects.filter(is_upcoming=True)[:5]
 
-    # Data for General Secretary
     if has_role(member, ['EXEC_GEN_SEC']):
         context['all_members'] = Member.objects.filter(is_active=True).order_by('last_name')
 
-    # Data for Publicity Secretary
     if has_role(member, ['EXEC_PUB_SEC']):
         context['news_posts'] = NewsPost.objects.all()[:10]
         context['announcements'] = Announcement.objects.all()[:10]
 
-    # Data for Education Chair
     if has_role(member, ['COMM_EDU']):
         context['events'] = Event.objects.all().order_by('-date')[:10]
 
-    # Data for Research Chair
     if has_role(member, ['COMM_RES']):
         context['research_news'] = NewsPost.objects.all()[:10]
 
-    # Data for Mentorship Chair
     if has_role(member, ['COMM_MEN']):
         context['mentorship_members'] = Member.objects.filter(is_active=True)[:20]
 
-    # Data for Class Rep
     if has_role(member, ['CLASS_REP']):
         context['class_members'] = Member.objects.filter(is_active=True, membership_type='FULL')[:50]
 
     return render(request, 'leadership_portal.html', context)
 
 def create_news_post(request):
-    """Publicity Secretary, Research Chair, and all Committee Chairs can create news."""
     member = get_member_from_session(request)
     if not member or not has_role(member, [
         'EXEC_PUB_SEC', 'COMM_RES', 'COMM_EDU', 'COMM_MEN',
@@ -878,16 +790,15 @@ def create_news_post(request):
             author=member
         )
         
-        # Send email notification to all members
-        send_news_notification(news_post)
+        # Send WhatsApp notification
+        send_news_whatsapp(news_post)
         
-        messages.success(request, 'News post created successfully! Email notification sent to all members.')
+        messages.success(request, 'News post created! WhatsApp notifications sent to members.')
         return redirect('leadership_portal')
     
     return render(request, 'create_news.html', {'member': member})
 
 def create_announcement(request):
-    """General Secretary, Publicity Secretary, and all Committee Chairs can create announcements."""
     member = get_member_from_session(request)
     if not member or not has_role(member, [
         'EXEC_GEN_SEC', 'EXEC_PUB_SEC', 'EXEC_CHAIR', 'EXEC_VICE_CHAIR',
@@ -903,16 +814,15 @@ def create_announcement(request):
             document=request.FILES.get('document')
         )
         
-        # Send email notification to all members
-        send_announcement_notification(announcement)
+        # Send WhatsApp notification
+        send_announcement_whatsapp(announcement)
         
-        messages.success(request, 'Announcement created successfully! Email notification sent to all members.')
+        messages.success(request, 'Announcement created! WhatsApp notifications sent to members.')
         return redirect('leadership_portal')
     
     return render(request, 'create_announcement.html', {'member': member})
 
 def create_event(request):
-    """All Committee Chairs and executives can create events."""
     member = get_member_from_session(request)
     if not member or not has_role(member, [
         'COMM_EDU', 'COMM_RES', 'COMM_MEN',
@@ -931,16 +841,15 @@ def create_event(request):
             is_upcoming=True
         )
         
-        # Send email notification to all members
-        send_event_notification(event)
+        # Send WhatsApp notification
+        send_event_whatsapp(event)
         
-        messages.success(request, 'Event created successfully! Email notification sent to all members.')
+        messages.success(request, 'Event created! WhatsApp notifications sent to members.')
         return redirect('leadership_portal')
     
     return render(request, 'create_event.html', {'member': member})
 
 def export_members_csv(request):
-    """General Secretary and Chair can export member list."""
     member = get_member_from_session(request)
     if not member or not has_role(member, ['EXEC_GEN_SEC', 'EXEC_CHAIR', 'EXEC_VICE_CHAIR']):
         messages.error(request, 'Not authorized.')
@@ -970,7 +879,6 @@ def export_members_csv(request):
 # ==========================================
 
 def class_rep_dashboard(request):
-    """Enhanced dashboard for Class Representatives."""
     member = get_member_from_session(request)
     if not member or not has_role(member, ['CLASS_REP']):
         messages.error(request, 'Not authorized.')
@@ -978,26 +886,19 @@ def class_rep_dashboard(request):
 
     settings = SiteSettings.load()
 
-    # Get all class members (Full Members only)
     class_members = Member.objects.filter(
         is_active=True,
         membership_type='FULL'
     ).order_by('last_name', 'first_name')
 
-    # Statistics
     total_class_members = class_members.count()
     members_this_month = class_members.filter(
         date_joined__month=datetime.now().month,
         date_joined__year=datetime.now().year
     ).count()
 
-    # Recent joiners
     recent_members = class_members.order_by('-date_joined')[:10]
-
-    # Class events
     class_events = Event.objects.filter(is_upcoming=True).order_by('date')[:10]
-
-    # Class announcements
     class_announcements = Announcement.objects.all()[:10]
 
     context = {
@@ -1014,7 +915,6 @@ def class_rep_dashboard(request):
     return render(request, 'class_rep_dashboard.html', context)
 
 def create_class_announcement(request):
-    """Class Reps can create announcements for their class."""
     member = get_member_from_session(request)
     if not member or not has_role(member, ['CLASS_REP']):
         messages.error(request, 'Not authorized.')
@@ -1023,8 +923,6 @@ def create_class_announcement(request):
     if request.method == 'POST':
         title = request.POST.get('title')
         description = request.POST.get('description')
-
-        # Add class rep identifier to title
         full_title = f"[Class Announcement] {title}"
 
         announcement = Announcement.objects.create(
@@ -1033,16 +931,14 @@ def create_class_announcement(request):
             document=request.FILES.get('document')
         )
         
-        # Send email notification to all members
-        send_announcement_notification(announcement)
+        send_announcement_whatsapp(announcement)
         
-        messages.success(request, 'Class announcement created successfully! Email notification sent to all members.')
+        messages.success(request, 'Class announcement created! WhatsApp sent to members.')
         return redirect('class_rep_dashboard')
 
     return render(request, 'create_class_announcement.html', {'member': member})
 
 def create_class_event(request):
-    """Class Reps can create events for their class."""
     member = get_member_from_session(request)
     if not member or not has_role(member, ['CLASS_REP']):
         messages.error(request, 'Not authorized.')
@@ -1053,8 +949,6 @@ def create_class_event(request):
         description = request.POST.get('description')
         date = request.POST.get('date')
         venue = request.POST.get('venue')
-
-        # Add class identifier to title
         full_title = f"[Class Event] {title}"
 
         event = Event.objects.create(
@@ -1066,16 +960,14 @@ def create_class_event(request):
             is_upcoming=True
         )
         
-        # Send email notification to all members
-        send_event_notification(event)
+        send_event_whatsapp(event)
         
-        messages.success(request, 'Class event created successfully! Email notification sent to all members.')
+        messages.success(request, 'Class event created! WhatsApp sent to members.')
         return redirect('class_rep_dashboard')
 
     return render(request, 'create_class_event.html', {'member': member})
 
 def export_class_members(request):
-    """Class Reps can export their class member list."""
     member = get_member_from_session(request)
     if not member or not has_role(member, ['CLASS_REP']):
         messages.error(request, 'Not authorized.')
@@ -1103,7 +995,6 @@ def export_class_members(request):
     return response
 
 def research_links_view(request):
-    """Display all research paper links."""
     papers = ResearchLink.objects.all()
     settings = SiteSettings.load()
     return render(request, 'research_links.html', {'papers': papers, 'settings': settings})
