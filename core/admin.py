@@ -1,11 +1,16 @@
 # core/admin.py
 from django.contrib import admin
 from django.contrib.auth.hashers import make_password
+
+
 from .models import (
     Member, Leadership, NewsPost, Announcement, FoundingMember, 
     MembershipTier, Event, SiteSettings, Subscription, Notification,
-    TransactionCategory, Transaction, Budget, FinancialReport, ResearchLink
+    TransactionCategory, Transaction, Budget, FinancialReport, ResearchLink,
+    Product, Order, OrderItem  # Add this line
 )
+
+
 
 @admin.register(Member)
 class MemberAdmin(admin.ModelAdmin):
@@ -154,3 +159,29 @@ class FinancialReportAdmin(admin.ModelAdmin):
 class ResearchLinkAdmin(admin.ModelAdmin):
     list_display = ['title', 'authors', 'journal', 'publication_date']
     search_fields = ['title', 'authors', 'journal']
+
+
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    list_display = ('name', 'price', 'stock', 'category', 'is_active', 'created_at')
+    list_filter = ('is_active', 'category', 'created_at')
+    search_fields = ('name', 'description', 'category')
+    list_editable = ('price', 'stock', 'is_active')
+
+class OrderItemInline(admin.TabularInline):
+    model = OrderItem
+    extra = 0
+    readonly_fields = ('product', 'quantity', 'price', 'get_total')
+    
+    def get_total(self, obj):
+        return obj.get_total()
+
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ('order_number', 'member', 'total_amount', 'status', 'created_at')
+    list_filter = ('status', 'created_at')
+    search_fields = ('order_number', 'member__first_name', 'member__last_name', 'member__email')
+    list_editable = ('status',)
+    inlines = [OrderItemInline]
+    readonly_fields = ('order_number', 'member', 'total_amount', 'created_at')
