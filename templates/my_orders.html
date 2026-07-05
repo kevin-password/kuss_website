@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% block title %}My Orders - KUSS{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <h1><i class="fa-solid fa-list"></i> My Orders</h1>
+</section>
+
+<section class="section container">
+    <div style="max-width: 1000px; margin: 0 auto;">
+        {% if orders %}
+            {% for order in orders %}
+            <div style="background: white; border-radius: 10px; box-shadow: var(--shadow); margin-bottom: 20px; overflow: hidden;">
+                <div style="background: var(--navy); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+                    <div>
+                        <h3 style="margin: 0;">Order #{{ order.order_number }}</h3>
+                        <p style="margin: 5px 0 0 0; opacity: 0.8; font-size: 0.9rem;">{{ order.created_at|date:"F d, Y" }}</p>
+                    </div>
+                    <div style="text-align: right;">
+                        <p style="margin: 0; font-size: 1.5rem; font-weight: 700;">UGX {{ order.total_amount|floatformat:0 }}</p>
+                        <span style="background: {% if order.status == 'PAID' %}#4caf50{% elif order.status == 'PENDING' %}#ff9800{% elif order.status == 'DELIVERED' %}#2196f3{% else %}#9e9e9e{% endif %}; padding: 5px 15px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;">
+                            {{ order.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+                
+                <div style="padding: 20px;">
+                    <h4 style="color: var(--navy); margin-bottom: 15px;">Items</h4>
+                    {% for item in order.items.all %}
+                    <div style="display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee;">
+                        <span>{{ item.quantity }}x {{ item.product.name }}</span>
+                        <span style="font-weight: 600;">UGX {{ item.get_total|floatformat:0 }}</span>
+                    </div>
+                    {% endfor %}
+                    
+                    {% if order.notes %}
+                    <div style="margin-top: 15px; padding: 15px; background: var(--light-gray); border-radius: 6px;">
+                        <strong>Notes:</strong> {{ order.notes }}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="empty-state">
+                <i class="fa-solid fa-box-open" style="font-size: 4rem; color: var(--text-light); margin-bottom: 20px;"></i>
+                <h3>No orders yet</h3>
+                <p>Start shopping to see your orders here!</p>
+                <a href="{% url 'marketplace' %}" class="btn btn-primary" style="margin-top: 20px;">
+                    <i class="fa-solid fa-store"></i> Go to Marketplace
+                </a>
+            </div>
+        {% endif %}
+    </div>
+</section>
+{% endblock %}
