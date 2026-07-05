@@ -1,16 +1,19 @@
 # core/views.py
 import re
 import csv
+import random
+import string
 from decimal import Decimal
 from datetime import datetime
 
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from django.contrib.auth.hashers import check_password
+from django.contrib.auth.hashers import check_password, make_password
 from django.utils import timezone
 from django.db.models import Sum, Count, F
 from django.db.models.functions import TruncMonth
 from django.http import HttpResponse
+from django.core.mail import send_mail
 
 from .models import (
     NewsPost, Announcement, Leadership, Member, FoundingMember, 
@@ -18,6 +21,362 @@ from .models import (
     Transaction, TransactionCategory, ResearchLink
 )
 from .forms import MemberJoinForm, MemberLoginForm, MemberProfileForm
+
+# Email configuration
+TECH_EMAIL = 'tumusiimekevin3@gmail.com'
+FROM_EMAIL = 'KUSS <tumusiimekevin3@gmail.com>'
+
+# ==========================================
+# EMAIL HELPER FUNCTIONS
+# ==========================================
+
+def send_welcome_email(member, password):
+    """Send welcome email with login credentials to new member."""
+    settings = SiteSettings.load()
+    
+    subject = 'Welcome to KUSS - Your Portal Login Details'
+    message = f'''Dear {member.first_name},
+
+Welcome to the Kabale University Surgical Society (KUSS)!
+
+Your membership application has been received successfully.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+YOUR PORTAL LOGIN DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Email: {member.email}
+Password: {password}
+Login URL: https://kabsurgicalsociety.pythonanywhere.com/login/
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+IMPORTANT: Please change your password after first login for security.
+
+NEXT STEPS:
+1. Login to your member portal using the credentials above
+2. Complete your payment as per Chapter 2 of the Constitution
+3. Once payment is confirmed by the Treasurer, your membership will be fully activated
+
+PAYMENT DETAILS:
+{settings.payment_instructions if settings.payment_instructions else 'Contact the Treasurer for payment details.'}
+
+Treasurer Contact:
+{settings.treasurer_name if settings.treasurer_name else 'Treasurer'}
+{settings.treasurer_phone if settings.treasurer_phone else 'Contact via email'}
+
+If you have any questions, contact:
+- General Secretary: {settings.contact_email or 'kabsurgicalsociety@gmail.com'}
+- IT Support: {settings.whatsapp_number or 'Contact via email'}
+
+Supra et Ultra!
+
+The KUSS Executive Committee
+Kabale University Surgical Society
+https://kabsurgicalsociety.pythonanywhere.com'''
+    
+    try:
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=FROM_EMAIL,
+            recipient_list=[member.email],
+            fail_silently=False,
+        )
+        print(f"✅ Welcome email sent to {member.email}")
+        
+        # Notify tech guy
+        send_mail(
+            subject=f'✅ New KUSS Member Registered: {member.first_name} {member.last_name}',
+            message=f'''A new member has registered on the KUSS website:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MEMBER DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Name: {member.first_name} {member.last_name}
+Email: {member.email}
+Phone: {member.phone_number}
+Membership Type: {member.get_membership_type_display()}
+Registration Number: {member.registration_number or 'Not provided'}
+Date: {member.date_joined}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Welcome email with login credentials has been sent automatically.
+
+ACTION REQUIRED:
+- Monitor payment status in Treasurer Dashboard
+- Activate membership once payment is confirmed
+
+Admin Panel: https://kabsurgicalsociety.pythonanywhere.com/admin/
+
+— KUSS Automated System''',
+            from_email=FROM_EMAIL,
+            recipient_list=[TECH_EMAIL],
+            fail_silently=True,
+        )
+        return True
+    except Exception as e:
+        print(f"❌ Email sending failed: {e}")
+        return False
+
+def send_news_notification(news_post):
+    """Send email notification to all members when news is posted."""
+    members = Member.objects.filter(is_active=True).exclude(email='')
+    
+    if not members.exists():
+        return
+    
+    subject = f'📰 New News: {news_post.title}'
+    message = f'''Dear KUSS Member,
+
+A new news article has been posted on the KUSS website:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+{news_post.title}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+{news_post.content[:500]}{'...' if len(news_post.content) > 500 else ''}
+
+Posted by: {news_post.author.first_name} {news_post.author.last_name}
+Date: {news_post.created_at.strftime('%B %d, %Y')}
+
+Read the full article: https://kabsurgicalsociety.pythonanywhere.com/news/
+
+Stay updated with the latest from KUSS!
+
+Supra et Ultra!
+
+The KUSS Executive Committee
+https://kabsurgicalsociety.pythonanywhere.com'''
+    
+    # Send to all members using BCC
+    recipient_emails = list(members.values_list('email', flat=True))
+    
+    try:
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=FROM_EMAIL,
+            recipient_list=[],  # Empty To field
+            bcc=recipient_emails,  # Use BCC to protect privacy
+            fail_silently=True,
+        )
+        print(f"✅ News notification sent to {len(recipient_emails)} members")
+        
+        # Notify tech guy
+        send_mail(
+            subject=f'📰 News Posted: {news_post.title}',
+            message=f'''A new news article has been posted:
+
+Title: {news_post.title}
+Author: {news_post.author.first_name} {news_post.author.last_name}
+Date: {news_post.created_at}
+
+Notification sent to {len(recipient_emails)} members.
+
+View article: https://kabsurgicalsociety.pythonanywhere.com/news/
+
+— KUSS Automated System''',
+            from_email=FROM_EMAIL,
+            recipient_list=[TECH_EMAIL],
+            fail_silently=True,
+        )
+    except Exception as e:
+        print(f"❌ News notification failed: {e}")
+
+def send_announcement_notification(announcement):
+    """Send email notification to all members when announcement is made."""
+    members = Member.objects.filter(is_active=True).exclude(email='')
+    
+    if not members.exists():
+        return
+    
+    subject = f'📢 New Announcement: {announcement.title}'
+    message = f'''Dear KUSS Member,
+
+A new announcement has been posted:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+{announcement.title}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+{announcement.description}
+
+Date: {announcement.created_at.strftime('%B %d, %Y')}
+
+View all announcements: https://kabsurgicalsociety.pythonanywhere.com/announcements/
+
+Please take note of this important information.
+
+Supra et Ultra!
+
+The KUSS Executive Committee
+https://kabsurgicalsociety.pythonanywhere.com'''
+    
+    recipient_emails = list(members.values_list('email', flat=True))
+    
+    try:
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=FROM_EMAIL,
+            recipient_list=[],
+            bcc=recipient_emails,
+            fail_silently=True,
+        )
+        print(f"✅ Announcement notification sent to {len(recipient_emails)} members")
+        
+        # Notify tech guy
+        send_mail(
+            subject=f'📢 Announcement Posted: {announcement.title}',
+            message=f'''A new announcement has been posted:
+
+Title: {announcement.title}
+Date: {announcement.created_at}
+
+Notification sent to {len(recipient_emails)} members.
+
+View announcement: https://kabsurgicalsociety.pythonanywhere.com/announcements/
+
+— KUSS Automated System''',
+            from_email=FROM_EMAIL,
+            recipient_list=[TECH_EMAIL],
+            fail_silently=True,
+        )
+    except Exception as e:
+        print(f"❌ Announcement notification failed: {e}")
+
+def send_event_notification(event):
+    """Send email notification to all members when event is created."""
+    members = Member.objects.filter(is_active=True).exclude(email='')
+    
+    if not members.exists():
+        return
+    
+    subject = f'📅 New Event: {event.title}'
+    message = f'''Dear KUSS Member,
+
+A new event has been scheduled:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+{event.title}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+{event.description}
+
+Date: {event.date.strftime('%B %d, %Y')}
+Venue: {event.venue}
+
+View all events: https://kabsurgicalsociety.pythonanywhere.com/
+
+Don't miss out! Mark your calendar and attend.
+
+Supra et Ultra!
+
+The KUSS Executive Committee
+https://kabsurgicalsociety.pythonanywhere.com'''
+    
+    recipient_emails = list(members.values_list('email', flat=True))
+    
+    try:
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=FROM_EMAIL,
+            recipient_list=[],
+            bcc=recipient_emails,
+            fail_silently=True,
+        )
+        print(f"✅ Event notification sent to {len(recipient_emails)} members")
+        
+        # Notify tech guy
+        send_mail(
+            subject=f'📅 Event Created: {event.title}',
+            message=f'''A new event has been created:
+
+Title: {event.title}
+Date: {event.date}
+Venue: {event.venue}
+
+Notification sent to {len(recipient_emails)} members.
+
+View event: https://kabsurgicalsociety.pythonanywhere.com/
+
+— KUSS Automated System''',
+            from_email=FROM_EMAIL,
+            recipient_list=[TECH_EMAIL],
+            fail_silently=True,
+        )
+    except Exception as e:
+        print(f"❌ Event notification failed: {e}")
+
+def send_payment_reminder_email(member):
+    """Send payment reminder email to member."""
+    settings = SiteSettings.load()
+    
+    subject = '💰 Payment Reminder: KUSS Subscription Fees'
+    message = f'''Dear {member.first_name},
+
+This is a friendly reminder that your KUSS subscription fees are pending.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PAYMENT DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Member: {member.first_name} {member.last_name}
+Email: {member.email}
+Membership Type: {member.get_membership_type_display()}
+Status: UNPAID
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+As per Chapter 2 of the KUSS Constitution, all members are required to pay their subscription fees to maintain active membership status.
+
+{settings.payment_instructions if settings.payment_instructions else 'Please contact the Treasurer for payment details.'}
+
+Treasurer Contact:
+{settings.treasurer_name if settings.treasurer_name else 'Treasurer'}
+{settings.treasurer_phone if settings.treasurer_phone else 'Contact via email'}
+
+IMPORTANT:
+- Members with unpaid fees may lose voting rights and access to society activities
+- Please clear your dues at your earliest convenience
+- Once payment is confirmed, your membership will be fully activated
+
+If you have already made payment, please contact the Treasurer with your payment confirmation.
+
+Thank you for your prompt attention to this matter.
+
+Supra et Ultra!
+
+The KUSS Executive Committee
+Kabale University Surgical Society
+https://kabsurgicalsociety.pythonanywhere.com'''
+    
+    try:
+        send_mail(
+            subject=subject,
+            message=message,
+            from_email=FROM_EMAIL,
+            recipient_list=[member.email],
+            fail_silently=True,
+        )
+        print(f"✅ Payment reminder sent to {member.email}")
+        
+        # Notify tech guy
+        send_mail(
+            subject=f'💰 Payment Reminder Sent: {member.first_name} {member.last_name}',
+            message=f'''A payment reminder has been sent to:
+
+Member: {member.first_name} {member.last_name}
+Email: {member.email}
+Phone: {member.phone_number}
+
+— KUSS Automated System''',
+            from_email=FROM_EMAIL,
+            recipient_list=[TECH_EMAIL],
+            fail_silently=True,
+        )
+        return True
+    except Exception as e:
+        print(f"❌ Payment reminder email failed: {e}")
+        return False
 
 # ==========================================
 # HELPER FUNCTIONS
@@ -98,14 +457,30 @@ def leadership_view(request):
 
 def join_view(request):
     settings = SiteSettings.load()
+    tiers = MembershipTier.objects.all()
+    
     if request.method == 'POST':
         form = MemberJoinForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
+            member = form.save(commit=False)
+            
+            # Generate random password (10 characters)
+            random_password = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+            member.password = make_password(random_password)
+            member.save()
+            
+            # Send welcome email with credentials
+            send_welcome_email(member, random_password)
+            
             return redirect('join_success')
     else:
         form = MemberJoinForm()
-    return render(request, 'join.html', {'form': form, 'settings': settings})
+    
+    return render(request, 'join.html', {
+        'form': form,
+        'settings': settings,
+        'tiers': tiers,
+    })
 
 def join_success_view(request):
     settings = SiteSettings.load()
@@ -345,15 +720,20 @@ def toggle_subscription(request, member_id):
             messages.success(request, f'Subscription updated for {target_member.first_name} {target_member.last_name}')
 
         elif action == 'send_reminder':
+            # Create in-app notification
             Notification.objects.create(
                 member=target_member,
                 notification_type='PAYMENT_REMINDER',
                 title='Subscription Fee Reminder',
                 message=f'Dear {target_member.first_name}, this is a reminder to pay your subscription fees. Please check the Treasurer portal or contact us for payment details.'
             )
+            
+            # Send email notification
+            send_payment_reminder_email(target_member)
+            
             sub.last_reminder_sent = timezone.now()
             sub.save()
-            messages.success(request, f'Reminder sent to {target_member.first_name} {target_member.last_name}')
+            messages.success(request, f'Reminder sent to {target_member.first_name} {target_member.last_name} (Email + In-app notification)')
 
     return redirect('treasurer_dashboard')
 
@@ -470,7 +850,7 @@ def leadership_portal(request):
     if has_role(member, ['COMM_RES']):
         context['research_news'] = NewsPost.objects.all()[:10]
 
-        # Data for Mentorship Chair
+    # Data for Mentorship Chair
     if has_role(member, ['COMM_MEN']):
         context['mentorship_members'] = Member.objects.filter(is_active=True)[:20]
 
@@ -491,13 +871,17 @@ def create_news_post(request):
         return redirect('leadership_portal')
     
     if request.method == 'POST':
-        NewsPost.objects.create(
+        news_post = NewsPost.objects.create(
             title=request.POST.get('title'),
             content=request.POST.get('content'),
             image=request.FILES.get('image'),
             author=member
         )
-        messages.success(request, 'News post created successfully!')
+        
+        # Send email notification to all members
+        send_news_notification(news_post)
+        
+        messages.success(request, 'News post created successfully! Email notification sent to all members.')
         return redirect('leadership_portal')
     
     return render(request, 'create_news.html', {'member': member})
@@ -513,12 +897,16 @@ def create_announcement(request):
         return redirect('leadership_portal')
     
     if request.method == 'POST':
-        Announcement.objects.create(
+        announcement = Announcement.objects.create(
             title=request.POST.get('title'),
             description=request.POST.get('description'),
             document=request.FILES.get('document')
         )
-        messages.success(request, 'Announcement created successfully!')
+        
+        # Send email notification to all members
+        send_announcement_notification(announcement)
+        
+        messages.success(request, 'Announcement created successfully! Email notification sent to all members.')
         return redirect('leadership_portal')
     
     return render(request, 'create_announcement.html', {'member': member})
@@ -534,7 +922,7 @@ def create_event(request):
         return redirect('leadership_portal')
     
     if request.method == 'POST':
-        Event.objects.create(
+        event = Event.objects.create(
             title=request.POST.get('title'),
             description=request.POST.get('description'),
             date=request.POST.get('date'),
@@ -542,7 +930,11 @@ def create_event(request):
             flyer=request.FILES.get('flyer'),
             is_upcoming=True
         )
-        messages.success(request, 'Event created successfully!')
+        
+        # Send email notification to all members
+        send_event_notification(event)
+        
+        messages.success(request, 'Event created successfully! Email notification sent to all members.')
         return redirect('leadership_portal')
     
     return render(request, 'create_event.html', {'member': member})
@@ -635,12 +1027,16 @@ def create_class_announcement(request):
         # Add class rep identifier to title
         full_title = f"[Class Announcement] {title}"
 
-        Announcement.objects.create(
+        announcement = Announcement.objects.create(
             title=full_title,
             description=description,
             document=request.FILES.get('document')
         )
-        messages.success(request, 'Class announcement created successfully!')
+        
+        # Send email notification to all members
+        send_announcement_notification(announcement)
+        
+        messages.success(request, 'Class announcement created successfully! Email notification sent to all members.')
         return redirect('class_rep_dashboard')
 
     return render(request, 'create_class_announcement.html', {'member': member})
@@ -661,7 +1057,7 @@ def create_class_event(request):
         # Add class identifier to title
         full_title = f"[Class Event] {title}"
 
-        Event.objects.create(
+        event = Event.objects.create(
             title=full_title,
             description=description,
             date=date,
@@ -669,7 +1065,11 @@ def create_class_event(request):
             flyer=request.FILES.get('flyer'),
             is_upcoming=True
         )
-        messages.success(request, 'Class event created successfully!')
+        
+        # Send email notification to all members
+        send_event_notification(event)
+        
+        messages.success(request, 'Class event created successfully! Email notification sent to all members.')
         return redirect('class_rep_dashboard')
 
     return render(request, 'create_class_event.html', {'member': member})
@@ -702,15 +1102,8 @@ def export_class_members(request):
         ])
     return response
 
-
-
 def research_links_view(request):
     """Display all research paper links."""
     papers = ResearchLink.objects.all()
     settings = SiteSettings.load()
     return render(request, 'research_links.html', {'papers': papers, 'settings': settings})
-
-
-
-
-
