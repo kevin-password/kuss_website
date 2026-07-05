@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% block title %}KUSS Marketplace{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <h1><i class="fa-solid fa-store"></i> KUSS Marketplace</h1>
+    <p>Browse and purchase KUSS merchandise and resources</p>
+</section>
+
+<section class="section container">
+    {% if messages %}
+        {% for message in messages %}
+            <div style="background: {% if message.tags == 'error' %}#ffebee{% else %}#e8f5e9{% endif %}; color: {% if message.tags == 'error' %}#c62828{% else %}#2e7d32{% endif %}; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    {% if products %}
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 30px;">
+            {% for product in products %}
+            <div style="background: white; border-radius: 10px; overflow: hidden; box-shadow: var(--shadow); transition: transform 0.3s ease;">
+                {% if product.image %}
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" style="width: 100%; height: 250px; object-fit: cover;">
+                {% else %}
+                    <div style="width: 100%; height: 250px; background: var(--light-gray); display: flex; align-items: center; justify-content: center;">
+                        <i class="fa-solid fa-image" style="font-size: 4rem; color: var(--text-light);"></i>
+                    </div>
+                {% endif %}
+                
+                <div style="padding: 20px;">
+                    <h3 style="color: var(--navy); margin-bottom: 10px; font-size: 1.3rem;">{{ product.name }}</h3>
+                    <p style="color: var(--text-light); margin-bottom: 15px; font-size: 0.95rem; line-height: 1.6;">
+                        {{ product.description|truncatewords:20 }}
+                    </p>
+                    
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <span style="font-size: 1.5rem; font-weight: 700; color: var(--teal);">UGX {{ product.price|floatformat:0 }}</span>
+                        <span style="color: var(--text-light); font-size: 0.9rem;">
+                            <i class="fa-solid fa-box"></i> {{ product.stock }} in stock
+                        </span>
+                    </div>
+                    
+                    <div style="display: flex; gap: 10px;">
+                        <a href="{% url 'product_detail' product.id %}" class="btn btn-outline" style="flex: 1; text-align: center; margin-left: 0;">
+                            <i class="fa-solid fa-eye"></i> View
+                        </a>
+                        <a href="{% url 'add_to_cart' product.id %}" class="btn btn-primary" style="flex: 1; text-align: center;">
+                            <i class="fa-solid fa-cart-plus"></i> Add to Cart
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <i class="fa-solid fa-store-slash" style="font-size: 4rem; color: var(--text-light); margin-bottom: 20px;"></i>
+            <h3>No products available</h3>
+            <p>Check back soon for new merchandise!</p>
+        </div>
+    {% endif %}
+    
+    <!-- Cart Summary -->
+    {% if request.session.cart %}
+    <div style="position: fixed; bottom: 20px; right: 20px; background: var(--teal); color: white; padding: 15px 25px; border-radius: 50px; box-shadow: 0 4px 12px rgba(0,0,0,0.2); z-index: 1000;">
+        <a href="{% url 'view_cart' %}" style="color: white; text-decoration: none; display: flex; align-items: center; gap: 10px;">
+            <i class="fa-solid fa-shopping-cart" style="font-size: 1.5rem;"></i>
+            <span style="font-weight: 600;">View Cart ({{ request.session.cart|length }})</span>
+        </a>
+    </div>
+    {% endif %}
+</section>
+{% endblock %}
