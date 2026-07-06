@@ -21,18 +21,297 @@ from .models import (
     NewsPost, Announcement, Leadership, Member, FoundingMember, 
     MembershipTier, Event, SiteSettings, Subscription, Notification,
     Transaction, TransactionCategory, ResearchLink,
-    Product, Order, OrderItem  # Add this line
+    Product, Order, OrderItem
 )
 from .forms import MemberJoinForm, MemberLoginForm, MemberProfileForm
 
 # ==========================================
-# WHATSAPP (CallMeBot) CONFIGURATION
+# WEB3FORMS EMAIL CONFIGURATION
 # ==========================================
-CALLMEBOT_API_KEY = '6245479'  # Your CallMeBot API key
-TECH_WHATSAPP = '+256785365538'  # ⚠️ CHANGE THIS to your actual WhatsApp number (with +256)
+WEB3FORMS_ACCESS_KEY = 'f2c217cf-dd95-44ea-b8db-037947e8edce'
+WEB3FORMS_API_URL = 'https://api.web3forms.com/submit'
+TECH_EMAIL = 'tumusiimekevin3@gmail.com'
+FROM_NAME = 'KUSS - Kabale University Surgical Society'
 
 # ==========================================
-# WHATSAPP HELPER FUNCTIONS
+# WHATSAPP (CallMeBot) CONFIGURATION
+# ==========================================
+CALLMEBOT_API_KEY = '6245479'
+TECH_WHATSAPP = '+256785365538'
+
+# ==========================================
+# WEB3FORMS EMAIL HELPER
+# ==========================================
+
+def send_email_via_web3forms(to_email, subject, message, from_name=None):
+    """Send email using Web3Forms API - FREE, no card needed."""
+    if from_name is None:
+        from_name = FROM_NAME
+    
+    try:
+        payload = {
+            'apikey': WEB3FORMS_ACCESS_KEY,
+            'subject': subject,
+            'from_name': from_name,
+            'to': to_email,
+            'message': message,
+            'botcheck': ''
+        }
+        
+        response = requests.post(WEB3FORMS_API_URL, json=payload, timeout=15)
+        
+        if response.status_code == 200:
+            result = response.json()
+            if result.get('success'):
+                print(f"✅ Email sent to {to_email} via Web3Forms")
+                return True
+            else:
+                print(f"❌ Web3Forms error: {result.get('message')}")
+                return False
+        else:
+            print(f"❌ Web3Forms HTTP {response.status_code}: {response.text}")
+            return False
+            
+    except Exception as e:
+        print(f"❌ Web3Forms failed: {e}")
+        traceback.print_exc()
+        return False
+
+# ==========================================
+# EMAIL NOTIFICATION FUNCTIONS (Web3Forms)
+# ==========================================
+
+def send_welcome_email(member, password):
+    """Send welcome email with login credentials."""
+    print(f"📧 === Sending welcome email to {member.email} ===")
+    settings = SiteSettings.load()
+    
+    subject = 'Welcome to KUSS - Your Portal Login Details'
+    message = f"""Dear {member.first_name},
+
+Welcome to the Kabale University Surgical Society (KUSS)!
+
+Your membership application has been received successfully.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+YOUR PORTAL LOGIN DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Email: {member.email}
+Password: {password}
+Login URL: https://kabsurgicalsociety.pythonanywhere.com/login/
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+IMPORTANT: Please change your password after first login for security.
+
+NEXT STEPS:
+1. Login to your member portal using the credentials above
+2. Complete your payment as per Chapter 2 of the Constitution
+3. Once payment is confirmed by the Treasurer, your membership will be fully activated
+
+PAYMENT DETAILS:
+{settings.payment_instructions if settings.payment_instructions else 'Contact the Treasurer for payment details.'}
+
+Treasurer Contact:
+{settings.treasurer_name if settings.treasurer_name else 'Treasurer'}
+{settings.treasurer_phone if settings.treasurer_phone else 'Contact via email'}
+
+If you have any questions, contact:
+- General Secretary: {settings.contact_email or 'kabsurgicalsociety@gmail.com'}
+- IT Support: {settings.whatsapp_number or 'Contact via email'}
+
+Supra et Ultra!
+
+The KUSS Executive Committee
+Kabale University Surgical Society
+https://kabsurgicalsociety.pythonanywhere.com"""
+    
+    # Send to member
+    member_sent = send_email_via_web3forms(member.email, subject, message)
+    
+    # Send to tech guy
+    tech_subject = f'✅ New KUSS Member Registered: {member.first_name} {member.last_name}'
+    tech_message = f"""A new member has registered on the KUSS website:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+MEMBER DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Name: {member.first_name} {member.last_name}
+Email: {member.email}
+Phone: {member.phone_number}
+Membership Type: {member.get_membership_type_display()}
+Registration Number: {member.registration_number or 'Not provided'}
+Date: {member.date_joined}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+✅ Welcome email with login credentials has been sent automatically.
+
+ACTION REQUIRED:
+- Monitor payment status in Treasurer Dashboard
+- Activate membership once payment is confirmed
+
+Admin Panel: https://kabsurgicalsociety.pythonanywhere.com/admin/
+
+— KUSS Automated System"""
+    
+    tech_sent = send_email_via_web3forms(TECH_EMAIL, tech_subject, tech_message)
+    
+    return member_sent and tech_sent
+
+def send_news_email_notification(news_post):
+    """Send email notification to all members when news is posted."""
+    members = Member.objects.filter(is_active=True).exclude(email='')
+    
+    if not members.exists():
+        return
+    
+    subject = f'📰 New News: {news_post.title}'
+    message = f"""Dear KUSS Member,
+
+A new news article has been posted on the KUSS website:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+{news_post.title}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+{news_post.content[:500]}{'...' if len(news_post.content) > 500 else ''}
+
+Posted by: {news_post.author.first_name} {news_post.author.last_name}
+Date: {news_post.created_at.strftime('%B %d, %Y')}
+
+Read the full article: https://kabsurgicalsociety.pythonanywhere.com/news/
+
+Stay updated with the latest from KUSS!
+
+Supra et Ultra!
+
+The KUSS Executive Committee
+https://kabsurgicalsociety.pythonanywhere.com"""
+    
+    sent_count = 0
+    for member in members:
+        if send_email_via_web3forms(member.email, subject, message):
+            sent_count += 1
+    
+    print(f"✅ News email notification sent to {sent_count}/{members.count()} members")
+
+def send_announcement_email_notification(announcement):
+    """Send email notification to all members when announcement is made."""
+    members = Member.objects.filter(is_active=True).exclude(email='')
+    
+    if not members.exists():
+        return
+    
+    subject = f'📢 New Announcement: {announcement.title}'
+    message = f"""Dear KUSS Member,
+
+A new announcement has been posted:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+{announcement.title}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+{announcement.description}
+
+Date: {announcement.created_at.strftime('%B %d, %Y')}
+
+View all announcements: https://kabsurgicalsociety.pythonanywhere.com/announcements/
+
+Please take note of this important information.
+
+Supra et Ultra!
+
+The KUSS Executive Committee
+https://kabsurgicalsociety.pythonanywhere.com"""
+    
+    sent_count = 0
+    for member in members:
+        if send_email_via_web3forms(member.email, subject, message):
+            sent_count += 1
+    
+    print(f"✅ Announcement email notification sent to {sent_count}/{members.count()} members")
+
+def send_event_email_notification(event):
+    """Send email notification to all members when event is created."""
+    members = Member.objects.filter(is_active=True).exclude(email='')
+    
+    if not members.exists():
+        return
+    
+    subject = f'📅 New Event: {event.title}'
+    message = f"""Dear KUSS Member,
+
+A new event has been scheduled:
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+{event.title}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+{event.description}
+
+Date: {event.date.strftime('%B %d, %Y')}
+Venue: {event.venue}
+
+View all events: https://kabsurgicalsociety.pythonanywhere.com/
+
+Don't miss out! Mark your calendar and attend.
+
+Supra et Ultra!
+
+The KUSS Executive Committee
+https://kabsurgicalsociety.pythonanywhere.com"""
+    
+    sent_count = 0
+    for member in members:
+        if send_email_via_web3forms(member.email, subject, message):
+            sent_count += 1
+    
+    print(f"✅ Event email notification sent to {sent_count}/{members.count()} members")
+
+def send_payment_reminder_email(member):
+    """Send payment reminder email to member."""
+    settings = SiteSettings.load()
+    
+    subject = '💰 Payment Reminder: KUSS Subscription Fees'
+    message = f"""Dear {member.first_name},
+
+This is a friendly reminder that your KUSS subscription fees are pending.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+PAYMENT DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Member: {member.first_name} {member.last_name}
+Email: {member.email}
+Membership Type: {member.get_membership_type_display()}
+Status: UNPAID
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+As per Chapter 2 of the KUSS Constitution, all members are required to pay their subscription fees to maintain active membership status.
+
+{settings.payment_instructions if settings.payment_instructions else 'Please contact the Treasurer for payment details.'}
+
+Treasurer Contact:
+{settings.treasurer_name if settings.treasurer_name else 'Treasurer'}
+{settings.treasurer_phone if settings.treasurer_phone else 'Contact via email'}
+
+IMPORTANT:
+- Members with unpaid fees may lose voting rights and access to society activities
+- Please clear your dues at your earliest convenience
+- Once payment is confirmed, your membership will be fully activated
+
+If you have already made payment, please contact the Treasurer with your payment confirmation.
+
+Thank you for your prompt attention to this matter.
+
+Supra et Ultra!
+
+The KUSS Executive Committee
+Kabale University Surgical Society
+https://kabsurgicalsociety.pythonanywhere.com"""
+    
+    return send_email_via_web3forms(member.email, subject, message)
+
+# ==========================================
+# WHATSAPP HELPER FUNCTIONS (CallMeBot)
 # ==========================================
 
 def clean_phone_number(phone):
@@ -40,10 +319,8 @@ def clean_phone_number(phone):
     if not phone:
         return None
     
-    # Remove spaces, dashes, parentheses
     clean = re.sub(r'[\s\-\(\)]', '', phone)
     
-    # Add Uganda country code if missing
     if clean.startswith('0'):
         clean = '+256' + clean[1:]
     elif clean.startswith('256'):
@@ -62,16 +339,10 @@ def send_whatsapp(phone_number, message):
         return False
     
     try:
-        # URL encode the message
         encoded_message = urllib.parse.quote(message)
-        
-        # Build API URL
         url = f"https://api.callmebot.com/whatsapp.php?phone={clean_phone.replace('+', '')}&text={encoded_message}&apikey={CALLMEBOT_API_KEY}"
-        
-        # Make request
         response = requests.get(url, timeout=15)
         
-        # Check response
         if response.status_code == 200:
             response_text = response.text.lower()
             if 'error' in response_text or 'failed' in response_text:
@@ -93,7 +364,6 @@ def send_welcome_whatsapp(member, password):
     print(f"📱 === Sending welcome WhatsApp to {member.phone_number} ===")
     settings = SiteSettings.load()
     
-    # Message to new member
     member_message = f"""🎉 *Welcome to KUSS, {member.first_name}!*
 
 Your membership application has been received!
@@ -120,42 +390,24 @@ Your membership application has been received!
 {settings.treasurer_name if settings.treasurer_name else 'Treasurer'}
 {settings.treasurer_phone if settings.treasurer_phone else 'Contact via email'}
 
-❓ Questions? Contact:
-- Gen Sec: {settings.contact_email or 'kabsurgicalsociety@gmail.com'}
-
 *Supra et Ultra!* 🏥
 
-KUSS Executive Committee
-Kabale University Surgical Society"""
+KUSS Executive Committee"""
     
-    # Message to tech guy
     tech_message = f"""✅ *NEW KUSS MEMBER REGISTERED*
 
-━━━━━━━━━━━━━━━━━━━━━━━━
-*MEMBER DETAILS*
-━━━━━━━━━━━━━━━━━━━━━━━━
 👤 Name: {member.first_name} {member.last_name}
 📧 Email: {member.email}
 📱 Phone: {member.phone_number}
 🎓 Type: {member.get_membership_type_display()}
-🆔 Reg No: {member.registration_number or 'Not provided'}
-📅 Date: {member.date_joined}
-━━━━━━━━━━━━━━━━━━━━━━━━
 
 ✅ Welcome message with credentials sent.
-
-*ACTION REQUIRED:*
-• Monitor payment in Treasurer Dashboard
-• Activate membership once paid
 
 🔐 Admin: https://kabsurgicalsociety.pythonanywhere.com/admin/
 
 — KUSS Automated System"""
     
-    # Send to member
     member_sent = send_whatsapp(member.phone_number, member_message)
-    
-    # Send to tech guy
     tech_sent = send_whatsapp(TECH_WHATSAPP, tech_message)
     
     return member_sent and tech_sent
@@ -169,29 +421,21 @@ def send_news_whatsapp(news_post):
     
     message = f"""📰 *NEW NEWS: {news_post.title}*
 
-━━━━━━━━━━━━━━━━━━━━━━━━
 {news_post.content[:400]}{'...' if len(news_post.content) > 400 else ''}
-━━━━━━━━━━━━━━━━━━━━━━━━
 
 👤 By: {news_post.author.first_name} {news_post.author.last_name}
-📅 {news_post.created_at.strftime('%B %d, %Y')}
 
 🔗 Read more: https://kabsurgicalsociety.pythonanywhere.com/news/
 
-*Supra et Ultra!* 🏥
-KUSS Executive Committee"""
+*Supra et Ultra!* 🏥"""
     
-    # Send to all members
     sent_count = 0
     for member in members:
         if send_whatsapp(member.phone_number, message):
             sent_count += 1
     
-    print(f"✅ News sent to {sent_count}/{members.count()} members")
-    
-    # Notify tech
-    tech_msg = f"📰 News posted: {news_post.title}\nSent to {sent_count} members"
-    send_whatsapp(TECH_WHATSAPP, tech_msg)
+    print(f"✅ News WhatsApp sent to {sent_count}/{members.count()} members")
+    send_whatsapp(TECH_WHATSAPP, f"📰 News posted: {news_post.title}\nSent to {sent_count} members")
 
 def send_announcement_whatsapp(announcement):
     """Send WhatsApp notification when announcement is made."""
@@ -202,28 +446,21 @@ def send_announcement_whatsapp(announcement):
     
     message = f"""📢 *NEW ANNOUNCEMENT: {announcement.title}*
 
-━━━━━━━━━━━━━━━━━━━━━━━━
 {announcement.description}
-━━━━━━━━━━━━━━━━━━━━━━━━
 
 📅 {announcement.created_at.strftime('%B %d, %Y')}
 
 🔗 View all: https://kabsurgicalsociety.pythonanywhere.com/announcements/
 
-*Please take note of this important information.*
-
-*Supra et Ultra!* 🏥
-KUSS Executive Committee"""
+*Supra et Ultra!* 🏥"""
     
     sent_count = 0
     for member in members:
         if send_whatsapp(member.phone_number, message):
             sent_count += 1
     
-    print(f"✅ Announcement sent to {sent_count}/{members.count()} members")
-    
-    tech_msg = f"📢 Announcement posted: {announcement.title}\nSent to {sent_count} members"
-    send_whatsapp(TECH_WHATSAPP, tech_msg)
+    print(f"✅ Announcement WhatsApp sent to {sent_count}/{members.count()} members")
+    send_whatsapp(TECH_WHATSAPP, f"📢 Announcement posted: {announcement.title}\nSent to {sent_count} members")
 
 def send_event_whatsapp(event):
     """Send WhatsApp notification when event is created."""
@@ -234,29 +471,22 @@ def send_event_whatsapp(event):
     
     message = f"""📅 *NEW EVENT: {event.title}*
 
-━━━━━━━━━━━━━━━━━━━━━━━━
 {event.description}
-━━━━━━━━━━━━━━━━━━━━━━━━
 
 📆 *Date:* {event.date.strftime('%B %d, %Y')}
 📍 *Venue:* {event.venue}
 
 🔗 View all: https://kabsurgicalsociety.pythonanywhere.com/
 
-*Don't miss out! Mark your calendar.*
-
-*Supra et Ultra!* 🏥
-KUSS Executive Committee"""
+*Supra et Ultra!* 🏥"""
     
     sent_count = 0
     for member in members:
         if send_whatsapp(member.phone_number, message):
             sent_count += 1
     
-    print(f"✅ Event sent to {sent_count}/{members.count()} members")
-    
-    tech_msg = f"📅 Event created: {event.title}\nDate: {event.date}\nSent to {sent_count} members"
-    send_whatsapp(TECH_WHATSAPP, tech_msg)
+    print(f"✅ Event WhatsApp sent to {sent_count}/{members.count()} members")
+    send_whatsapp(TECH_WHATSAPP, f"📅 Event created: {event.title}\nSent to {sent_count} members")
 
 def send_payment_reminder_whatsapp(member):
     """Send payment reminder via WhatsApp."""
@@ -268,15 +498,9 @@ Dear {member.first_name},
 
 Your KUSS subscription fees are pending.
 
-━━━━━━━━━━━━━━━━━━━━━━━━
-*PAYMENT DETAILS*
-━━━━━━━━━━━━━━━━━━━━━━━━
 👤 Member: {member.first_name} {member.last_name}
 🎓 Type: {member.get_membership_type_display()}
 ❌ Status: *UNPAID*
-━━━━━━━━━━━━━━━━━━━━━━━━
-
-As per Chapter 2 of the KUSS Constitution, all members must pay subscription fees.
 
 💰 *Payment Details:*
 {settings.payment_instructions if settings.payment_instructions else 'Contact Treasurer for details.'}
@@ -285,20 +509,10 @@ As per Chapter 2 of the KUSS Constitution, all members must pay subscription fee
 {settings.treasurer_name if settings.treasurer_name else 'Treasurer'}
 {settings.treasurer_phone if settings.treasurer_phone else 'Contact via email'}
 
-⚠️ *IMPORTANT:*
-• Unpaid members may lose voting rights
-• Please clear dues soon
-• Once paid, membership fully activated
-
-If already paid, contact Treasurer with confirmation.
-
-*Supra et Ultra!* 🏥
-KUSS Executive Committee"""
+*Supra et Ultra!* 🏥"""
     
     member_sent = send_whatsapp(member.phone_number, message)
-    
-    tech_msg = f"💰 Payment reminder sent to:\n{member.first_name} {member.last_name}\n📱 {member.phone_number}"
-    send_whatsapp(TECH_WHATSAPP, tech_msg)
+    send_whatsapp(TECH_WHATSAPP, f"💰 Payment reminder sent to:\n{member.first_name} {member.last_name}\n📱 {member.phone_number}")
     
     return member_sent
 
@@ -403,7 +617,11 @@ def join_view(request):
             member.save()
             print(f"✅ Member saved: {member.email}")
             
-            # Send welcome WhatsApp message
+            # Send BOTH welcome email AND WhatsApp
+            print("📧 Sending welcome email via Web3Forms...")
+            email_sent = send_welcome_email(member, random_password)
+            print(f"📧 Email result: {email_sent}")
+            
             print("📱 Sending welcome WhatsApp...")
             whatsapp_sent = send_welcome_whatsapp(member, random_password)
             print(f"📱 WhatsApp result: {whatsapp_sent}")
@@ -652,12 +870,13 @@ def toggle_subscription(request, member_id):
                 message=f'Dear {target_member.first_name}, this is a reminder to pay your subscription fees.'
             )
             
-            # Send WhatsApp reminder
+            # Send BOTH email AND WhatsApp reminder
+            send_payment_reminder_email(target_member)
             send_payment_reminder_whatsapp(target_member)
             
             sub.last_reminder_sent = timezone.now()
             sub.save()
-            messages.success(request, f'Reminder sent to {target_member.first_name} {target_member.last_name} via WhatsApp')
+            messages.success(request, f'Reminder sent to {target_member.first_name} {target_member.last_name} (Email + WhatsApp)')
 
     return redirect('treasurer_dashboard')
 
@@ -791,10 +1010,11 @@ def create_news_post(request):
             author=member
         )
         
-        # Send WhatsApp notification
+        # Send BOTH email AND WhatsApp notifications
+        send_news_email_notification(news_post)
         send_news_whatsapp(news_post)
         
-        messages.success(request, 'News post created! WhatsApp notifications sent to members.')
+        messages.success(request, 'News post created! Email + WhatsApp notifications sent to members.')
         return redirect('leadership_portal')
     
     return render(request, 'create_news.html', {'member': member})
@@ -815,10 +1035,11 @@ def create_announcement(request):
             document=request.FILES.get('document')
         )
         
-        # Send WhatsApp notification
+        # Send BOTH email AND WhatsApp notifications
+        send_announcement_email_notification(announcement)
         send_announcement_whatsapp(announcement)
         
-        messages.success(request, 'Announcement created! WhatsApp notifications sent to members.')
+        messages.success(request, 'Announcement created! Email + WhatsApp notifications sent to members.')
         return redirect('leadership_portal')
     
     return render(request, 'create_announcement.html', {'member': member})
@@ -842,10 +1063,11 @@ def create_event(request):
             is_upcoming=True
         )
         
-        # Send WhatsApp notification
+        # Send BOTH email AND WhatsApp notifications
+        send_event_email_notification(event)
         send_event_whatsapp(event)
         
-        messages.success(request, 'Event created! WhatsApp notifications sent to members.')
+        messages.success(request, 'Event created! Email + WhatsApp notifications sent to members.')
         return redirect('leadership_portal')
     
     return render(request, 'create_event.html', {'member': member})
@@ -932,9 +1154,10 @@ def create_class_announcement(request):
             document=request.FILES.get('document')
         )
         
+        send_announcement_email_notification(announcement)
         send_announcement_whatsapp(announcement)
         
-        messages.success(request, 'Class announcement created! WhatsApp sent to members.')
+        messages.success(request, 'Class announcement created! Email + WhatsApp sent to members.')
         return redirect('class_rep_dashboard')
 
     return render(request, 'create_class_announcement.html', {'member': member})
@@ -961,9 +1184,10 @@ def create_class_event(request):
             is_upcoming=True
         )
         
+        send_event_email_notification(event)
         send_event_whatsapp(event)
         
-        messages.success(request, 'Class event created! WhatsApp sent to members.')
+        messages.success(request, 'Class event created! Email + WhatsApp sent to members.')
         return redirect('class_rep_dashboard')
 
     return render(request, 'create_class_event.html', {'member': member})
@@ -995,14 +1219,17 @@ def export_class_members(request):
         ])
     return response
 
+# ==========================================
+# RESEARCH LINKS VIEW
+# ==========================================
+
 def research_links_view(request):
+    """Display all research paper links."""
     papers = ResearchLink.objects.all()
+    settings = SiteSettings.load()
+    return render(request, 'research_links.html', {'papers': papers, 'settings': settings})
 
-
-
-
-
-    # ==========================================
+# ==========================================
 # MARKETPLACE VIEWS
 # ==========================================
 
@@ -1032,11 +1259,9 @@ def add_to_cart(request, product_id):
         messages.error(request, 'Sorry, this product is out of stock.')
         return redirect('marketplace')
     
-    # Get cart from session
     cart = request.session.get('cart', {})
     product_id_str = str(product_id)
     
-    # Add or update quantity
     if product_id_str in cart:
         cart[product_id_str]['quantity'] += 1
     else:
@@ -1056,7 +1281,6 @@ def view_cart(request):
     cart = request.session.get('cart', {})
     settings = SiteSettings.load()
     
-    # Calculate totals
     cart_items = []
     total = Decimal('0')
     
@@ -1124,13 +1348,11 @@ def checkout(request):
     if request.method == 'POST':
         notes = request.POST.get('notes', '')
         
-        # Create order
         order = Order.objects.create(
             member=member,
             notes=notes
         )
         
-        # Add items to order and calculate total
         total = Decimal('0')
         for product_id, item in cart.items():
             product = get_object_or_404(Product, id=product_id)
@@ -1144,7 +1366,6 @@ def checkout(request):
                 price=price
             )
             
-            # Update stock
             product.stock -= quantity
             product.save()
             
@@ -1153,10 +1374,8 @@ def checkout(request):
         order.total_amount = total
         order.save()
         
-        # Clear cart
         request.session['cart'] = {}
         
-        # Send notification to tech guy
         send_order_notification(order)
         
         messages.success(request, f'Order #{order.order_number} placed successfully! Total: UGX {total:,.0f}')
@@ -1188,10 +1407,10 @@ def my_orders(request):
     })
 
 def send_order_notification(order):
-    """Send notification about new order."""
+    """Send notification about new order via Email + WhatsApp."""
     settings = SiteSettings.load()
     
-    # Create in-app notification for tech/admin
+    # Create in-app notification
     Notification.objects.create(
         member=order.member,
         notification_type='ORDER_PLACED',
@@ -1199,41 +1418,29 @@ def send_order_notification(order):
         message=f'Your order has been placed successfully. Total: UGX {order.total_amount:,.0f}. Please proceed with payment.'
     )
     
-    # Send email/WhatsApp notification to tech guy
+    # Build message
+    items_text = ""
+    for item in order.items.all():
+        items_text += f"• {item.quantity}x {item.product.name} - UGX {item.get_total():,.0f}\n"
+    
     tech_message = f"""🛒 *NEW ORDER PLACED*
 
-━━━━━━━━━━━━━━━━━━━━━━━━
-*ORDER DETAILS*
-━━━━━━━━━━━━━━━━━━━━━━━━
 📋 Order #: {order.order_number}
 👤 Customer: {order.member.first_name} {order.member.last_name}
 📧 Email: {order.member.email}
 📱 Phone: {order.member.phone_number}
 💰 Total: UGX {order.total_amount:,.0f}
 📝 Notes: {order.notes or 'None'}
-━━━━━━━━━━━━━━━━━━━━━━━━
 
 *ITEMS:*
-"""
-    
-    for item in order.items.all():
-        tech_message += f"• {item.quantity}x {item.product.name} - UGX {item.get_total():,.0f}\n"
-    
-    tech_message += f"""
-━━━━━━━━━━━━━━━━━━━━━━━━
-*ACTION REQUIRED:*
-• Contact customer to confirm order
-• Arrange payment collection
-• Update order status in admin panel
+{items_text}
 
 🔐 Admin: https://kabsurgicalsociety.pythonanywhere.com/admin/
 
 — KUSS Automated System"""
     
-    # Send via email (if configured) or WhatsApp
-    try:
-        send_email_via_sendgrid(TECH_EMAIL, f'🛒 New Order: {order.order_number}', tech_message)
-    except:
-        pass  # Fails silently if email not configured
-    settings = SiteSettings.load()
-    return render(request, 'research_links.html', {'papers': papers, 'settings': settings})
+    # Send via Web3Forms email
+    send_email_via_web3forms(TECH_EMAIL, f'🛒 New Order: {order.order_number}', tech_message)
+    
+    # Send via WhatsApp
+    send_whatsapp(TECH_WHATSAPP, tech_message)
