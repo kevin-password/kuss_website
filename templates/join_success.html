@@ -12,7 +12,7 @@
         <h2 style="color: var(--navy); margin-bottom: 20px; font-family: 'Playfair Display', serif;">Registration Successful!</h2>
         
         <div id="emailStatus" style="background: #fff3cd; color: #856404; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
-            <i class="fa-solid fa-spinner fa-spin"></i> Sending welcome email with your login credentials...
+            <i class="fa-solid fa-spinner fa-spin"></i> Sending your login credentials via email...
         </div>
         
         <p style="color: var(--text-light); font-size: 1.1rem; line-height: 1.8; margin-bottom: 40px;">
@@ -35,6 +35,37 @@
                     Please contact the Treasurer for payment details.
                 {% endif %}
             </p>
+            
+            <div style="margin-top: 15px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #c8e6c9;">
+                <p style="margin-bottom: 10px;">
+                    <strong>Treasurer:</strong>
+                    {% if settings.treasurer_name %}
+                        {{ settings.treasurer_name }}
+                    {% endif %}
+                </p>
+                
+                {% if settings.contact_email %}
+                <p style="margin-bottom: 10px;">
+                    <i class="fa-solid fa-envelope" style="color: var(--teal); margin-right: 8px;"></i>
+                    <a href="mailto:{{ settings.contact_email }}" style="color: var(--teal); font-weight: 600;">
+                        {{ settings.contact_email }}
+                    </a>
+                </p>
+                {% endif %}
+                
+                {% if request.session.member_id %}
+                    {% if settings.treasurer_phone %}
+                        <p style="font-size: 1.1rem; font-weight: 700; color: var(--teal); margin: 0;">
+                            <i class="fa-solid fa-phone"></i> {{ settings.treasurer_phone }}
+                        </p>
+                    {% endif %}
+                {% else %}
+                    <p style="color: var(--text-light); font-size: 0.9rem; margin: 0;">
+                        <i class="fa-solid fa-lock"></i> 
+                        <a href="{% url 'login' %}" style="color: var(--teal); font-weight: 600;">Login</a> to view phone number
+                    </p>
+                {% endif %}
+            </div>
         </div>
         {% endif %}
 
@@ -46,25 +77,69 @@
     </div>
 </section>
 
+<!-- EmailJS SDK -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
 <script>
-// Auto-send welcome email from browser
+// EmailJS Configuration
+const EMAILJS_PUBLIC_KEY = '1zMWIopNfq1nkwwxB';
+const EMAILJS_SERVICE_ID = 'service_d6fsqwi';
+const EMAILJS_TEMPLATE_ID = 'template_h2ubueh';
+
+// Initialize EmailJS
+(function() {
+    emailjs.init({
+        publicKey: EMAILJS_PUBLIC_KEY,
+    });
+})();
+
+// Auto-send welcome email from browser when page loads
 (async function sendWelcomeEmail() {
-    const WEB3FORMS_API_KEY = 'f2c217cf-dd95-44ea-b8db-037947e8edce';
-    const WEB3FORMS_API_URL = 'https://api.web3forms.com/submit';
     const emailStatus = document.getElementById('emailStatus');
     
     try {
-        // Get member info from server (add this endpoint if needed)
-        // For now, we'll use a simpler approach - just show message
+        // Step 1: Fetch new member info from server
+        const response = await fetch('/api/new-member-info/');
         
-        emailStatus.innerHTML = '<i class="fa-solid fa-check-circle"></i> Check your email for login credentials. If you don\'t see it, check your spam folder or contact the General Secretary.';
-        emailStatus.style.background = '#e8f5e9';
-        emailStatus.style.color = '#2e7d32';
+        if (!response.ok) {
+            throw new Error('Could not retrieve your registration details');
+        }
+        
+        const memberData = await response.json();
+        
+        // Step 2: Send email via EmailJS
+        const templateParams = {
+            to_email: memberData.email,
+            from_name: 'KUSS - Kabale University Surgical Society',
+            subject: 'Welcome to KUSS - Your Portal Login Details',
+            first_name: memberData.first_name,
+            email: memberData.email,
+            password: memberData.password,
+            payment_instructions: memberData.payment_instructions,
+            treasurer_name: memberData.treasurer_name,
+            treasurer_phone: memberData.treasurer_phone || '',
+            contact_email: memberData.contact_email
+        };
+        
+        const emailResponse = await emailjs.send(
+            EMAILJS_SERVICE_ID,
+            EMAILJS_TEMPLATE_ID,
+            templateParams
+        );
+        
+        if (emailResponse.status === 200) {
+            emailStatus.innerHTML = '<i class="fa-solid fa-check-circle"></i> ✅ Welcome email sent! Check your inbox (and spam folder) for your login credentials.';
+            emailStatus.style.background = '#e8f5e9';
+            emailStatus.style.color = '#2e7d32';
+        } else {
+            throw new Error('Email sending failed');
+        }
         
     } catch (error) {
-        emailStatus.innerHTML = '<i class="fa-solid fa-exclamation-circle"></i> Could not send email automatically. Please contact the General Secretary for your login credentials.';
+        emailStatus.innerHTML = `<i class="fa-solid fa-exclamation-circle"></i> ⚠️ Could not send email automatically. Please contact the General Secretary at kabsurgicalsociety@gmail.com for your login credentials.`;
         emailStatus.style.background = '#ffebee';
         emailStatus.style.color = '#c62828';
+        console.error('Welcome email error:', error);
     }
 })();
 </script>
