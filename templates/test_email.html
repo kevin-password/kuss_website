@@ -3,8 +3,8 @@
 
 {% block content %}
 <section class="page-header">
-    <h1><i class="fa-solid fa-flask"></i> Email Test Page (EmailJS)</h1>
-    <p>Test if EmailJS works from your browser</p>
+    <h1><i class="fa-solid fa-flask"></i> Email Test Page (EmailJS SMTP)</h1>
+    <p>Test if EmailJS SMTP works from your browser</p>
 </section>
 
 <section class="section container">
@@ -12,7 +12,7 @@
         
         <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; margin-bottom: 30px; border-left: 4px solid #2196f3;">
             <p style="margin: 0; color: #1565c0;">
-                <strong>ℹ️ Using EmailJS with Gmail</strong> - Better deliverability than Web3Forms
+                <strong>ℹ️ Using EmailJS SMTP</strong> - Direct Gmail SMTP connection
             </p>
         </div>
         
@@ -27,7 +27,7 @@
         </div>
         
         <button onclick="sendTestEmail()" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 1.1rem;" id="testBtn">
-            <i class="fa-solid fa-paper-plane"></i> Send Test Email via EmailJS
+            <i class="fa-solid fa-paper-plane"></i> Send Test Email via SMTP
         </button>
         
         <div id="result" style="margin-top: 20px; padding: 15px; border-radius: 6px; display: none;"></div>
@@ -42,9 +42,9 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <script>
-// EmailJS Configuration
+// EmailJS Configuration - SMTP Service
 const EMAILJS_PUBLIC_KEY = '1zMWIopNfq1nkwwxB';
-const EMAILJS_SERVICE_ID = 'service_d6fsqwi';
+const EMAILJS_SERVICE_ID = 'service_7w2ytzv';  // NEW SMTP Service
 const EMAILJS_TEMPLATE_ID = 'template_h2ubueh';
 
 // Initialize EmailJS
@@ -77,13 +77,13 @@ async function sendTestEmail() {
     result.style.display = 'none';
     
     debugLog(`Starting test email to: ${email}`, 'info');
-    debugLog(`Using EmailJS Service: ${EMAILJS_SERVICE_ID}`, 'info');
+    debugLog(`Using SMTP Service: ${EMAILJS_SERVICE_ID}`, 'info');
     debugLog(`Using Template: ${EMAILJS_TEMPLATE_ID}`, 'info');
     
     const templateParams = {
         to_email: email,
         from_name: 'KUSS Test System',
-        subject: '🧪 KUSS Email Test (EmailJS)',
+        subject: '🧪 KUSS Email Test (SMTP)',
         first_name: 'Test User',
         email: email,
         password: 'TEST_PASSWORD_123',
@@ -96,7 +96,7 @@ async function sendTestEmail() {
     debugLog(`Template params prepared`, 'info');
     
     try {
-        debugLog('Sending via EmailJS...', 'info');
+        debugLog('Sending via EmailJS SMTP...', 'info');
         
         const response = await emailjs.send(
             EMAILJS_SERVICE_ID,
@@ -111,8 +111,8 @@ async function sendTestEmail() {
             result.style.display = 'block';
             result.style.background = '#e8f5e9';
             result.style.color = '#2e7d32';
-            result.innerHTML = '<i class="fa-solid fa-check-circle"></i> ✅ <strong>Success!</strong> Email sent via EmailJS + Gmail. Check your inbox (should arrive in 1-2 minutes).';
-            debugLog('✅ EMAIL SENT SUCCESSFULLY VIA EMAILJS!', 'success');
+            result.innerHTML = '<i class="fa-solid fa-check-circle"></i> ✅ <strong>Success!</strong> Email sent via SMTP. Check your inbox (should arrive in 1-2 minutes).';
+            debugLog('✅ EMAIL SENT SUCCESSFULLY VIA SMTP!', 'success');
             btn.innerHTML = '<i class="fa-solid fa-check"></i> Sent! Send Another';
         } else {
             throw new Error(`Unexpected status: ${response.status}`);
