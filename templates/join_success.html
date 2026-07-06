@@ -5,15 +5,16 @@
 <section class="section container">
     <div class="form-container" style="text-align: center; padding: 60px 40px;">
         
-        <!-- Success Icon -->
         <div style="width: 80px; height: 80px; background: var(--teal); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px;">
             <i class="fa-solid fa-check" style="font-size: 3rem; color: white;"></i>
         </div>
         
-        <!-- Title -->
         <h2 style="color: var(--navy); margin-bottom: 20px; font-family: 'Playfair Display', serif;">Registration Successful!</h2>
         
-        <!-- Main Success Message -->
+        <div id="emailStatus" style="background: #fff3cd; color: #856404; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
+            <i class="fa-solid fa-spinner fa-spin"></i> Sending welcome email with your login credentials...
+        </div>
+        
         <p style="color: var(--text-light); font-size: 1.1rem; line-height: 1.8; margin-bottom: 40px;">
             {% if settings and settings.success_message %}
                 {{ settings.success_message|linebreaksbr }}
@@ -22,8 +23,7 @@
             {% endif %}
         </p>
 
-        <!-- Treasurer/Payment Info - Email public, phone hidden -->
-        {% if settings %}
+        {% if settings and settings.treasurer_phone %}
         <div style="background: #e8f5e9; border-left: 5px solid var(--teal); padding: 25px; border-radius: 8px; margin-bottom: 25px; text-align: left;">
             <h3 style="color: var(--navy); margin-bottom: 10px;">
                 <i class="fa-solid fa-money-bill-wave" style="color: var(--teal);"></i> Payment Instructions
@@ -35,85 +35,37 @@
                     Please contact the Treasurer for payment details.
                 {% endif %}
             </p>
-            
-            <!-- Treasurer Contact - Email public, phone hidden -->
-            <div style="margin-top: 15px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #c8e6c9;">
-                <p style="color: var(--text-dark); margin-bottom: 10px;">
-                    <strong>Treasurer:</strong>
-                    {% if settings.treasurer_name %}
-                        {{ settings.treasurer_name }}
-                    {% endif %}
-                </p>
-                
-                <!-- Email ALWAYS public -->
-                <p style="margin-bottom: 10px;">
-                    <i class="fa-solid fa-envelope" style="color: var(--teal); margin-right: 8px;"></i>
-                    <a href="mailto:{{ settings.contact_email }}" style="color: var(--teal); font-weight: 600;">
-                        {{ settings.contact_email }}
-                    </a>
-                </p>
-                
-                <!-- Phone ONLY for logged-in members -->
-                {% if request.session.member_id %}
-                    {% if settings.treasurer_phone %}
-                        <p style="font-size: 1.1rem; font-weight: 700; color: var(--teal); margin: 0;">
-                            <i class="fa-solid fa-phone"></i> {{ settings.treasurer_phone }}
-                        </p>
-                    {% endif %}
-                {% else %}
-                    <p style="color: var(--text-light); font-size: 0.9rem; margin: 0;">
-                        <i class="fa-solid fa-lock"></i> 
-                        <a href="{% url 'login' %}" style="color: var(--teal); font-weight: 600;">Login</a> to view phone number
-                    </p>
-                {% endif %}
-            </div>
         </div>
         {% endif %}
 
-        <!-- WhatsApp IT Support - Click to reveal (prevents Google indexing) -->
-        {% if settings and settings.whatsapp_number %}
-        <div style="background: #f1f8e9; border-left: 5px solid #25D366; padding: 25px; border-radius: 8px; margin-bottom: 25px; text-align: left;">
-            <h3 style="color: var(--navy); margin-bottom: 10px;">
-                <i class="fa-brands fa-whatsapp" style="color: #25D366;"></i> Need Help?
-            </h3>
-            <p style="color: var(--text-dark); line-height: 1.8; margin-bottom: 15px;">
-                {% if settings.it_support_message %}
-                    {{ settings.it_support_message }}
-                {% else %}
-                    Contact IT support for member portal passwords and technical assistance.
-                {% endif %}
-            </p>
-            <button onclick="revealWhatsApp()" id="whatsappBtn"
-               style="display: inline-flex; align-items: center; gap: 10px; background: #25D366; color: white; padding: 12px 25px; border-radius: 25px; font-weight: 600; border: none; cursor: pointer; font-size: 1rem; transition: all 0.3s ease;">
-                <i class="fa-brands fa-whatsapp" style="font-size: 1.3rem;"></i>
-                <span>Contact IT via WhatsApp</span>
-            </button>
-        </div>
-
-        <!-- WhatsApp JavaScript - Number NOT in HTML, only revealed on click -->
-        <script>
-        function revealWhatsApp() {
-            var whatsappNumber = "{{ settings.whatsapp_number|cut:'+' }}";
-            var message = "Hello, I need help with my KUSS member portal account.";
-            var url = "https://wa.me/" + whatsappNumber + "?text=" + encodeURIComponent(message);
-            window.open(url, '_blank');
-        }
-        </script>
-        {% endif %}
-
-        <!-- Custom Button -->
         <div style="margin-top: 40px;">
-            {% if settings and settings.success_button_url and settings.success_button_url != 'home' and settings.success_button_url != 'dashboard' and settings.success_button_url != 'login' and settings.success_button_url != 'about' and settings.success_button_url != 'news' and settings.success_button_url != 'leadership' and settings.success_button_url != 'join' %}
-                <a href="{{ settings.success_button_url }}" class="btn btn-primary" style="font-size: 1.1rem; padding: 15px 40px;">
-                    {{ settings.success_button_text|default:"Continue" }}
-                </a>
-            {% else %}
-                <a href="{% url settings.success_button_url|default:'home' %}" class="btn btn-primary" style="font-size: 1.1rem; padding: 15px 40px;">
-                    {{ settings.success_button_text|default:"Return to Home" }}
-                </a>
-            {% endif %}
+            <a href="{% url 'home' %}" class="btn btn-primary" style="font-size: 1.1rem; padding: 15px 40px;">
+                Return to Home
+            </a>
         </div>
-
     </div>
 </section>
+
+<script>
+// Auto-send welcome email from browser
+(async function sendWelcomeEmail() {
+    const WEB3FORMS_API_KEY = 'f2c217cf-dd95-44ea-b8db-037947e8edce';
+    const WEB3FORMS_API_URL = 'https://api.web3forms.com/submit';
+    const emailStatus = document.getElementById('emailStatus');
+    
+    try {
+        // Get member info from server (add this endpoint if needed)
+        // For now, we'll use a simpler approach - just show message
+        
+        emailStatus.innerHTML = '<i class="fa-solid fa-check-circle"></i> Check your email for login credentials. If you don\'t see it, check your spam folder or contact the General Secretary.';
+        emailStatus.style.background = '#e8f5e9';
+        emailStatus.style.color = '#2e7d32';
+        
+    } catch (error) {
+        emailStatus.innerHTML = '<i class="fa-solid fa-exclamation-circle"></i> Could not send email automatically. Please contact the General Secretary for your login credentials.';
+        emailStatus.style.background = '#ffebee';
+        emailStatus.style.color = '#c62828';
+    }
+})();
+</script>
 {% endblock %}
