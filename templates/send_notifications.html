@@ -1,78 +1,56 @@
 {% extends 'base.html' %}
-{% block title %}Registration Successful - KUSS{% endblock %}
+{% block title %}Send Notifications - KUSS{% endblock %}
 
 {% block content %}
+<section class="page-header">
+    <h1><i class="fa-solid fa-paper-plane"></i> Send Notifications</h1>
+    <p>Send emails to all KUSS members from your browser</p>
+</section>
+
 <section class="section container">
-    <div class="form-container" style="text-align: center; padding: 60px 40px;">
+    <div style="max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 10px; box-shadow: var(--shadow);">
         
-        <div style="width: 80px; height: 80px; background: var(--teal); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 30px;">
-            <i class="fa-solid fa-check" style="font-size: 3rem; color: white;"></i>
-        </div>
-        
-        <h2 style="color: var(--navy); margin-bottom: 20px; font-family: 'Playfair Display', serif;">Registration Successful!</h2>
-        
-        <div id="emailStatus" style="background: #fff3cd; color: #856404; padding: 15px; border-radius: 6px; margin-bottom: 20px;">
-            <i class="fa-solid fa-spinner fa-spin"></i> Sending your login credentials via email...
-        </div>
-        
-        <p style="color: var(--text-light); font-size: 1.1rem; line-height: 1.8; margin-bottom: 40px;">
-            {% if settings and settings.success_message %}
-                {{ settings.success_message|linebreaksbr }}
-            {% else %}
-                Thank you for joining KUSS! Your membership application has been received.
-            {% endif %}
-        </p>
-
-        {% if settings and settings.treasurer_phone %}
-        <div style="background: #e8f5e9; border-left: 5px solid var(--teal); padding: 25px; border-radius: 8px; margin-bottom: 25px; text-align: left;">
-            <h3 style="color: var(--navy); margin-bottom: 10px;">
-                <i class="fa-solid fa-money-bill-wave" style="color: var(--teal);"></i> Payment Instructions
-            </h3>
-            <p style="color: var(--text-dark); line-height: 1.8;">
-                {% if settings.payment_instructions %}
-                    {{ settings.payment_instructions|linebreaksbr }}
-                {% else %}
-                    Please contact the Treasurer for payment details.
-                {% endif %}
+        <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; margin-bottom: 30px; border-left: 4px solid #2196f3;">
+            <p style="color: #1565c0; margin: 0;">
+                <strong>ℹ️ Using EmailJS SMTP</strong> - Emails sent directly from your browser. Keep this page open until sending is complete.
             </p>
-            
-            <div style="margin-top: 15px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #c8e6c9;">
-                <p style="margin-bottom: 10px;">
-                    <strong>Treasurer:</strong>
-                    {% if settings.treasurer_name %}
-                        {{ settings.treasurer_name }}
-                    {% endif %}
-                </p>
-                
-                {% if settings.contact_email %}
-                <p style="margin-bottom: 10px;">
-                    <i class="fa-solid fa-envelope" style="color: var(--teal); margin-right: 8px;"></i>
-                    <a href="mailto:{{ settings.contact_email }}" style="color: var(--teal); font-weight: 600;">
-                        {{ settings.contact_email }}
-                    </a>
-                </p>
-                {% endif %}
-                
-                {% if request.session.member_id %}
-                    {% if settings.treasurer_phone %}
-                        <p style="font-size: 1.1rem; font-weight: 700; color: var(--teal); margin: 0;">
-                            <i class="fa-solid fa-phone"></i> {{ settings.treasurer_phone }}
-                        </p>
-                    {% endif %}
-                {% else %}
-                    <p style="color: var(--text-light); font-size: 0.9rem; margin: 0;">
-                        <i class="fa-solid fa-lock"></i> 
-                        <a href="{% url 'login' %}" style="color: var(--teal); font-weight: 600;">Login</a> to view phone number
-                    </p>
-                {% endif %}
-            </div>
         </div>
-        {% endif %}
-
-        <div style="margin-top: 40px;">
-            <a href="{% url 'home' %}" class="btn btn-primary" style="font-size: 1.1rem; padding: 15px 40px;">
-                Return to Home
-            </a>
+        
+        <form id="notificationForm">
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: 600; color: var(--navy); margin-bottom: 8px;">
+                    Subject *
+                </label>
+                <input type="text" id="emailSubject" required 
+                       style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;"
+                       placeholder="e.g., New Announcement: Surgical Workshop">
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: 600; color: var(--navy); margin-bottom: 8px;">
+                    Message *
+                </label>
+                <textarea id="emailMessage" rows="10" required 
+                          style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit;"
+                          placeholder="Write your message here..."></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 1.1rem;" id="sendBtn">
+                <i class="fa-solid fa-paper-plane"></i> Fetch Recipients & Start Sending
+            </button>
+        </form>
+        
+        <!-- Progress Section (hidden initially) -->
+        <div id="progressSection" style="display: none; margin-top: 30px;">
+            <h3 style="color: var(--navy); margin-bottom: 15px;">
+                <i class="fa-solid fa-spinner fa-spin"></i> Sending Progress
+            </h3>
+            <div style="background: var(--light-gray); border-radius: 8px; overflow: hidden; margin-bottom: 15px;">
+                <div id="progressBar" style="background: var(--teal); height: 30px; width: 0%; transition: width 0.3s; display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;"></div>
+            </div>
+            <p id="progressText" style="color: var(--text-dark); margin-bottom: 15px; font-weight: 600;"></p>
+            <div id="logOutput" style="background: #1e1e1e; color: #0f0; padding: 15px; border-radius: 8px; max-height: 300px; overflow-y: auto; font-family: monospace; font-size: 0.85rem;">
+            </div>
         </div>
     </div>
 </section>
@@ -81,9 +59,9 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <script>
-// EmailJS Configuration
+// EmailJS Configuration - SMTP Service
 const EMAILJS_PUBLIC_KEY = '1zMWIopNfq1nkwwxB';
-const EMAILJS_SERVICE_ID = 'service_d6fsqwi';
+const EMAILJS_SERVICE_ID = 'service_7w2ytzv';  // NEW SMTP Service
 const EMAILJS_TEMPLATE_ID = 'template_h2ubueh';
 
 // Initialize EmailJS
@@ -93,54 +71,113 @@ const EMAILJS_TEMPLATE_ID = 'template_h2ubueh';
     });
 })();
 
-// Auto-send welcome email from browser when page loads
-(async function sendWelcomeEmail() {
-    const emailStatus = document.getElementById('emailStatus');
+// Log to output
+function log(message, type = 'info') {
+    const logOutput = document.getElementById('logOutput');
+    const timestamp = new Date().toLocaleTimeString();
+    const colors = {
+        info: '#0f0',
+        success: '#4caf50',
+        error: '#f44336',
+        warning: '#ff9800'
+    };
+    
+    logOutput.innerHTML += `<div style="color: ${colors[type]}; margin-bottom: 5px;">[${timestamp}] ${message}</div>`;
+    logOutput.scrollTop = logOutput.scrollHeight;
+}
+
+// Main form handler
+document.getElementById('notificationForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const subject = document.getElementById('emailSubject').value.trim();
+    const message = document.getElementById('emailMessage').value.trim();
+    const sendBtn = document.getElementById('sendBtn');
+    const progressSection = document.getElementById('progressSection');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    
+    // Disable button and show progress
+    sendBtn.disabled = true;
+    sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
+    progressSection.style.display = 'block';
     
     try {
-        // Step 1: Fetch new member info from server
-        const response = await fetch('/api/new-member-info/');
+        // Step 1: Fetch recipients
+        log('Fetching recipient list from server...', 'info');
+        const response = await fetch('/api/recipients/');
         
         if (!response.ok) {
-            throw new Error('Could not retrieve your registration details');
+            throw new Error('Failed to fetch recipients - are you logged in as a leader?');
         }
         
-        const memberData = await response.json();
+        const data = await response.json();
+        const recipients = data.recipients;
         
-        // Step 2: Send email via EmailJS
-        const templateParams = {
-            to_email: memberData.email,
-            from_name: 'KUSS - Kabale University Surgical Society',
-            subject: 'Welcome to KUSS - Your Portal Login Details',
-            first_name: memberData.first_name,
-            email: memberData.email,
-            password: memberData.password,
-            payment_instructions: memberData.payment_instructions,
-            treasurer_name: memberData.treasurer_name,
-            treasurer_phone: memberData.treasurer_phone || '',
-            contact_email: memberData.contact_email
-        };
+        log(`✅ Found ${recipients.length} recipients`, 'success');
         
-        const emailResponse = await emailjs.send(
-            EMAILJS_SERVICE_ID,
-            EMAILJS_TEMPLATE_ID,
-            templateParams
-        );
+        // Step 2: Send emails one by one via EmailJS SMTP
+        let successCount = 0;
+        let failCount = 0;
         
-        if (emailResponse.status === 200) {
-            emailStatus.innerHTML = '<i class="fa-solid fa-check-circle"></i> ✅ Welcome email sent! Check your inbox (and spam folder) for your login credentials.';
-            emailStatus.style.background = '#e8f5e9';
-            emailStatus.style.color = '#2e7d32';
-        } else {
-            throw new Error('Email sending failed');
+        for (let i = 0; i < recipients.length; i++) {
+            const recipient = recipients[i];
+            const progress = ((i + 1) / recipients.length) * 100;
+            
+            log(`📧 Sending to ${recipient.first_name} ${recipient.last_name} (${recipient.email})...`, 'info');
+            
+            // Prepare template params
+            const templateParams = {
+                to_email: recipient.email,
+                from_name: 'KUSS - Kabale University Surgical Society',
+                subject: subject,
+                first_name: recipient.first_name,
+                email: recipient.email,
+                password: '',
+                payment_instructions: '',
+                treasurer_name: '',
+                treasurer_phone: '',
+                contact_email: 'kabsurgicalsociety@gmail.com',
+                message: message
+            };
+            
+            try {
+                const emailResponse = await emailjs.send(
+                    EMAILJS_SERVICE_ID,
+                    EMAILJS_TEMPLATE_ID,
+                    templateParams
+                );
+                
+                if (emailResponse.status === 200) {
+                    successCount++;
+                    log(`✅ Sent to ${recipient.email}`, 'success');
+                } else {
+                    throw new Error(`Status: ${emailResponse.status}`);
+                }
+            } catch (error) {
+                failCount++;
+                log(`❌ Failed: ${recipient.email} - ${error.text || error.message}`, 'error');
+            }
+            
+            // Update progress bar
+            progressBar.style.width = `${progress}%`;
+            progressBar.textContent = `${Math.round(progress)}%`;
+            progressText.textContent = `Progress: ${i + 1} of ${recipients.length} (${successCount} sent, ${failCount} failed)`;
+            
+            // Delay to avoid rate limiting (1 second between emails)
+            await new Promise(resolve => setTimeout(resolve, 1000));
         }
+        
+        // Done!
+        log(`🎉 Completed! ${successCount} emails sent successfully, ${failCount} failed.`, 'success');
+        sendBtn.innerHTML = '<i class="fa-solid fa-check"></i> Done! Send Another';
+        sendBtn.disabled = false;
         
     } catch (error) {
-        emailStatus.innerHTML = `<i class="fa-solid fa-exclamation-circle"></i> ⚠️ Could not send email automatically. Please contact the General Secretary at kabsurgicalsociety@gmail.com for your login credentials.`;
-        emailStatus.style.background = '#ffebee';
-        emailStatus.style.color = '#c62828';
-        console.error('Welcome email error:', error);
+        log(`❌ Error: ${error.message}`, 'error');
+        sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Try Again';
+        sendBtn.disabled = false;
     }
-})();
+});
 </script>
 {% endblock %}
