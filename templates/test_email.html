@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% block title %}Email Test - KUSS{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <h1><i class="fa-solid fa-flask"></i> Email Test Page</h1>
+    <p>Test if Web3Forms works from your browser</p>
+</section>
+
+<section class="section container">
+    <div style="max-width: 700px; margin: 0 auto; background: white; padding: 40px; border-radius: 10px; box-shadow: var(--shadow);">
+        
+        <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin-bottom: 30px; border-left: 4px solid #ffc107;">
+            <p style="margin: 0; color: #856404;">
+                <strong>⚠️ Instructions:</strong> Enter YOUR email below. Click send. Check your inbox (and spam folder).
+            </p>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+            <label style="display: block; font-weight: 600; color: var(--navy); margin-bottom: 8px;">
+                Your Email Address *
+            </label>
+            <input type="email" id="testEmail" required 
+                   value="{{ request.user.email|default:'tumusiimekevin3@gmail.com' }}"
+                   style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;"
+                   placeholder="your@email.com">
+        </div>
+        
+        <button onclick="sendTestEmail()" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 1.1rem;" id="testBtn">
+            <i class="fa-solid fa-paper-plane"></i> Send Test Email
+        </button>
+        
+        <div id="result" style="margin-top: 20px; padding: 15px; border-radius: 6px; display: none;"></div>
+        
+        <div id="debugLog" style="margin-top: 20px; background: #1e1e1e; color: #0f0; padding: 15px; border-radius: 8px; max-height: 300px; overflow-y: auto; font-family: monospace; font-size: 0.85rem;">
+            <div style="color: #888;">Debug log will appear here...</div>
+        </div>
+    </div>
+</section>
+
+<script>
+const WEB3FORMS_API_KEY = 'f2c217cf-dd95-44ea-b8db-037947e8edce';
+const WEB3FORMS_API_URL = 'https://api.web3forms.com/submit';
+
+function debugLog(message, type = 'info') {
+    const log = document.getElementById('debugLog');
+    const colors = { info: '#0f0', success: '#4caf50', error: '#f44336', warning: '#ff9800' };
+    const time = new Date().toLocaleTimeString();
+    log.innerHTML += `<div style="color: ${colors[type]};">[${time}] ${message}</div>`;
+    log.scrollTop = log.scrollHeight;
+}
+
+async function sendTestEmail() {
+    const email = document.getElementById('testEmail').value.trim();
+    const btn = document.getElementById('testBtn');
+    const result = document.getElementById('result');
+    
+    if (!email) {
+        alert('Please enter an email address');
+        return;
+    }
+    
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
+    result.style.display = 'none';
+    
+    debugLog(`Starting test email to: ${email}`, 'info');
+    
+    const payload = {
+        apikey: WEB3FORMS_API_KEY,
+        subject: '🧪 KUSS Email Test',
+        from_name: 'KUSS Test System',
+        to: email,
+        message: `Hello!
+
+This is a TEST email from the KUSS website.
+
+If you received this, it means:
+✅ Web3Forms is working from your browser
+✅ Your API key is valid
+✅ The email system is ready
+
+Time sent: ${new Date().toLocaleString()}
+
+— KUSS Automated Test`,
+        botcheck: ''
+    };
+    
+    debugLog(`Payload prepared. Sending to ${WEB3FORMS_API_URL}...`, 'info');
+    debugLog(`API Key: ${WEB3FORMS_API_KEY.substring(0, 8)}...`, 'info');
+    
+    try {
+        debugLog('Making fetch request...', 'info');
+        
+        const response = await fetch(WEB3FORMS_API_URL, {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+        
+        debugLog(`Response status: ${response.status}`, response.ok ? 'success' : 'error');
+        
+        const responseText = await response.text();
+        debugLog(`Raw response: ${responseText}`, 'info');
+        
+        let result_data;
+        try {
+            result_data = JSON.parse(responseText);
+        } catch (e) {
+            debugLog(`Failed to parse JSON: ${e.message}`, 'error');
+            throw new Error('Invalid response from Web3Forms');
+        }
+        
+        debugLog(`Parsed response: ${JSON.stringify(result_data)}`, 'info');
+        
+        if (result_data.success) {
+            result.style.display = 'block';
+            result.style.background = '#e8f5e9';
+            result.style.color = '#2e7d32';
+            result.innerHTML = '<i class="fa-solid fa-check-circle"></i> ✅ <strong>Success!</strong> Email sent. Check your inbox (and spam folder).';
+            debugLog('✅ EMAIL SENT SUCCESSFULLY!', 'success');
+            btn.innerHTML = '<i class="fa-solid fa-check"></i> Sent! Send Another';
+        } else {
+            throw new Error(result_data.message || 'Unknown error');
+        }
+        
+    } catch (error) {
+        debugLog(`❌ ERROR: ${error.message}`, 'error');
+        debugLog(`Error details: ${error.stack || 'No stack trace'}`, 'error');
+        
+        result.style.display = 'block';
+        result.style.background = '#ffebee';
+        result.style.color = '#c62828';
+        result.innerHTML = `<i class="fa-solid fa-exclamation-circle"></i> ❌ <strong>Failed:</strong> ${error.message}<br><small>Check debug log below for details.</small>`;
+        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Try Again';
+    }
+    
+    btn.disabled = false;
+}
+</script>
+{% endblock %}
