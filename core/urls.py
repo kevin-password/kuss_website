@@ -57,4 +57,12 @@ urlpatterns = [
     path('marketplace/checkout/', views.checkout, name='checkout'),
     path('marketplace/order/success/<int:order_id>/', views.order_success, name='order_success'),
     path('marketplace/my-orders/', views.my_orders, name='my_orders'),
+
+
+
+    path('send-notifications/', TemplateView.as_view(template_name='send_notifications.html'), name='send_notifications'),
 ]
+
+
+
+
