@@ -81,9 +81,9 @@
 <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <script>
-// EmailJS Configuration
+// EmailJS Configuration - SMTP Service
 const EMAILJS_PUBLIC_KEY = '1zMWIopNfq1nkwwxB';
-const EMAILJS_SERVICE_ID = 'service_d6fsqwi';
+const EMAILJS_SERVICE_ID = 'service_7w2ytzv';  // NEW SMTP Service
 const EMAILJS_TEMPLATE_ID = 'template_h2ubueh';
 
 // Initialize EmailJS
@@ -107,7 +107,7 @@ const EMAILJS_TEMPLATE_ID = 'template_h2ubueh';
         
         const memberData = await response.json();
         
-        // Step 2: Send email via EmailJS
+        // Step 2: Send email via EmailJS SMTP
         const templateParams = {
             to_email: memberData.email,
             from_name: 'KUSS - Kabale University Surgical Society',
