@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% block title %}Send Notifications - KUSS{% endblock %}
+
+{% block content %}
+<section class="page-header">
+    <h1><i class="fa-solid fa-paper-plane"></i> Send Notifications</h1>
+    <p>Send emails to all KUSS members from your browser</p>
+</section>
+
+<section class="section container">
+    <div style="max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 10px; box-shadow: var(--shadow);">
+        
+        <div style="background: #e8f5e9; padding: 20px; border-radius: 8px; margin-bottom: 30px; border-left: 4px solid var(--teal);">
+            <p style="color: var(--text-dark); margin: 0;">
+                <strong>ℹ️ How this works:</strong> Emails are sent directly from YOUR browser using Web3Forms. 
+                This bypasses server limitations and works on the free plan.
+            </p>
+        </div>
+        
+        <form id="notificationForm">
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: 600; color: var(--navy); margin-bottom: 8px;">
+                    Subject *
+                </label>
+                <input type="text" id="emailSubject" required 
+                       style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;"
+                       placeholder="e.g., New Announcement: Surgical Workshop">
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; font-weight: 600; color: var(--navy); margin-bottom: 8px;">
+                    Message *
+                </label>
+                <textarea id="emailMessage" rows="10" required 
+                          style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-family: inherit;"
+                          placeholder="Write your message here..."></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 1.1rem;" id="sendBtn">
+                <i class="fa-solid fa-paper-plane"></i> Fetch Recipients & Start Sending
+            </button>
+        </form>
+        
+        <!-- Progress Section (hidden initially) -->
+        <div id="progressSection" style="display: none; margin-top: 30px;">
+            <h3 style="color: var(--navy); margin-bottom: 15px;">
+                <i class="fa-solid fa-spinner fa-spin"></i> Sending Progress
+            </h3>
+            <div style="background: var(--light-gray); border-radius: 8px; overflow: hidden; margin-bottom: 15px;">
+                <div id="progressBar" style="background: var(--teal); height: 30px; width: 0%; transition: width 0.3s;"></div>
+            </div>
+            <p id="progressText" style="color: var(--text-dark); margin-bottom: 15px;"></p>
+            <div id="logOutput" style="background: #1e1e1e; color: #0f0; padding: 15px; border-radius: 8px; max-height: 300px; overflow-y: auto; font-family: monospace; font-size: 0.85rem;">
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+// Web3Forms Configuration
+const WEB3FORMS_API_KEY = 'f2c217cf-dd95-44ea-b8db-037947e8edce';
+const WEB3FORMS_API_URL = 'https://api.web3forms.com/submit';
+const FROM_NAME = 'KUSS - Kabale University Surgical Society';
+
+// Send single email via Web3Forms from browser
+async function sendEmailViaWeb3Forms(toEmail, subject, message) {
+    try {
+        const payload = {
+            apikey: WEB3FORMS_API_KEY,
+            subject: subject,
+            from_name: FROM_NAME,
+            to: toEmail,
+            message: message,
+            botcheck: ''
+        };
+        
+        const response = await fetch(WEB3FORMS_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+        
+        const result = await response.json();
+        return result.success === true;
+    } catch (error) {
+        console.error('Email send error:', error);
+        return false;
+    }
+}
+
+// Log to output
+function log(message, type = 'info') {
+    const logOutput = document.getElementById('logOutput');
+    const timestamp = new Date().toLocaleTimeString();
+    const colors = {
+        info: '#0f0',
+        success: '#4caf50',
+        error: '#f44336',
+        warning: '#ff9800'
+    };
+    
+    logOutput.innerHTML += `<div style="color: ${colors[type]}; margin-bottom: 5px;">[${timestamp}] ${message}</div>`;
+    logOutput.scrollTop = logOutput.scrollHeight;
+}
+
+// Main form handler
+document.getElementById('notificationForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const subject = document.getElementById('emailSubject').value.trim();
+    const message = document.getElementById('emailMessage').value.trim();
+    const sendBtn = document.getElementById('sendBtn');
+    const progressSection = document.getElementById('progressSection');
+    const progressBar = document.getElementById('progressBar');
+    const progressText = document.getElementById('progressText');
+    
+    // Disable button and show progress
+    sendBtn.disabled = true;
+    sendBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Sending...';
+    progressSection.style.display = 'block';
+    
+    try {
+        // Step 1: Fetch recipients
+        log('Fetching recipient list from server...', 'info');
+        const response = await fetch('/api/recipients/');
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch recipients');
+        }
+        
+        const data = await response.json();
+        const recipients = data.recipients;
+        
+        log(`✅ Found ${recipients.length} recipients`, 'success');
+        
+        // Step 2: Send emails one by one
+        let successCount = 0;
+        let failCount = 0;
+        
+        for (let i = 0; i < recipients.length; i++) {
+            const recipient = recipients[i];
+            const progress = ((i + 1) / recipients.length) * 100;
+            
+            log(`📧 Sending to ${recipient.first_name} ${recipient.last_name} (${recipient.email})...`, 'info');
+            
+            // Personalize message
+            const personalizedMessage = `Dear ${recipient.first_name},\n\n${message}\n\nSupra et Ultra!\n\nKUSS Executive Committee`;
+            
+            const success = await sendEmailViaWeb3Forms(recipient.email, subject, personalizedMessage);
+            
+            if (success) {
+                successCount++;
+                log(`✅ Sent to ${recipient.email}`, 'success');
+            } else {
+                failCount++;
+                log(`❌ Failed: ${recipient.email}`, 'error');
+            }
+            
+            // Update progress bar
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = `Progress: ${i + 1} of ${recipients.length} (${successCount} sent, ${failCount} failed)`;
+            
+            // Small delay to avoid rate limiting
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
+        
+        // Done!
+        log(`🎉 Completed! ${successCount} emails sent successfully, ${failCount} failed.`, 'success');
+        sendBtn.innerHTML = '<i class="fa-solid fa-check"></i> Done! Send Another';
+        sendBtn.disabled = false;
+        
+    } catch (error) {
+        log(`❌ Error: ${error.message}`, 'error');
+        sendBtn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Try Again';
+        sendBtn.disabled = false;
+    }
+});
+</script>
+{% endblock %}
