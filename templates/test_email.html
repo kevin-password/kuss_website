@@ -3,16 +3,16 @@
 
 {% block content %}
 <section class="page-header">
-    <h1><i class="fa-solid fa-flask"></i> Email Test Page</h1>
-    <p>Test if Web3Forms works from your browser</p>
+    <h1><i class="fa-solid fa-flask"></i> Email Test Page (EmailJS)</h1>
+    <p>Test if EmailJS works from your browser</p>
 </section>
 
 <section class="section container">
     <div style="max-width: 700px; margin: 0 auto; background: white; padding: 40px; border-radius: 10px; box-shadow: var(--shadow);">
         
-        <div style="background: #fff3cd; padding: 20px; border-radius: 8px; margin-bottom: 30px; border-left: 4px solid #ffc107;">
-            <p style="margin: 0; color: #856404;">
-                <strong>⚠️ Instructions:</strong> Enter YOUR email below. Click send. Check your inbox (and spam folder).
+        <div style="background: #e3f2fd; padding: 20px; border-radius: 8px; margin-bottom: 30px; border-left: 4px solid #2196f3;">
+            <p style="margin: 0; color: #1565c0;">
+                <strong>ℹ️ Using EmailJS with Gmail</strong> - Better deliverability than Web3Forms
             </p>
         </div>
         
@@ -21,13 +21,13 @@
                 Your Email Address *
             </label>
             <input type="email" id="testEmail" required 
-                   value="{{ request.user.email|default:'tumusiimekevin3@gmail.com' }}"
+                   value="tumusiimekevin3@gmail.com"
                    style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;"
                    placeholder="your@email.com">
         </div>
         
         <button onclick="sendTestEmail()" class="btn btn-primary" style="width: 100%; padding: 15px; font-size: 1.1rem;" id="testBtn">
-            <i class="fa-solid fa-paper-plane"></i> Send Test Email
+            <i class="fa-solid fa-paper-plane"></i> Send Test Email via EmailJS
         </button>
         
         <div id="result" style="margin-top: 20px; padding: 15px; border-radius: 6px; display: none;"></div>
@@ -38,9 +38,21 @@
     </div>
 </section>
 
+<!-- EmailJS SDK -->
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
 <script>
-const WEB3FORMS_API_KEY = 'f2c217cf-dd95-44ea-b8db-037947e8edce';
-const WEB3FORMS_API_URL = 'https://api.web3forms.com/submit';
+// EmailJS Configuration
+const EMAILJS_PUBLIC_KEY = '1zMWIopNfq1nkwwxB';
+const EMAILJS_SERVICE_ID = 'service_d6fsqwi';
+const EMAILJS_TEMPLATE_ID = 'template_h2ubueh';
+
+// Initialize EmailJS
+(function() {
+    emailjs.init({
+        publicKey: EMAILJS_PUBLIC_KEY,
+    });
+})();
 
 function debugLog(message, type = 'info') {
     const log = document.getElementById('debugLog');
@@ -65,76 +77,55 @@ async function sendTestEmail() {
     result.style.display = 'none';
     
     debugLog(`Starting test email to: ${email}`, 'info');
+    debugLog(`Using EmailJS Service: ${EMAILJS_SERVICE_ID}`, 'info');
+    debugLog(`Using Template: ${EMAILJS_TEMPLATE_ID}`, 'info');
     
-    const payload = {
-        apikey: WEB3FORMS_API_KEY,
-        subject: '🧪 KUSS Email Test',
+    const templateParams = {
+        to_email: email,
         from_name: 'KUSS Test System',
-        to: email,
-        message: `Hello!
-
-This is a TEST email from the KUSS website.
-
-If you received this, it means:
-✅ Web3Forms is working from your browser
-✅ Your API key is valid
-✅ The email system is ready
-
-Time sent: ${new Date().toLocaleString()}
-
-— KUSS Automated Test`,
-        botcheck: ''
+        subject: '🧪 KUSS Email Test (EmailJS)',
+        first_name: 'Test User',
+        email: email,
+        password: 'TEST_PASSWORD_123',
+        payment_instructions: 'This is a test email. No payment required.',
+        treasurer_name: 'Test Treasurer',
+        treasurer_phone: '+256 700 000 000',
+        contact_email: 'kabsurgicalsociety@gmail.com'
     };
     
-    debugLog(`Payload prepared. Sending to ${WEB3FORMS_API_URL}...`, 'info');
-    debugLog(`API Key: ${WEB3FORMS_API_KEY.substring(0, 8)}...`, 'info');
+    debugLog(`Template params prepared`, 'info');
     
     try {
-        debugLog('Making fetch request...', 'info');
+        debugLog('Sending via EmailJS...', 'info');
         
-        const response = await fetch(WEB3FORMS_API_URL, {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        });
+        const response = await emailjs.send(
+            EMAILJS_SERVICE_ID,
+            EMAILJS_TEMPLATE_ID,
+            templateParams
+        );
         
-        debugLog(`Response status: ${response.status}`, response.ok ? 'success' : 'error');
+        debugLog(`✅ EmailJS response status: ${response.status}`, 'success');
+        debugLog(`✅ EmailJS response text: ${response.text}`, 'success');
         
-        const responseText = await response.text();
-        debugLog(`Raw response: ${responseText}`, 'info');
-        
-        let result_data;
-        try {
-            result_data = JSON.parse(responseText);
-        } catch (e) {
-            debugLog(`Failed to parse JSON: ${e.message}`, 'error');
-            throw new Error('Invalid response from Web3Forms');
-        }
-        
-        debugLog(`Parsed response: ${JSON.stringify(result_data)}`, 'info');
-        
-        if (result_data.success) {
+        if (response.status === 200) {
             result.style.display = 'block';
             result.style.background = '#e8f5e9';
             result.style.color = '#2e7d32';
-            result.innerHTML = '<i class="fa-solid fa-check-circle"></i> ✅ <strong>Success!</strong> Email sent. Check your inbox (and spam folder).';
-            debugLog('✅ EMAIL SENT SUCCESSFULLY!', 'success');
+            result.innerHTML = '<i class="fa-solid fa-check-circle"></i> ✅ <strong>Success!</strong> Email sent via EmailJS + Gmail. Check your inbox (should arrive in 1-2 minutes).';
+            debugLog('✅ EMAIL SENT SUCCESSFULLY VIA EMAILJS!', 'success');
             btn.innerHTML = '<i class="fa-solid fa-check"></i> Sent! Send Another';
         } else {
-            throw new Error(result_data.message || 'Unknown error');
+            throw new Error(`Unexpected status: ${response.status}`);
         }
         
     } catch (error) {
-        debugLog(`❌ ERROR: ${error.message}`, 'error');
-        debugLog(`Error details: ${error.stack || 'No stack trace'}`, 'error');
+        debugLog(`❌ ERROR: ${error.text || error.message}`, 'error');
+        debugLog(`Error status: ${error.status || 'unknown'}`, 'error');
         
         result.style.display = 'block';
         result.style.background = '#ffebee';
         result.style.color = '#c62828';
-        result.innerHTML = `<i class="fa-solid fa-exclamation-circle"></i> ❌ <strong>Failed:</strong> ${error.message}<br><small>Check debug log below for details.</small>`;
+        result.innerHTML = `<i class="fa-solid fa-exclamation-circle"></i> ❌ <strong>Failed:</strong> ${error.text || error.message}<br><small>Check debug log below for details.</small>`;
         btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Try Again';
     }
     
