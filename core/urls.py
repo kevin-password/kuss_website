@@ -82,5 +82,14 @@ urlpatterns = [
     # SEO FILES
     # ==========================================
     path('sitemap.xml', TemplateView.as_view(template_name='sitemap.xml', content_type='text/xml'), name='sitemap'),
+
+
+
+
+
+    path('test-email/', TemplateView.as_view(template_name='test_email.html'), name='test_email'),
+
+
+    
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain'), name='robots'),
 ]
