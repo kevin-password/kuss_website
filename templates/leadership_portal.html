@@ -226,6 +226,10 @@
     </div>
     {% endif %}
 
+    <a href="{% url 'send_notifications' %}" class="btn btn-primary" style="width: 100%; padding: 20px; font-size: 1.2rem; margin-bottom: 20px;">
+    <i class="fa-solid fa-paper-plane"></i> Send Bulk Emails to All Members
+</a>
+
     <!-- Current Leadership - Email public, phone shown to logged-in leaders -->
     {% if all_leaders %}
     <div style="background: white; padding: 30px; border-radius: 10px; box-shadow: var(--shadow);">
