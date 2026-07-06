@@ -61,6 +61,9 @@ urlpatterns = [
 
 
     path('send-notifications/', TemplateView.as_view(template_name='send_notifications.html'), name='send_notifications'),
+
+
+    path('api/recipients/', views.api_get_recipients, name='api_recipients'),
 ]
 
 
