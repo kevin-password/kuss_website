@@ -46,14 +46,18 @@
             {% if upcoming_events %}
                 <div class="features-grid">
                     {% for event in upcoming_events %}
-                        <div class="event-card">
-                            <h4>{{ event.title }}</h4>
-                            <div class="event-meta">
-                                <i class="fa-solid fa-calendar"></i> {{ event.date|date:"M d, Y" }} | 
-                                <i class="fa-solid fa-location-dot"></i> {{ event.venue }}
+                        <!-- WHOLE EVENT CARD IS NOW CLICKABLE -->
+                        <a href="{% url 'event_detail' event.id %}" class="event-card-link">
+                            <div class="event-card">
+                                <h4>{{ event.title }}</h4>
+                                <div class="event-meta">
+                                    <i class="fa-solid fa-calendar"></i> {{ event.date|date:"M d, Y" }} | 
+                                    <i class="fa-solid fa-location-dot"></i> {{ event.venue }}
+                                </div>
+                                <!-- urlize makes URLs clickable, truncatewords_html preserves HTML -->
+                                <p>{{ event.description|truncatewords_html:25|urlize }}</p>
                             </div>
-                            <p>{{ event.description|truncatewords:25 }}</p>
-                        </div>
+                        </a>
                     {% endfor %}
                 </div>
             {% else %}
