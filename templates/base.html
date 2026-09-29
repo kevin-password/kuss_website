@@ -16,35 +16,57 @@
     <meta name="language" content="English">
     <meta name="revisit-after" content="7 days">
 
-    <!-- Open Graph Meta Tags (for social media sharing) -->
-    <meta property="og:title" content="KUSS - Kabale University Surgical Society">
-    <meta property="og:description" content="Official website of the Kabale University Surgical Society. Join us for surgical excellence.">
-    <meta property="og:image" content="{{ settings.logo.url|default:'/media/KUSS_LOGO.png' }}">
-    <meta property="og:url" content="https://kabsurgicalsociety.pythonanywhere.com">
-    <meta property="og:type" content="website">
+    <!-- DYNAMIC Open Graph Meta Tags (for WhatsApp, Facebook, LinkedIn sharing) -->
+    {% if post %}
+        <meta property="og:title" content="{{ post.title }} | KUSS">
+        <meta property="og:description" content="{{ post.description|truncatewords:30 }}">
+        <meta property="og:image" content="https://kuss-website.onrender.com{{ post.image.url }}">
+        <meta property="og:url" content="{{ request.build_absolute_uri }}">
+        <meta property="og:type" content="article">
+    {% elif news %}
+        <meta property="og:title" content="{{ news.title }} | KUSS">
+        <meta property="og:description" content="{{ news.description|truncatewords:30 }}">
+        <meta property="og:image" content="https://kuss-website.onrender.com{{ news.image.url }}">
+        <meta property="og:url" content="{{ request.build_absolute_uri }}">
+        <meta property="og:type" content="article">
+    {% else %}
+        <meta property="og:title" content="KUSS - Kabale University Surgical Society">
+        <meta property="og:description" content="Official website of the Kabale University Surgical Society. Join us for surgical education, research, and mentorship.">
+        <meta property="og:image" content="https://kuss-website.onrender.com{{ settings.logo.url|default:'/media/KUSS_LOGO.png' }}">
+        <meta property="og:url" content="{{ request.build_absolute_uri }}">
+        <meta property="og:type" content="website">
+    {% endif %}
     <meta property="og:site_name" content="KUSS">
 
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="KUSS - Kabale University Surgical Society">
-    <meta name="twitter:description" content="Official website of the Kabale University Surgical Society.">
-    <meta name="twitter:image" content="{{ settings.logo.url|default:'/media/KUSS_LOGO.png' }}">
+    <!-- DYNAMIC Twitter Card Meta Tags -->
+    {% if post or news %}
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="{% if post %}{{ post.title }}{% else %}{{ news.title }}{% endif %} | KUSS">
+        <meta name="twitter:description" content="{% if post %}{{ post.description|truncatewords:30 }}{% else %}{{ news.description|truncatewords:30 }}{% endif %}">
+        <meta name="twitter:image" content="https://kuss-website.onrender.com{% if post %}{{ post.image.url }}{% else %}{{ news.image.url }}{% endif %}">
+    {% else %}
+        <meta name="twitter:card" content="summary_large_image">
+        <meta name="twitter:title" content="KUSS - Kabale University Surgical Society">
+        <meta name="twitter:description" content="Official website of the Kabale University Surgical Society.">
+        <meta name="twitter:image" content="https://kuss-website.onrender.com{{ settings.logo.url|default:'/media/KUSS_LOGO.png' }}">
+    {% endif %}
 
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://kabsurgicalsociety.pythonanywhere.com{{ request.path }}">
+    <!-- Canonical URL (Auto-updates based on current domain) -->
+    <link rel="canonical" href="{{ request.build_absolute_uri }}">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/media/KUSS_LOGO.png">
+    <link rel="icon" type="image/png" href="{{ settings.logo.url|default:'/media/KUSS_LOGO.png' }}">
+    <link rel="shortcut icon" type="image/png" href="{{ settings.logo.url|default:'/media/KUSS_LOGO.png' }}">
 
-    <!-- Structured Data for Organization -->
+    <!-- Structured Data for Organization (Updated to Render domain) -->
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "EducationalOrganization",
         "name": "Kabale University Surgical Society",
         "alternateName": "KUSS",
-        "url": "https://kabsurgicalsociety.pythonanywhere.com",
-        "logo": "https://kabsurgicalsociety.pythonanywhere.com/media/KUSS_LOGO.png",
+        "url": "https://kuss-website.onrender.com",
+        "logo": "https://kuss-website.onrender.com{{ settings.logo.url|default:'/media/KUSS_LOGO.png' }}",
         "description": "Official website of the Kabale University Surgical Society - Promoting surgical excellence among medical students at Kabale University, Uganda",
         "address": {
             "@type": "PostalAddress",
@@ -311,14 +333,11 @@
                     </a></li>
                     {% endif %}
 
-                
-                {% if is_leader %}
-<li><a href="{% url 'send_notifications' %}" class="nav-link">
-    <i class="fa-solid fa-paper-plane"></i> Send Notifications
-</a></li>
-{% endif %}
-
-               
+                    {% if is_leader %}
+                    <li><a href="{% url 'send_notifications' %}" class="nav-link">
+                        <i class="fa-solid fa-paper-plane"></i> Send Notifications
+                    </a></li>
+                    {% endif %}
                     
                     <li><a href="{% url 'logout' %}" class="nav-link">
                         <i class="fa-solid fa-right-from-bracket"></i> Logout
