@@ -10,21 +10,21 @@ import dj_database_url
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# Reads from Render/PythonAnywhere environment variables, falls back to a local dev key
+# Reads from Render environment variables, falls back to a local dev key
 SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-local-dev-key-change-me-12345')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # Defaults to False for safety. Set DEBUG=True in your local environment if needed.
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-# Allowed Hosts (Add your TrueHost domain in Phase 2)
+# Allowed Hosts (Updated with your TrueHost domain)
 ALLOWED_HOSTS = [
     '.pythonanywhere.com', 
     '.onrender.com', 
     'localhost', 
     '127.0.0.1',
-    'yourdomain.com',       # Replace with your actual TrueHost domain later
-    'www.yourdomain.com'    # Replace with your actual TrueHost domain later
+    'kabsurgicalsociety.com',
+    'www.kabsurgicalsociety.com'
 ]
 
 # Render provides this environment variable automatically
@@ -35,8 +35,8 @@ if RENDER_EXTERNAL_HOSTNAME:
 # CSRF Trusted Origins (Required for Render and custom domains)
 CSRF_TRUSTED_ORIGINS = [
     'https://*.onrender.com',
-    'https://yourdomain.com',
-    'https://www.yourdomain.com'
+    'https://kabsurgicalsociety.com',
+    'https://www.kabsurgicalsociety.com'
 ]
 
 # Application definition
@@ -133,5 +133,5 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'tumusiimekevin3@gmail.com')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD') # MUST be set in Render/PythonAnywhere env vars
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD') # MUST be set in Render env vars
 DEFAULT_FROM_EMAIL = 'KUSS <tumusiimekevin3@gmail.com>'
