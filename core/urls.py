@@ -89,7 +89,7 @@ urlpatterns = [
 
     path('test-email/', TemplateView.as_view(template_name='test_email.html'), name='test_email'),
 
-
+    path('event/<int:event_id>/', views.event_detail_view, name='event_detail'),
     
     path('robots.txt', TemplateView.as_view(template_name='robots.txt', content_type='text/plain'), name='robots'),
 ]
