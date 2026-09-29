@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ event.title }} - KUSS Events{% endblock %}
+
+{% block content %}
+    <!-- Event Header -->
+    <div class="event-detail-header">
+        <div class="container">
+            <h1 class="event-detail-title">{{ event.title }}</h1>
+            <div class="event-detail-meta">
+                <div>
+                    <i class="fa-solid fa-calendar"></i>
+                    <span>{{ event.date|date:"l, F d, Y" }}</span>
+                </div>
+                {% if event.time %}
+                <div>
+                    <i class="fa-solid fa-clock"></i>
+                    <span>{{ event.time|time:"g:i A" }}</span>
+                </div>
+                {% endif %}
+                <div>
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span>{{ event.venue }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Event Detail Content -->
+    <div class="event-detail-container">
+        
+        <!-- Prominent Flyer Display -->
+        {% if event.flyer %}
+            <div class="event-flyer-container">
+                <img src="{{ event.flyer.url }}" alt="Flyer for {{ event.title }}" class="event-flyer" loading="lazy" decoding="async">
+            </div>
+        {% endif %}
+
+        <!-- Event Description (with clickable links) -->
+        <div class="event-description">
+            <h3 style="color: var(--navy); margin-bottom: 20px; font-family: 'Playfair Display', serif; font-size: 1.5rem;">
+                About This Event
+            </h3>
+            <!-- urlize automatically converts URLs to clickable links, linebreaks preserves formatting -->
+            {{ event.description|urlize|linebreaks }}
+        </div>
+
+        <!-- Social Media Share Buttons -->
+        {% with current_domain=request.scheme|add:"://"|add:request.get_host %}
+        {% with event_url=current_domain|add:request.path %}
+        {% with share_text=event.title|add:" - Join us at Kabale University Surgical Society!"|urlencode %}
+            <div class="event-share-buttons">
+                <a href="https://wa.me/?text={{ share_text }}%20{{ event_url|urlencode }}" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   class="share-btn share-whatsapp">
+                    <i class="fa-brands fa-whatsapp"></i> Share on WhatsApp
+                </a>
+                <a href="https://www.facebook.com/sharer/sharer.php?u={{ event_url|urlencode }}" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   class="share-btn share-facebook">
+                    <i class="fa-brands fa-facebook-f"></i> Share on Facebook
+                </a>
+                <a href="https://twitter.com/intent/tweet?text={{ share_text }}&url={{ event_url|urlencode }}" 
+                   target="_blank" 
+                   rel="noopener noreferrer"
+                   class="share-btn share-twitter">
+                    <i class="fa-brands fa-x-twitter"></i> Share on X
+                </a>
+            </div>
+        {% endwith %}
+        {% endwith %}
+        {% endwith %}
+
+        <!-- Back Button -->
+        <div style="text-align: center; margin-top: 50px; margin-bottom: 20px;">
+            <a href="{% url 'home' %}" class="btn btn-outline" style="border-color: var(--navy); color: var(--navy);">
+                <i class="fa-solid fa-arrow-left"></i> Back to Home
+            </a>
+            <!-- If you have a dedicated events page, you can change the above href to {% url 'events' %} -->
+        </div>
+    </div>
+{% endblock %}
