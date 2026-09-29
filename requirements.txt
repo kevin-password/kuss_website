@@ -1,9 +1,10 @@
 Django==5.1.15
 dj-database-url==2.1.0
-psycopg[binary]==3.1.18
+psycopg[binary]
 gunicorn==21.2.0
 whitenoise==6.6.0
 channels==4.3.2
 asgiref==3.11.1
 sqlparse==0.5.5
 tzdata==2026.2
+requests
