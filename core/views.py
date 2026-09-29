@@ -306,6 +306,19 @@ def leadership_view(request):
     settings = SiteSettings.load()
     return render(request, 'leadership.html', {'leaders': current_leaders, 'settings': settings})
 
+# ==========================================
+# NEW ADDITION: EVENT DETAIL VIEW
+# ==========================================
+def event_detail_view(request, event_id):
+    """Display details of a specific event with flyer and social sharing."""
+    event = get_object_or_404(Event, id=event_id)
+    settings = SiteSettings.load()
+    return render(request, 'event_detail.html', {
+        'event': event,
+        'settings': settings
+    })
+# ==========================================
+
 def join_view(request):
     """Handle member registration - stores password in session for frontend email."""
     settings = SiteSettings.load()
