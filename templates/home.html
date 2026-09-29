@@ -48,7 +48,10 @@
                     {% for event in upcoming_events %}
                         <div class="event-card">
                             <h4>{{ event.title }}</h4>
-                            <div class="event-meta"><i class="fa-solid fa-calendar"></i> {{ event.date|date:"M d, Y" }} | <i class="fa-solid fa-location-dot"></i> {{ event.venue }}</div>
+                            <div class="event-meta">
+                                <i class="fa-solid fa-calendar"></i> {{ event.date|date:"M d, Y" }} | 
+                                <i class="fa-solid fa-location-dot"></i> {{ event.venue }}
+                            </div>
                             <p>{{ event.description|truncatewords:25 }}</p>
                         </div>
                     {% endfor %}
@@ -65,7 +68,10 @@
             <div class="news-preview-grid">
                 {% for post in latest_news %}
                     <div class="preview-card">
-                        {% if post.image %}<img src="{{ post.image.url }}" alt="{{ post.title }}" class="preview-img">{% endif %}
+                        {% if post.image %}
+                            <!-- WORLD-CLASS PERFORMANCE: Lazy loading & async decoding for instant mobile speeds -->
+                            <img src="{{ post.image.url }}" alt="{{ post.title }}" class="preview-img" loading="lazy" decoding="async">
+                        {% endif %}
                         <div class="preview-content">
                             <span class="preview-date">{{ post.created_at|date:"F d, Y" }}</span>
                             <h3 class="preview-title">{{ post.title }}</h3>
