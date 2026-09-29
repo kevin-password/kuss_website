@@ -4,17 +4,40 @@ Django settings for kuss_website project.
 
 from pathlib import Path
 import os
+import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-kuss-website-secret-key-change-in-production-12345'
+# Reads from Render/PythonAnywhere environment variables, falls back to a local dev key
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-local-dev-key-change-me-12345')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+# Defaults to False for safety. Set DEBUG=True in your local environment if needed.
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = ['.pythonanywhere.com']
+# Allowed Hosts (Add your TrueHost domain in Phase 2)
+ALLOWED_HOSTS = [
+    '.pythonanywhere.com', 
+    '.onrender.com', 
+    'localhost', 
+    '127.0.0.1',
+    'yourdomain.com',       # Replace with your actual TrueHost domain later
+    'www.yourdomain.com'    # Replace with your actual TrueHost domain later
+]
+
+# Render provides this environment variable automatically
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+# CSRF Trusted Origins (Required for Render and custom domains)
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.onrender.com',
+    'https://yourdomain.com',
+    'https://www.yourdomain.com'
+]
 
 # Application definition
 INSTALLED_APPS = [
@@ -29,6 +52,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', # Added for Render static files
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -59,27 +83,21 @@ TEMPLATES = [
 WSGI_APPLICATION = 'kuss_website.wsgi.application'
 
 # Database
+# Uses Neon PostgreSQL on Render (via DATABASE_URL), falls back to SQLite locally
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.config(
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        conn_max_age=600,
+        ssl_require=True
+    )
 }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
 # Internationalization
@@ -90,40 +108,30 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+# WhiteNoise configuration for serving static files on Render
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
+    },
+}
 
 # Media files (User uploads)
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-
-
-
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
-
-
-
-
-
-
 # Email Configuration
+# Passwords and users are now pulled from Environment Variables for security!
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'tumusiimekevin3@gmail.com'
-EMAIL_HOST_PASSWORD = 'xeroztstjuenjlcj'  # App password without spaces
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'tumusiimekevin3@gmail.com')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD') # MUST be set in Render/PythonAnywhere env vars
 DEFAULT_FROM_EMAIL = 'KUSS <tumusiimekevin3@gmail.com>'
-
-
-
-
-
-
-
-
-
-
-
