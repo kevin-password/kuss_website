@@ -79,8 +79,8 @@
     position: relative;
     z-index: 2;
     display: grid;
-    grid-template-columns: minmax(0, 1.08fr) minmax(360px, .72fr);
-    gap: 70px;
+    grid-template-columns: minmax(0, 1.15fr) minmax(340px, .85fr);
+    gap: 50px;
     align-items: center;
     padding: 86px 0;
 }
@@ -202,93 +202,9 @@
 .kh-ring::before { inset: 45px; }
 .kh-ring::after { inset: 105px; }
 
-.kh-brand-card {
-    width: 260px;
-    min-height: 300px;
-    position: relative;
-    z-index: 2;
-    padding: 28px 24px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    background: rgba(255,255,255,.96);
-    color: var(--kh-navy);
-    border: 1px solid rgba(255,255,255,.7);
-    box-shadow: 0 35px 90px rgba(0,0,0,.28);
-}
-
-.kh-brand-logo {
-    width: 112px;
-    height: 112px;
-    object-fit: contain;
-    padding: 8px;
-    background: #fff;
-    margin-bottom: 20px;
-}
-
-.kh-brand-card .fallback-mark {
-    width: 112px;
-    height: 112px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 20px;
-    background: #eef7f6;
-    color: var(--kh-teal);
-    font-size: 3rem;
-}
-
-.kh-brand-name {
-    font-family: "Playfair Display", serif;
-    font-size: 1.5rem;
-    margin-bottom: 5px;
-}
-
-.kh-brand-sub {
-    color: var(--kh-teal);
-    font-size: .66rem;
-    font-weight: 800;
-    letter-spacing: .17em;
-    text-transform: uppercase;
-}
-
-.kh-brand-motto {
-    margin-top: 21px;
-    padding-top: 17px;
-    width: 100%;
-    border-top: 1px solid #e2e7e8;
-    color: #6a747c;
-    font-size: .73rem;
-    letter-spacing: .08em;
-    text-transform: uppercase;
-}
-
+.kh-brand-card,
 .kh-floating-note {
-    position: absolute;
-    z-index: 3;
-    right: -4px;
-    bottom: 38px;
-    padding: 14px 18px;
-    background: #fff;
-    color: var(--kh-navy);
-    box-shadow: 0 18px 45px rgba(0,0,0,.20);
-    border-left: 3px solid var(--kh-teal);
-}
-
-.kh-floating-note strong {
-    display: block;
-    font-size: .77rem;
-    text-transform: uppercase;
-    letter-spacing: .11em;
-}
-
-.kh-floating-note span {
-    display: block;
-    color: #778188;
-    font-size: .72rem;
-    margin-top: 3px;
+    display: none !important;
 }
 
 /* =========================================================
@@ -816,11 +732,6 @@
     .kh-ring { width: 285px; height: 285px; }
     .kh-ring::before { inset: 32px; }
     .kh-ring::after { inset: 72px; }
-    .kh-brand-card { width: 205px; min-height: 245px; padding: 20px; }
-    .kh-brand-logo, .kh-brand-card .fallback-mark { width: 82px; height: 82px; margin-bottom: 13px; }
-    .kh-brand-card .fallback-mark { font-size: 2.3rem; }
-    .kh-brand-name { font-size: 1.18rem; }
-    .kh-floating-note { right: -2px; bottom: 10px; }
     .kh-strip-inner { grid-template-columns: 1fr; padding: 13px 0; }
     .kh-strip-item,
     .kh-strip-item:first-child { border-right: 0; border-bottom: 1px solid var(--kh-line); padding: 15px 0; }
@@ -876,32 +787,6 @@
 
             <div class="kh-hero-visual" aria-hidden="true">
                 <div class="kh-ring"></div>
-
-                <div class="kh-brand-card">
-                    {% if settings and settings.logo %}
-                        <img src="{{ settings.logo.url }}" alt="" class="kh-brand-logo">
-                    {% else %}
-                        <div class="fallback-mark">
-                            <i class="fa-solid fa-user-doctor"></i>
-                        </div>
-                    {% endif %}
-
-                    <div class="kh-brand-name">KUSS</div>
-                    <div class="kh-brand-sub">Surgical Society</div>
-
-                    <div class="kh-brand-motto">
-                        {% if settings and settings.motto %}
-                            {{ settings.motto }}
-                        {% else %}
-                            Supra et Ultra
-                        {% endif %}
-                    </div>
-                </div>
-
-                <div class="kh-floating-note">
-                    <strong>Education · Research · Mentorship</strong>
-                    <span>Kabale University School of Medicine</span>
-                </div>
             </div>
         </div>
     </section>
