@@ -1,220 +1,342 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>{% block title %}KUSS - Kabale University Surgical Society{% endblock %}</title>
-
-    <!-- Google Site Verification -->
-    <meta name="google-site-verification"
-          content="PaCdWodGCPc74Qev4otrbIs9sewiCja5MJgPMFPI9us">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <!-- =========================================================
-         SEO
+         PAGE TITLE
     ========================================================== -->
-
-    <meta name="description"
-          content="Kabale University Surgical Society (KUSS) - Official website for medical students at Kabale University. Join us for surgical education, research, and mentorship.">
-
-    <meta name="keywords"
-          content="KUSS, Kabale University, Surgical Society, medical students, surgery, Uganda, medical school, surgical education, medical research, Kabale, KUSS Uganda, Kabale surgery">
-
-    <meta name="author"
-          content="Kabale University Surgical Society">
-
-    <meta name="robots"
-          content="index, follow">
-
-    <meta name="language"
-          content="English">
-
-    <meta name="revisit-after"
-          content="7 days">
+    <title>
+        {% block title %}
+            KUSS - Kabale University Surgical Society
+        {% endblock %}
+    </title>
 
 
     <!-- =========================================================
-         SOCIAL MEDIA / OPEN GRAPH
-         IMPORTANT:
-         Never access .url unless the file exists.
+         GOOGLE SEARCH CONSOLE VERIFICATION
     ========================================================== -->
-
-    {% with current_domain=request.scheme|add:"://"|add:request.get_host %}
-
-        {% if event %}
-
-            <meta property="og:title"
-                  content="{{ event.title }} | KUSS">
-
-            <meta property="og:description"
-                  content="{{ event.description|truncatewords:30 }}">
-
-            <meta property="og:url"
-                  content="{{ request.build_absolute_uri }}">
-
-            <meta property="og:type"
-                  content="article">
-
-            {% if event.flyer %}
-                <meta property="og:image"
-                      content="{{ current_domain }}{{ event.flyer.url }}">
-            {% else %}
-                <meta property="og:image"
-                      content="{{ current_domain }}/media/KUSS_LOGO.png">
-            {% endif %}
-
-            <meta property="og:site_name"
-                  content="KUSS">
-
-            <meta name="twitter:card"
-                  content="summary_large_image">
-
-            <meta name="twitter:title"
-                  content="{{ event.title }} | KUSS">
-
-            <meta name="twitter:description"
-                  content="{{ event.description|truncatewords:30 }}">
-
-            {% if event.flyer %}
-                <meta name="twitter:image"
-                      content="{{ current_domain }}{{ event.flyer.url }}">
-            {% else %}
-                <meta name="twitter:image"
-                      content="{{ current_domain }}/media/KUSS_LOGO.png">
-            {% endif %}
+    <meta
+        name="google-site-verification"
+        content="PaCdWodGCPc74Qev4otrbIs9sewiCja5MJgPMFPI9us"
+    >
 
 
-        {% elif post %}
-
-            <meta property="og:title"
-                  content="{{ post.title }} | KUSS">
-
-            <meta property="og:description"
-                  content="{{ post.description|truncatewords:30 }}">
-
-            <meta property="og:url"
-                  content="{{ request.build_absolute_uri }}">
-
-            <meta property="og:type"
-                  content="article">
-
-            {% if post.image %}
-                <meta property="og:image"
-                      content="{{ current_domain }}{{ post.image.url }}">
-            {% else %}
-                <meta property="og:image"
-                      content="{{ current_domain }}/media/KUSS_LOGO.png">
-            {% endif %}
-
-            <meta property="og:site_name"
-                  content="KUSS">
-
-            <meta name="twitter:card"
-                  content="summary_large_image">
-
-            <meta name="twitter:title"
-                  content="{{ post.title }} | KUSS">
-
-            <meta name="twitter:description"
-                  content="{{ post.description|truncatewords:30 }}">
-
-            {% if post.image %}
-                <meta name="twitter:image"
-                      content="{{ current_domain }}{{ post.image.url }}">
-            {% else %}
-                <meta name="twitter:image"
-                      content="{{ current_domain }}/media/KUSS_LOGO.png">
-            {% endif %}
+    <!-- =========================================================
+         SEO DESCRIPTION
+    ========================================================== -->
+    {% block meta_description %}
+    <meta
+        name="description"
+        content="Kabale University Surgical Society (KUSS) - Official website of the surgical society at Kabale University, Uganda. Explore surgical education, research, events, news, leadership and membership."
+    >
+    {% endblock %}
 
 
-        {% elif news %}
+    <meta
+        name="author"
+        content="Kabale University Surgical Society"
+    >
 
-            <meta property="og:title"
-                  content="{{ news.title }} | KUSS">
-
-            <meta property="og:description"
-                  content="{{ news.description|truncatewords:30 }}">
-
-            <meta property="og:url"
-                  content="{{ request.build_absolute_uri }}">
-
-            <meta property="og:type"
-                  content="article">
-
-            {% if news.image %}
-                <meta property="og:image"
-                      content="{{ current_domain }}{{ news.image.url }}">
-            {% else %}
-                <meta property="og:image"
-                      content="{{ current_domain }}/media/KUSS_LOGO.png">
-            {% endif %}
-
-            <meta property="og:site_name"
-                  content="KUSS">
-
-            <meta name="twitter:card"
-                  content="summary_large_image">
-
-            <meta name="twitter:title"
-                  content="{{ news.title }} | KUSS">
-
-            <meta name="twitter:description"
-                  content="{{ news.description|truncatewords:30 }}">
-
-            {% if news.image %}
-                <meta name="twitter:image"
-                      content="{{ current_domain }}{{ news.image.url }}">
-            {% else %}
-                <meta name="twitter:image"
-                      content="{{ current_domain }}/media/KUSS_LOGO.png">
-            {% endif %}
-
-
-        {% else %}
-
-            <!-- DEFAULT WEBSITE SOCIAL PREVIEW -->
-
-            <meta property="og:title"
-                  content="KUSS - Kabale University Surgical Society">
-
-            <meta property="og:description"
-                  content="Official website of the Kabale University Surgical Society. Join us for surgical education, research, and mentorship.">
-
-            <meta property="og:url"
-                  content="{{ request.build_absolute_uri }}">
-
-            <meta property="og:type"
-                  content="website">
-
-            <meta property="og:image"
-                  content="{{ current_domain }}/media/KUSS_LOGO.png">
-
-            <meta property="og:site_name"
-                  content="KUSS">
-
-            <meta name="twitter:card"
-                  content="summary_large_image">
-
-            <meta name="twitter:title"
-                  content="KUSS - Kabale University Surgical Society">
-
-            <meta name="twitter:description"
-                  content="Official website of the Kabale University Surgical Society.">
-
-            <meta name="twitter:image"
-                  content="{{ current_domain }}/media/KUSS_LOGO.png">
-
-        {% endif %}
-
-    {% endwith %}
+    <meta
+        name="robots"
+        content="index, follow, max-image-preview:large"
+    >
 
 
     <!-- =========================================================
          CANONICAL URL
+         Always point Google to the real public domain.
+    ========================================================== -->
+    <link
+        rel="canonical"
+        href="https://kabsurgicalsociety.com{{ request.path }}"
+    >
+
+
+    <!-- =========================================================
+         OPEN GRAPH / FACEBOOK / WHATSAPP
     ========================================================== -->
 
-    <link rel="canonical"
-          href="{{ request.build_absolute_uri }}">
+    {% if event %}
+
+        <meta
+            property="og:title"
+            content="{{ event.title }} | KUSS"
+        >
+
+        <meta
+            property="og:description"
+            content="{{ event.description|striptags|truncatewords:35 }}"
+        >
+
+        <meta
+            property="og:type"
+            content="article"
+        >
+
+        <meta
+            property="og:url"
+            content="https://kabsurgicalsociety.com{{ request.path }}"
+        >
+
+        {% if event.flyer %}
+            <meta
+                property="og:image"
+                content="{{ event.flyer.url }}"
+            >
+
+            <meta
+                property="og:image:alt"
+                content="{{ event.title }} - Kabale University Surgical Society"
+            >
+        {% else %}
+            <meta
+                property="og:image"
+                content="https://kabsurgicalsociety.com/media/KUSS_LOGO.png"
+            >
+
+            <meta
+                property="og:image:alt"
+                content="Kabale University Surgical Society logo"
+            >
+        {% endif %}
+
+
+    {% elif post %}
+
+        <meta
+            property="og:title"
+            content="{{ post.title }} | KUSS"
+        >
+
+        <meta
+            property="og:description"
+            content="{{ post.content|striptags|truncatewords:35 }}"
+        >
+
+        <meta
+            property="og:type"
+            content="article"
+        >
+
+        <meta
+            property="og:url"
+            content="https://kabsurgicalsociety.com{{ request.path }}"
+        >
+
+        {% if post.image %}
+            <meta
+                property="og:image"
+                content="{{ post.image.url }}"
+            >
+
+            <meta
+                property="og:image:alt"
+                content="{{ post.title }}"
+            >
+        {% else %}
+            <meta
+                property="og:image"
+                content="https://kabsurgicalsociety.com/media/KUSS_LOGO.png"
+            >
+
+            <meta
+                property="og:image:alt"
+                content="Kabale University Surgical Society logo"
+            >
+        {% endif %}
+
+
+    {% elif news %}
+
+        <meta
+            property="og:title"
+            content="Latest News | KUSS"
+        >
+
+        <meta
+            property="og:description"
+            content="Latest surgical education, research, events and announcements from the Kabale University Surgical Society."
+        >
+
+        <meta
+            property="og:type"
+            content="website"
+        >
+
+        <meta
+            property="og:url"
+            content="https://kabsurgicalsociety.com{{ request.path }}"
+        >
+
+        <meta
+            property="og:image"
+            content="https://kabsurgicalsociety.com/media/KUSS_LOGO.png"
+        >
+
+        <meta
+            property="og:image:alt"
+            content="Kabale University Surgical Society"
+        >
+
+
+    {% else %}
+
+        <meta
+            property="og:title"
+            content="KUSS - Kabale University Surgical Society"
+        >
+
+        <meta
+            property="og:description"
+            content="Official website of the Kabale University Surgical Society. Discover surgical education, research, events, news, leadership and membership opportunities at Kabale University, Uganda."
+        >
+
+        <meta
+            property="og:type"
+            content="website"
+        >
+
+        <meta
+            property="og:url"
+            content="https://kabsurgicalsociety.com{{ request.path }}"
+        >
+
+        <meta
+            property="og:image"
+            content="https://kabsurgicalsociety.com/media/KUSS_LOGO.png"
+        >
+
+        <meta
+            property="og:image:alt"
+            content="Kabale University Surgical Society logo"
+        >
+
+    {% endif %}
+
+
+    <meta
+        property="og:site_name"
+        content="Kabale University Surgical Society"
+    >
+
+    <meta
+        property="og:locale"
+        content="en_UG"
+    >
+
+
+    <!-- =========================================================
+         TWITTER / X CARD
+    ========================================================== -->
+
+    <meta
+        name="twitter:card"
+        content="summary_large_image"
+    >
+
+    {% if event %}
+
+        <meta
+            name="twitter:title"
+            content="{{ event.title }} | KUSS"
+        >
+
+        <meta
+            name="twitter:description"
+            content="{{ event.description|striptags|truncatewords:35 }}"
+        >
+
+        {% if event.flyer %}
+            <meta
+                name="twitter:image"
+                content="{{ event.flyer.url }}"
+            >
+
+            <meta
+                name="twitter:image:alt"
+                content="{{ event.title }} - KUSS"
+            >
+        {% else %}
+            <meta
+                name="twitter:image"
+                content="https://kabsurgicalsociety.com/media/KUSS_LOGO.png"
+            >
+
+            <meta
+                name="twitter:image:alt"
+                content="Kabale University Surgical Society"
+            >
+        {% endif %}
+
+
+    {% elif post %}
+
+        <meta
+            name="twitter:title"
+            content="{{ post.title }} | KUSS"
+        >
+
+        <meta
+            name="twitter:description"
+            content="{{ post.content|striptags|truncatewords:35 }}"
+        >
+
+        {% if post.image %}
+            <meta
+                name="twitter:image"
+                content="{{ post.image.url }}"
+            >
+
+            <meta
+                name="twitter:image:alt"
+                content="{{ post.title }}"
+            >
+        {% else %}
+            <meta
+                name="twitter:image"
+                content="https://kabsurgicalsociety.com/media/KUSS_LOGO.png"
+            >
+
+            <meta
+                name="twitter:image:alt"
+                content="Kabale University Surgical Society"
+            >
+        {% endif %}
+
+
+    {% else %}
+
+        <meta
+            name="twitter:title"
+            content="KUSS - Kabale University Surgical Society"
+        >
+
+        <meta
+            name="twitter:description"
+            content="Official website of the Kabale University Surgical Society. Surgical education, research, events and student opportunities at Kabale University, Uganda."
+        >
+
+        <meta
+            name="twitter:image"
+            content="https://kabsurgicalsociety.com/media/KUSS_LOGO.png"
+        >
+
+        <meta
+            name="twitter:image:alt"
+            content="Kabale University Surgical Society"
+        >
+
+    {% endif %}
 
 
     <!-- =========================================================
@@ -222,97 +344,163 @@
     ========================================================== -->
 
     {% if settings and settings.logo %}
-        <link rel="icon"
-              type="image/png"
-              href="{{ settings.logo.url }}">
 
-        <link rel="shortcut icon"
-              type="image/png"
-              href="{{ settings.logo.url }}">
+        <link
+            rel="icon"
+            type="image/png"
+            href="{{ settings.logo.url }}"
+        >
+
+        <link
+            rel="shortcut icon"
+            type="image/png"
+            href="{{ settings.logo.url }}"
+        >
+
     {% else %}
-        <link rel="icon"
-              type="image/png"
-              href="/media/KUSS_LOGO.png">
 
-        <link rel="shortcut icon"
-              type="image/png"
-              href="/media/KUSS_LOGO.png">
+        <link
+            rel="icon"
+            type="image/png"
+            href="/media/KUSS_LOGO.png"
+        >
+
+        <link
+            rel="shortcut icon"
+            type="image/png"
+            href="/media/KUSS_LOGO.png"
+        >
+
     {% endif %}
 
 
     <!-- =========================================================
-         STRUCTURED DATA
+         ORGANIZATION STRUCTURED DATA
+         Helps search engines understand what KUSS is.
     ========================================================== -->
 
     <script type="application/ld+json">
     {
         "@context": "https://schema.org",
         "@type": "EducationalOrganization",
+
         "name": "Kabale University Surgical Society",
+
         "alternateName": "KUSS",
-        "url": "{{ request.scheme }}://{{ request.get_host }}",
-        "logo": "{{ request.scheme }}://{{ request.get_host }}/media/KUSS_LOGO.png",
-        "description": "Official website of the Kabale University Surgical Society - Promoting surgical excellence among medical students at Kabale University, Uganda",
+
+        "url": "https://kabsurgicalsociety.com/",
+
+        "logo": "https://kabsurgicalsociety.com/media/KUSS_LOGO.png",
+
+        "description": "Official website of the Kabale University Surgical Society, promoting surgical education, research, mentorship and professional development among medical students.",
+
         "address": {
             "@type": "PostalAddress",
             "addressLocality": "Kabale",
-            "addressRegion": "Western Uganda",
+            "addressRegion": "Western Region",
             "addressCountry": "UG"
         },
-        "foundingDate": "2024",
+
         "slogan": "Supra et Ultra - Above and Beyond",
-        "department": "Department of Surgery",
+
         "parentOrganization": {
             "@type": "CollegeOrUniversity",
             "name": "Kabale University",
-            "url": "https://www.kab.ac.ug"
+            "url": "https://www.kab.ac.ug/"
         }
     }
     </script>
 
 
     <!-- =========================================================
-         FONTS
+         EVENT STRUCTURED DATA
+         Only appears on event pages.
     ========================================================== -->
 
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
-          rel="stylesheet">
+    {% if event %}
 
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+
+        "@type": "Event",
+
+        "name": "{{ event.title|escapejs }}",
+
+        "description": "{{ event.description|striptags|escapejs }}",
+
+        "url": "https://kabsurgicalsociety.com{{ request.path }}",
+
+        "eventStatus": "https://schema.org/EventScheduled",
+
+        "location": {
+            "@type": "Place",
+
+            "name": "{{ event.venue|escapejs }}",
+
+            "address": {
+                "@type": "PostalAddress",
+                "addressLocality": "Kabale",
+                "addressRegion": "Western Region",
+                "addressCountry": "UG"
+            }
+        },
+
+        "organizer": {
+            "@type": "EducationalOrganization",
+            "name": "Kabale University Surgical Society",
+            "url": "https://kabsurgicalsociety.com/"
+        }
+
+        {% if event.flyer %},
+
+        "image": [
+            "{{ event.flyer.url }}"
+        ]
+
+        {% endif %}
+    }
+    </script>
+
+    {% endif %}
 
 
     <!-- =========================================================
-         MAIN CSS
+         GOOGLE FONTS
+    ========================================================== -->
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet"
+    >
+
+
+    <!-- =========================================================
+         FONT AWESOME
+    ========================================================== -->
+
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    >
+
+
+    <!-- =========================================================
+         EXISTING WEBSITE CSS
     ========================================================== -->
 
     <style>
 
         :root {
-            --navy: #0A192F;
-            --navy-light: #112240;
-
-            --teal: #00796B;
-            --teal-light: #009688;
-
-            --white: #FFFFFF;
-
-            --light-gray: #F8F9FA;
-
-            --text-dark: #333333;
-            --text-light: #666666;
-
-            --shadow:
-                0 4px 6px rgba(0, 0, 0, 0.1);
-
-            --transition-premium:
-                all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --primary: #0b1f3a;
+            --secondary: #123d6a;
+            --accent: #d4af37;
+            --light: #f8f9fa;
+            --dark: #111827;
+            --text: #374151;
+            --white: #ffffff;
+            --border: #e5e7eb;
         }
-
-
-        /* =====================================================
-           GLOBAL
-        ====================================================== */
 
         * {
             margin: 0;
@@ -320,241 +508,114 @@
             box-sizing: border-box;
         }
 
-
         html {
             scroll-behavior: smooth;
         }
 
-
         body {
             font-family: 'Inter', sans-serif;
-            color: var(--text-dark);
+            background: #ffffff;
+            color: var(--text);
             line-height: 1.6;
-            background-color: var(--white);
         }
-
 
         a {
             text-decoration: none;
             color: inherit;
         }
 
-
-        ul {
-            list-style: none;
-        }
-
-
         img {
             max-width: 100%;
+            height: auto;
         }
 
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-
-        /* Accessibility */
-
-        :focus-visible {
-            outline: 3px solid var(--teal-light);
-            outline-offset: 3px;
-            border-radius: 4px;
+        button,
+        input,
+        textarea,
+        select {
+            font-family: inherit;
         }
 
 
         /* =====================================================
-           NAVBAR
+           NAVIGATION
         ====================================================== */
 
         .navbar {
-            background-color: var(--navy);
-            padding: 10px 0;
+            background: var(--primary);
+            color: var(--white);
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: var(--shadow);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
         }
-
 
         .nav-container {
             max-width: 1200px;
-            margin: 0 auto;
+            margin: auto;
             padding: 0 20px;
-
             display: flex;
+            align-items: center;
             justify-content: space-between;
-            align-items: center;
+            min-height: 75px;
         }
 
-
-        .nav-logo {
+        .logo-container {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
         }
 
-
-        .nav-logo img {
-            height: 55px;
-            width: auto;
-            max-width: 80px;
+        .logo-container img {
+            width: 48px;
+            height: 48px;
             object-fit: contain;
-
-            background: white;
-            padding: 5px;
-
-            border-radius: 8px;
-
-            box-shadow:
-                0 2px 5px rgba(0,0,0,0.2);
+            border-radius: 50%;
+            background: #ffffff;
         }
-
 
         .logo-text {
             font-family: 'Playfair Display', serif;
-
-            font-size:
-                clamp(1.2rem, 3vw, 1.6rem);
-
+            font-size: 1.15rem;
             font-weight: 700;
-
-            color: var(--white);
-
-            line-height: 1;
         }
 
-
-        .logo-sub {
-            font-size:
-                clamp(0.6rem, 2vw, 0.7rem);
-
-            color: var(--teal-light);
-
-            text-transform: uppercase;
-
-            letter-spacing: 2px;
-        }
-
-
-        .nav-menu {
+        .nav-links {
             display: flex;
-            gap: 25px;
             align-items: center;
+            gap: 22px;
         }
 
-
-        .nav-link {
-            color: var(--white);
-
+        .nav-links a {
+            color: #ffffff;
+            font-size: 0.92rem;
             font-weight: 500;
-
-            font-size: 0.95rem;
-
-            transition: var(--transition-premium);
-
-            min-height: 44px;
-
-            display: flex;
-            align-items: center;
+            transition: 0.3s;
         }
 
-
-        .nav-link:hover {
-            color: var(--teal-light);
+        .nav-links a:hover {
+            color: var(--accent);
         }
 
-
-        .nav-btn {
-            background: var(--teal);
-
-            padding:
-                8px 16px;
-
-            border-radius: 5px;
-
-            color: white !important;
-        }
-
-
-        .nav-btn:hover {
-            background: var(--teal-light);
-
-            transform:
-                translateY(-1px);
-        }
-
-
-        .mobile-menu-toggle {
+        .menu-toggle {
             display: none;
-
-            background: none;
-
-            border: none;
-
-            color: white;
-
             font-size: 1.5rem;
-
             cursor: pointer;
-
-            padding: 10px;
-
-            min-width: 44px;
-            min-height: 44px;
-
-            align-items: center;
-            justify-content: center;
         }
 
 
         /* =====================================================
-           HERO
+           MAIN CONTENT
         ====================================================== */
 
-        .hero {
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--navy) 0%,
-                    var(--navy-light) 100%
-                );
-
-            color: var(--white);
-
-            padding: 100px 20px;
-
-            text-align: center;
+        main {
+            min-height: 70vh;
         }
 
-
-        .hero-title {
-            font-family:
-                'Playfair Display',
-                serif;
-
-            font-size:
-                clamp(2rem, 6vw, 3.5rem);
-
-            line-height: 1.2;
-
-            margin-bottom: 20px;
-        }
-
-
-        .hero-subtitle {
-            font-size:
-                clamp(1rem, 2.5vw, 1.25rem);
-
-            max-width: 700px;
-
-            margin:
-                0 auto 40px;
-
-            color: #ccd6f6;
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 40px 20px;
         }
 
 
@@ -563,1130 +624,44 @@
         ====================================================== */
 
         .btn {
-            display: inline-flex;
-
-            align-items: center;
-
-            justify-content: center;
-
-            padding:
-                12px 30px;
-
-            border-radius: 5px;
-
+            display: inline-block;
+            padding: 12px 22px;
+            border-radius: 6px;
             font-weight: 600;
-
-            transition:
-                var(--transition-premium);
-
+            transition: 0.3s;
+            border: none;
             cursor: pointer;
-
-            min-height: 44px;
         }
-
 
         .btn-primary {
-            background-color: var(--teal);
-            color: var(--white);
+            background: var(--primary);
+            color: #ffffff;
         }
-
 
         .btn-primary:hover {
-            background-color: var(--teal-light);
-
-            transform:
-                translateY(-2px);
-
-            box-shadow:
-                0 4px 12px
-                rgba(0, 121, 107, 0.3);
+            background: var(--secondary);
         }
 
-
-        .btn-outline {
-            border:
-                2px solid var(--teal-light);
-
-            color:
-                var(--teal-light);
-
-            background:
-                transparent;
-
-            margin-left: 10px;
+        .btn-accent {
+            background: var(--accent);
+            color: var(--dark);
         }
 
-
-        .btn-outline:hover {
-            background:
-                var(--teal-light);
-
-            color:
-                white;
+        .btn-accent:hover {
+            opacity: 0.9;
         }
 
 
         /* =====================================================
-           HERO STATS
+           CARDS
         ====================================================== */
 
-        .hero-stats {
-            display: flex;
-
-            justify-content: center;
-
-            gap: 50px;
-
-            margin-top: 50px;
-
-            flex-wrap: wrap;
-        }
-
-
-        .stat-number {
-            font-size: 2.5rem;
-
-            font-weight: 700;
-
-            color:
-                var(--teal-light);
-
-            display: block;
-        }
-
-
-        .stat-label {
-            font-size: 0.9rem;
-
-            text-transform: uppercase;
-
-            letter-spacing: 1px;
-
-            color: #8892b0;
-        }
-
-
-        /* =====================================================
-           SECTIONS
-        ====================================================== */
-
-        .section {
-            padding: 80px 0;
-        }
-
-
-        .section-title {
-            font-family:
-                'Playfair Display',
-                serif;
-
-            font-size:
-                clamp(1.8rem, 4vw, 2.5rem);
-
-            text-align: center;
-
-            margin-bottom: 20px;
-
-            color:
-                var(--navy);
-        }
-
-
-        .section-text {
-            text-align: center;
-
-            max-width: 800px;
-
-            margin:
-                0 auto 50px;
-
-            color:
-                var(--text-light);
-
-            font-size: 1.1rem;
-        }
-
-
-        .page-header {
-            background-color:
-                var(--navy);
-
-            color:
-                var(--white);
-
-            padding:
-                60px 20px;
-
-            text-align: center;
-        }
-
-
-        .page-header h1 {
-            font-family:
-                'Playfair Display',
-                serif;
-
-            font-size:
-                clamp(1.8rem, 4vw, 2.5rem);
-
-            margin-bottom: 10px;
-        }
-
-
-        /* =====================================================
-           FEATURE GRID
-        ====================================================== */
-
-        .features-grid {
-            display: grid;
-
-            grid-template-columns:
-                repeat(
-                    auto-fit,
-                    minmax(300px, 1fr)
-                );
-
-            gap: 30px;
-        }
-
-
-        .feature-card {
-            background:
-                var(--light-gray);
-
-            padding:
-                40px 30px;
-
-            border-radius: 8px;
-
-            text-align: center;
-
-            border-top:
-                4px solid var(--teal);
-
-            transition:
-                var(--transition-premium);
-        }
-
-
-        .feature-card:hover {
-            transform:
-                translateY(-5px);
-
-            box-shadow:
-                var(--shadow);
-        }
-
-
-        .feature-card h3 {
-            color:
-                var(--navy);
-
-            margin-bottom:
-                15px;
-
-            font-size:
-                1.5rem;
-        }
-
-
-        .pillar-icon {
-            width: 80px;
-            height: 80px;
-
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--teal),
-                    var(--teal-light)
-                );
-
-            color: white;
-
-            border-radius: 50%;
-
-            display: flex;
-
-            align-items: center;
-            justify-content: center;
-
-            font-size: 2rem;
-
-            margin:
-                0 auto 25px;
-        }
-
-
-        /* =====================================================
-           NEWS
-        ====================================================== */
-
-        .news-preview-grid {
-            display: grid;
-
-            grid-template-columns:
-                repeat(
-                    auto-fit,
-                    minmax(300px, 1fr)
-                );
-
-            gap: 30px;
-
-            margin-top: 40px;
-        }
-
-
-        .preview-card {
-            background:
-                var(--white);
-
-            border-radius:
-                10px;
-
-            overflow:
-                hidden;
-
-            box-shadow:
-                var(--shadow);
-
-            transition:
-                var(--transition-premium);
-
-            border:
-                1px solid #eee;
-        }
-
-
-        .preview-card:hover {
-            transform:
-                translateY(-8px);
-
-            box-shadow:
-                0 12px 24px
-                rgba(0,0,0,0.1);
-        }
-
-
-        .preview-img {
-            width: 100%;
-
-            height: 200px;
-
-            object-fit: cover;
-
-            background-color:
-                var(--light-gray);
-        }
-
-
-        .preview-content {
+        .card {
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 10px;
             padding: 25px;
-        }
-
-
-        .preview-date {
-            font-size: 0.8rem;
-
-            color: var(--teal);
-
-            font-weight: 600;
-
-            text-transform: uppercase;
-        }
-
-
-        .preview-title {
-            font-size: 1.25rem;
-
-            color: var(--navy);
-
-            margin:
-                10px 0;
-
-            font-weight: 600;
-        }
-
-
-        .read-more {
-            color: var(--teal);
-
-            font-weight: 600;
-
-            display: inline-flex;
-
-            align-items: center;
-
-            gap: 5px;
-
-            transition:
-                var(--transition-premium);
-        }
-
-
-        .read-more:hover {
-            gap: 10px;
-        }
-
-
-        /* =====================================================
-           LEADERSHIP
-        ====================================================== */
-
-        .leaders-grid {
-            display: grid;
-
-            grid-template-columns:
-                repeat(
-                    auto-fit,
-                    minmax(280px, 1fr)
-                );
-
-            gap: 30px;
-
-            margin-top: 40px;
-        }
-
-
-        .leader-card {
-            background:
-                var(--white);
-
-            border-radius: 8px;
-
-            overflow: hidden;
-
-            box-shadow:
-                var(--shadow);
-
-            text-align: center;
-
-            transition:
-                var(--transition-premium);
-
-            border-bottom:
-                4px solid var(--teal);
-        }
-
-
-        .leader-card:hover {
-            transform:
-                translateY(-5px);
-        }
-
-
-        .leader-img {
-            width: 150px;
-            height: 150px;
-
-            border-radius: 50%;
-
-            object-fit: cover;
-
-            margin:
-                30px auto 15px;
-
-            border:
-                4px solid var(--light-gray);
-
-            background-color:
-                var(--navy);
-
-            display: flex;
-
-            align-items: center;
-            justify-content: center;
-
-            color: white;
-
-            font-size: 2rem;
-        }
-
-
-        .leader-info {
-            padding:
-                0 20px 30px;
-        }
-
-
-        .leader-name {
-            font-size: 1.3rem;
-
-            color:
-                var(--navy);
-
-            margin-bottom:
-                5px;
-        }
-
-
-        .leader-role {
-            color:
-                var(--teal);
-
-            font-weight: 600;
-
-            font-size: 0.9rem;
-
-            text-transform: uppercase;
-
-            margin-bottom:
-                15px;
-        }
-
-
-        /* =====================================================
-           ANNOUNCEMENTS
-        ====================================================== */
-
-        .announcement-list {
-            display: flex;
-
-            flex-direction: column;
-
-            gap: 20px;
-
-            margin-top: 40px;
-        }
-
-
-        .announcement-card {
-            background:
-                var(--white);
-
-            padding: 30px;
-
-            border-radius: 8px;
-
-            box-shadow:
-                var(--shadow);
-
-            display: flex;
-
-            justify-content:
-                space-between;
-
-            align-items:
-                center;
-
-            border-left:
-                5px solid var(--teal);
-
-            flex-wrap: wrap;
-
-            gap: 20px;
-        }
-
-
-        .announcement-details h3 {
-            color:
-                var(--navy);
-
-            margin-bottom:
-                8px;
-        }
-
-
-        .btn-download {
-            background-color:
-                var(--navy);
-
-            color:
-                var(--white);
-
-            padding:
-                10px 20px;
-
-            border-radius:
-                5px;
-
-            font-weight:
-                600;
-
-            white-space:
-                nowrap;
-
-            transition:
-                background 0.3s;
-        }
-
-
-        .btn-download:hover {
-            background-color:
-                var(--teal);
-        }
-
-
-        /* =====================================================
-           FORMS
-        ====================================================== */
-
-        .form-container {
-            max-width: 700px;
-
-            margin:
-                0 auto;
-
-            background:
-                white;
-
-            padding:
-                40px;
-
-            border-radius:
-                10px;
-
-            box-shadow:
-                var(--shadow);
-        }
-
-
-        .form-container h2 {
-            text-align:
-                center;
-
-            color:
-                var(--navy);
-
-            margin-bottom:
-                10px;
-        }
-
-
-        .form-container p.subtitle {
-            text-align:
-                center;
-
-            color:
-                var(--text-light);
-
-            margin-bottom:
-                30px;
-        }
-
-
-        .form-container p {
-            margin-bottom:
-                20px;
-        }
-
-
-        .form-container label {
-            display:
-                block;
-
-            font-weight:
-                600;
-
-            color:
-                var(--navy);
-
-            margin-bottom:
-                8px;
-        }
-
-
-        .form-container input[type="text"],
-        .form-container input[type="email"],
-        .form-container input[type="tel"],
-        .form-container select,
-        .form-container textarea {
-
-            width: 100%;
-
-            padding:
-                12px 15px;
-
-            border:
-                1px solid #ddd;
-
-            border-radius:
-                6px;
-
-            font-size:
-                1rem;
-
-            font-family:
-                inherit;
-        }
-
-
-        .form-container input[type="file"] {
-            padding: 10px;
-
-            border:
-                1px dashed #ccc;
-
-            border-radius:
-                6px;
-
-            width: 100%;
-        }
-
-
-        .btn-submit {
-            width: 100%;
-
-            padding: 15px;
-
-            background:
-                var(--teal);
-
-            color:
-                white;
-
-            border:
-                none;
-
-            border-radius:
-                6px;
-
-            font-size:
-                1.1rem;
-
-            font-weight:
-                600;
-
-            cursor:
-                pointer;
-
-            margin-top:
-                10px;
-        }
-
-
-        .btn-submit:hover {
-            background:
-                var(--teal-light);
-        }
-
-
-        /* =====================================================
-           CONSTITUTION
-        ====================================================== */
-
-        .founders-grid {
-            display: grid;
-
-            grid-template-columns:
-                repeat(
-                    auto-fit,
-                    minmax(250px, 1fr)
-                );
-
-            gap: 20px;
-
-            margin-top: 30px;
-        }
-
-
-        .founder-card {
-            background:
-                var(--light-gray);
-
-            padding:
-                20px;
-
-            border-radius:
-                8px;
-
-            text-align:
-                center;
-
-            border:
-                1px solid #eee;
-        }
-
-
-        .founder-card h4 {
-            color:
-                var(--navy);
-
-            margin-bottom:
-                5px;
-        }
-
-
-        .founder-card p {
-            color:
-                var(--teal);
-
-            font-weight:
-                600;
-
-            font-size:
-                0.9rem;
-        }
-
-
-        .fee-table {
-            width: 100%;
-
-            border-collapse:
-                collapse;
-
-            margin-top:
-                20px;
-
-            background:
-                white;
-
-            box-shadow:
-                var(--shadow);
-
-            border-radius:
-                8px;
-
-            overflow:
-                hidden;
-        }
-
-
-        .fee-table th {
-            background:
-                var(--navy);
-
-            color:
-                white;
-
-            padding:
-                15px;
-
-            text-align:
-                left;
-        }
-
-
-        .fee-table td {
-            padding:
-                15px;
-
-            border-bottom:
-                1px solid #eee;
-        }
-
-
-        .fee-table tr:last-child td {
-            border-bottom:
-                none;
-        }
-
-
-        /* =====================================================
-           EVENTS
-        ====================================================== */
-
-        .event-card {
-            background:
-                var(--light-gray);
-
-            padding:
-                20px;
-
-            border-radius:
-                8px;
-
-            border-left:
-                5px solid var(--teal);
-
-            margin-bottom:
-                15px;
-
-            transition:
-                var(--transition-premium);
-        }
-
-
-        .event-card h4 {
-            color:
-                var(--navy);
-        }
-
-
-        .event-meta {
-            color:
-                var(--teal);
-
-            font-weight:
-                600;
-
-            font-size:
-                0.9rem;
-
-            margin-bottom:
-                10px;
-        }
-
-
-        .event-card-link {
-            text-decoration:
-                none;
-
-            color:
-                inherit;
-
-            display:
-                block;
-
-            transition:
-                var(--transition-premium);
-        }
-
-
-        .event-card-link:hover {
-            transform:
-                translateY(-5px);
-        }
-
-
-        .event-card-link:hover .event-card {
-            box-shadow:
-                0 8px 16px
-                rgba(0, 121, 107, 0.2);
-
-            border-left-color:
-                var(--teal-light);
-        }
-
-
-        /* =====================================================
-           EVENT DETAIL
-        ====================================================== */
-
-        .event-detail-container {
-            max-width:
-                900px;
-
-            margin:
-                0 auto;
-
-            padding:
-                40px 20px;
-        }
-
-
-        .event-detail-header {
-            background:
-                linear-gradient(
-                    135deg,
-                    var(--navy) 0%,
-                    var(--navy-light) 100%
-                );
-
-            color:
-                var(--white);
-
-            padding:
-                60px 20px;
-
-            text-align:
-                center;
-
-            margin-bottom:
-                40px;
-        }
-
-
-        .event-detail-title {
-            font-family:
-                'Playfair Display',
-                serif;
-
-            font-size:
-                clamp(2rem, 5vw, 3rem);
-
-            margin-bottom:
-                20px;
-
-            line-height:
-                1.2;
-        }
-
-
-        .event-detail-meta {
-            display:
-                flex;
-
-            justify-content:
-                center;
-
-            gap:
-                30px;
-
-            flex-wrap:
-                wrap;
-
-            font-size:
-                1.1rem;
-
-            color:
-                #ccd6f6;
-        }
-
-
-        .event-detail-meta i {
-            color:
-                var(--teal-light);
-
-            margin-right:
-                8px;
-        }
-
-
-        .event-flyer-container {
-            max-width:
-                600px;
-
-            margin:
-                0 auto 40px;
-
-            text-align:
-                center;
-        }
-
-
-        .event-flyer {
-            width:
-                100%;
-
-            height:
-                auto;
-
-            border-radius:
-                12px;
-
-            box-shadow:
-                0 8px 24px
-                rgba(0, 0, 0, 0.15);
-        }
-
-
-        .event-description {
-            background:
-                var(--white);
-
-            padding:
-                40px;
-
-            border-radius:
-                12px;
-
-            box-shadow:
-                var(--shadow);
-
-            line-height:
-                1.8;
-
-            font-size:
-                1.1rem;
-
-            color:
-                var(--text-dark);
-        }
-
-
-        .event-description a {
-            color:
-                var(--teal);
-
-            text-decoration:
-                underline;
-
-            font-weight:
-                600;
-
-            transition:
-                var(--transition-premium);
-        }
-
-
-        .event-description a:hover {
-            color:
-                var(--teal-light);
-        }
-
-
-        .event-share-buttons {
-            display:
-                flex;
-
-            justify-content:
-                center;
-
-            gap:
-                15px;
-
-            margin-top:
-                40px;
-
-            flex-wrap:
-                wrap;
-        }
-
-
-        .share-btn {
-            display:
-                inline-flex;
-
-            align-items:
-                center;
-
-            gap:
-                8px;
-
-            padding:
-                12px 24px;
-
-            border-radius:
-                25px;
-
-            font-weight:
-                600;
-
-            text-decoration:
-                none;
-
-            transition:
-                var(--transition-premium);
-
-            min-height:
-                44px;
-        }
-
-
-        .share-btn:hover {
-            transform:
-                translateY(-2px);
-
-            box-shadow:
-                0 4px 12px
-                rgba(0,0,0,0.2);
-        }
-
-
-        .share-whatsapp {
-            background:
-                #25D366;
-
-            color:
-                white;
-        }
-
-
-        .share-facebook {
-            background:
-                #1877F2;
-
-            color:
-                white;
-        }
-
-
-        .share-twitter {
-            background:
-                #1DA1F2;
-
-            color:
-                white;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
         }
 
 
@@ -1694,187 +669,74 @@
            FOOTER
         ====================================================== */
 
-        .footer {
-            background-color:
-                var(--navy);
-
-            color:
-                #8892b0;
-
-            padding:
-                60px 0 20px;
-
-            margin-top:
-                80px;
+        footer {
+            background: var(--primary);
+            color: #ffffff;
+            margin-top: 50px;
         }
-
 
         .footer-container {
-            max-width:
-                1200px;
-
-            margin:
-                0 auto;
-
-            padding:
-                0 20px;
-
-            display:
-                grid;
-
-            grid-template-columns:
-                repeat(
-                    auto-fit,
-                    minmax(250px, 1fr)
-                );
-
-            gap:
-                40px;
+            max-width: 1200px;
+            margin: auto;
+            padding: 50px 20px 25px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
         }
 
-
-        .footer h3,
-        .footer h4 {
-            color:
-                var(--white);
-
-            margin-bottom:
-                20px;
+        footer h3 {
+            margin-bottom: 15px;
+            font-family: 'Playfair Display', serif;
         }
 
-
-        .footer .motto {
-            font-style:
-                italic;
-
-            color:
-                var(--teal-light);
-
-            margin-bottom:
-                15px;
+        footer p,
+        footer a {
+            color: rgba(255, 255, 255, 0.8);
         }
 
-
-        .footer ul li {
-            margin-bottom:
-                10px;
+        footer a:hover {
+            color: var(--accent);
         }
-
-
-        .footer a:hover {
-            color:
-                var(--white);
-        }
-
 
         .footer-bottom {
-            text-align:
-                center;
-
-            margin-top:
-                40px;
-
-            padding-top:
-                20px;
-
-            border-top:
-                1px solid #233554;
-
-            font-size:
-                0.9rem;
+            border-top: 1px solid rgba(255,255,255,0.15);
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9rem;
+            color: rgba(255,255,255,0.7);
         }
 
 
-        .empty-state {
-            text-align:
-                center;
+        /* =====================================================
+           MOBILE NAVIGATION
+        ====================================================== */
 
-            padding:
-                60px;
+        @media (max-width: 900px) {
 
-            background:
-                var(--light-gray);
+            .menu-toggle {
+                display: block;
+            }
 
-            border-radius:
-                8px;
-        }
+            .nav-links {
+                position: absolute;
+                top: 75px;
+                left: 0;
+                right: 0;
+                background: var(--primary);
+                display: none;
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 25px 20px;
+                gap: 18px;
+            }
 
+            .nav-links.active {
+                display: flex;
+            }
 
-        .footer-logo {
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            gap:
-                15px;
-
-            margin-bottom:
-                20px;
-        }
-
-
-        .footer-logo img {
-            height:
-                45px;
-
-            width:
-                auto;
-
-            object-fit:
-                contain;
-        }
-
-
-        .social-links {
-            display:
-                flex;
-
-            gap:
-                15px;
-
-            margin-top:
-                20px;
-        }
-
-
-        .social-links a {
-            width:
-                44px;
-
-            height:
-                44px;
-
-            background:
-                rgba(255,255,255,0.1);
-
-            border-radius:
-                50%;
-
-            display:
-                flex;
-
-            align-items:
-                center;
-
-            justify-content:
-                center;
-
-            color:
-                var(--white);
-
-            transition:
-                var(--transition-premium);
-        }
-
-
-        .social-links a:hover {
-            background:
-                var(--teal);
-
-            transform:
-                translateY(-3px);
+            .footer-container {
+                grid-template-columns: 1fr;
+            }
         }
 
 
@@ -1882,268 +744,28 @@
            MOBILE
         ====================================================== */
 
-        @media (max-width: 768px) {
+        @media (max-width: 600px) {
 
             .nav-container {
-                flex-direction:
-                    row;
-
-                justify-content:
-                    space-between;
+                min-height: 68px;
             }
 
-
-            .mobile-menu-toggle {
-                display:
-                    flex;
+            .logo-container img {
+                width: 42px;
+                height: 42px;
             }
 
-
-            .nav-menu {
-                position:
-                    absolute;
-
-                top:
-                    100%;
-
-                left:
-                    0;
-
-                right:
-                    0;
-
-                background:
-                    rgba(10, 25, 47, 0.97);
-
-                backdrop-filter:
-                    blur(10px);
-
-                flex-direction:
-                    column;
-
-                padding:
-                    0 20px;
-
-                max-height:
-                    0;
-
-                overflow:
-                    hidden;
-
-                opacity:
-                    0;
-
-                transition:
-                    max-height 0.4s cubic-bezier(0.4,0,0.2,1),
-                    opacity 0.3s ease,
-                    padding 0.3s ease;
-
-                box-shadow:
-                    0 10px 15px
-                    rgba(0,0,0,0.2);
+            .logo-text {
+                font-size: 1rem;
             }
 
-
-            .nav-menu.active {
-                max-height:
-                    800px;
-
-                opacity:
-                    1;
-
-                padding:
-                    20px;
+            .container {
+                padding: 30px 15px;
             }
-
-
-            .nav-link {
-                font-size:
-                    1.1rem;
-
-                padding:
-                    12px 0;
-
-                width:
-                    100%;
-
-                justify-content:
-                    flex-start;
-            }
-
-
-            .nav-btn {
-                width:
-                    100%;
-
-                text-align:
-                    center;
-
-                justify-content:
-                    center;
-            }
-
-
-            .nav-logo img {
-                height:
-                    45px;
-            }
-
-
-            .hero {
-                padding:
-                    60px 20px;
-            }
-
-
-            .hero-stats {
-                gap:
-                    30px;
-            }
-
-
-            .stat-number {
-                font-size:
-                    2rem;
-            }
-
-
-            .section {
-                padding:
-                    50px 0;
-            }
-
-
-            .page-header {
-                padding:
-                    40px 20px;
-            }
-
-
-            .features-grid,
-            .news-preview-grid,
-            .leaders-grid,
-            .founders-grid {
-
-                grid-template-columns:
-                    1fr;
-
-                gap:
-                    20px;
-            }
-
-
-            .feature-card {
-                padding:
-                    30px 20px;
-            }
-
-
-            .preview-content {
-                padding:
-                    20px;
-            }
-
-
-            .preview-title {
-                font-size:
-                    1.1rem;
-            }
-
-
-            .form-container {
-                padding:
-                    25px 20px;
-
-                margin:
-                    0 15px;
-            }
-
-
-            .form-container h2 {
-                font-size:
-                    1.5rem;
-            }
-
-
-            .fee-table {
-                font-size:
-                    0.9rem;
-            }
-
-
-            .fee-table th,
-            .fee-table td {
-                padding:
-                    10px 8px;
-            }
-
-
-            .footer {
-                padding:
-                    40px 0 20px;
-            }
-
-
-            .footer-container {
-                grid-template-columns:
-                    1fr;
-
-                gap:
-                    30px;
-
-                text-align:
-                    center;
-            }
-
-
-            .footer-logo,
-            .social-links {
-                justify-content:
-                    center;
-            }
-
-
-            .btn {
-                padding:
-                    12px 25px;
-
-                font-size:
-                    0.95rem;
-            }
-
-
-            .btn-outline {
-                margin-left:
-                    0;
-
-                margin-top:
-                    10px;
-            }
-
-
-            .event-description {
-                padding:
-                    25px 20px;
-            }
-
-
-            .event-detail-header {
-                padding:
-                    45px 20px;
-            }
-
-
-            .event-detail-meta {
-                gap:
-                    15px;
-
-                font-size:
-                    0.95rem;
-            }
-
         }
 
     </style>
+
 </head>
 
 
@@ -2158,209 +780,119 @@
 
         <div class="nav-container">
 
-            <a href="{% url 'home' %}"
-               class="nav-logo">
+            <a
+                href="{% url 'home' %}"
+                class="logo-container"
+                aria-label="KUSS Home"
+            >
 
                 {% if settings and settings.logo %}
 
                     <img
                         src="{{ settings.logo.url }}"
-                        alt="{{ settings.site_name|default:'KUSS' }} Logo">
+                        alt="Kabale University Surgical Society logo"
+                    >
 
                 {% else %}
 
                     <img
                         src="/media/KUSS_LOGO.png"
-                        alt="KUSS Logo">
+                        alt="Kabale University Surgical Society logo"
+                    >
 
                 {% endif %}
 
-
-                <div style="display:flex; flex-direction:column;">
-
-                    <span class="logo-text">
-                        KUSS
-                    </span>
-
-                    <span class="logo-sub">
-                        Surgical Society
-                    </span>
-
-                </div>
+                <span class="logo-text">
+                    KUSS
+                </span>
 
             </a>
 
 
-            <!-- MOBILE MENU BUTTON -->
-
-            <button
-                class="mobile-menu-toggle"
-                onclick="toggleMobileMenu()"
-                id="mobileMenuToggle"
-                aria-label="Toggle navigation menu"
-                aria-expanded="false">
-
-                <i class="fa-solid fa-bars"></i>
-
-            </button>
+            <div
+                class="menu-toggle"
+                id="menuToggle"
+                aria-label="Open navigation menu"
+                role="button"
+                tabindex="0"
+            >
+                <i class="fas fa-bars"></i>
+            </div>
 
 
-            <!-- NAVIGATION MENU -->
+            <div
+                class="nav-links"
+                id="navLinks"
+            >
 
-            <ul
-                class="nav-menu"
-                id="navMenu">
+                <a href="{% url 'home' %}">
+                    Home
+                </a>
 
-                <li>
-                    <a href="{% url 'home' %}"
-                       class="nav-link">
-                        Home
+                <a href="{% url 'about' %}">
+                    About
+                </a>
+
+                <a href="{% url 'research' %}">
+                    Research
+                </a>
+
+                <a href="{% url 'news' %}">
+                    News
+                </a>
+
+                <a href="{% url 'marketplace' %}">
+                    Marketplace
+                </a>
+
+                <a href="{% url 'announcements' %}">
+                    Announcements
+                </a>
+
+                <a href="{% url 'leadership' %}">
+                    Leadership
+                </a>
+
+                <a href="{% url 'join' %}">
+                    Join KUSS
+                </a>
+
+
+                {% if user.is_authenticated %}
+
+                    <a href="{% url 'dashboard' %}">
+                        Dashboard
                     </a>
-                </li>
 
-                <li>
-                    <a href="{% url 'about' %}"
-                       class="nav-link">
-                        About
+                    <a href="{% url 'profile' %}">
+                        Profile
                     </a>
-                </li>
 
-                <li>
-                    <a href="{% url 'research' %}"
-                       class="nav-link">
-                        Research
-                    </a>
-                </li>
+                    {% if user.is_staff %}
 
-                <li>
-                    <a href="{% url 'news' %}"
-                       class="nav-link">
-                        News
-                    </a>
-                </li>
-
-                <li>
-                    <a href="{% url 'marketplace' %}"
-                       class="nav-link">
-                        Marketplace
-                    </a>
-                </li>
-
-                <li>
-                    <a href="{% url 'announcements' %}"
-                       class="nav-link">
-                        Docs
-                    </a>
-                </li>
-
-                <li>
-                    <a href="{% url 'leadership' %}"
-                       class="nav-link">
-                        Leadership
-                    </a>
-                </li>
-
-                <li>
-                    <a href="{% url 'join' %}"
-                       class="nav-link nav-btn">
-                        Join Us
-                    </a>
-                </li>
-
-
-                {% if request.session.member_id %}
-
-                    <!-- MEMBER PORTAL -->
-
-                    <li>
-                        <a href="{% url 'dashboard' %}"
-                           class="nav-link"
-                           style="color:var(--teal-light);font-weight:700;">
-
-                            <i class="fa-solid fa-user-circle"></i>
-                            &nbsp; My Portal
-
+                        <a href="{% url 'leadership_portal' %}">
+                            Leadership Portal
                         </a>
-                    </li>
 
-
-                    <!-- TREASURER -->
-
-                    {% if is_treasurer %}
-
-                        <li>
-                            <a href="{% url 'treasurer_dashboard' %}"
-                               class="nav-link"
-                               style="color:#ff9800;font-weight:700;">
-
-                                <i class="fa-solid fa-coins"></i>
-                                &nbsp; Treasurer
-
-                            </a>
-                        </li>
+                        <a href="{% url 'treasurer_dashboard' %}">
+                            Treasurer
+                        </a>
 
                     {% endif %}
 
-
-                    <!-- LEADERSHIP -->
-
-                    {% if is_leader %}
-
-                        <li>
-                            <a href="{% url 'leadership_portal' %}"
-                               class="nav-link"
-                               style="color:#ffd700;font-weight:700;">
-
-                                <i class="fa-solid fa-shield-halved"></i>
-                                &nbsp; Leadership
-
-                            </a>
-                        </li>
-
-
-                        <li>
-                            <a href="{% url 'send_notifications' %}"
-                               class="nav-link">
-
-                                <i class="fa-solid fa-paper-plane"></i>
-                                &nbsp; Send Notifications
-
-                            </a>
-                        </li>
-
-                    {% endif %}
-
-
-                    <!-- LOGOUT -->
-
-                    <li>
-                        <a href="{% url 'logout' %}"
-                           class="nav-link">
-
-                            <i class="fa-solid fa-right-from-bracket"></i>
-                            &nbsp; Logout
-
-                        </a>
-                    </li>
-
+                    <a href="{% url 'logout' %}">
+                        Logout
+                    </a>
 
                 {% else %}
 
-                    <!-- LOGIN -->
-
-                    <li>
-                        <a href="{% url 'login' %}"
-                           class="nav-link">
-
-                            <i class="fa-solid fa-right-to-bracket"></i>
-                            &nbsp; Login
-
-                        </a>
-                    </li>
+                    <a href="{% url 'login' %}">
+                        Login
+                    </a>
 
                 {% endif %}
 
-            </ul>
+            </div>
 
         </div>
 
@@ -2374,6 +906,7 @@
     <main>
 
         {% block content %}
+
         {% endblock %}
 
     </main>
@@ -2383,215 +916,25 @@
          FOOTER
     ========================================================== -->
 
-    <footer class="footer">
+    <footer>
 
         <div class="footer-container">
 
 
-            <!-- BRAND -->
+            <!-- ABOUT -->
 
             <div>
 
-                <div class="footer-logo">
-
-                    {% if settings and settings.logo %}
-
-                        <img
-                            src="{{ settings.logo.url }}"
-                            alt="{{ settings.site_name|default:'KUSS' }} Logo">
-
-                    {% else %}
-
-                        <img
-                            src="/media/KUSS_LOGO.png"
-                            alt="KUSS Logo">
-
-                    {% endif %}
-
-
-                    <h3 style="margin:0;">
-
-                        {% if settings %}
-                            {{ settings.site_name }}
-                        {% else %}
-                            Kabale University Surgical Society
-                        {% endif %}
-
-                    </h3>
-
-                </div>
-
-
-                <p class="motto">
-
-                    "{% if settings %}
-                        {{ settings.motto }}
-                    {% else %}
-                        Supra et Ultra - Above and Beyond
-                    {% endif %}"
-
-                </p>
-
+                <h3>
+                    KUSS
+                </h3>
 
                 <p>
-                    Department of Surgery,
-                    Kabale University School of Medicine.
+                    Kabale University Surgical Society is dedicated
+                    to advancing surgical education, research,
+                    mentorship and professional development among
+                    medical students.
                 </p>
-
-
-                <!-- SOCIAL LINKS -->
-
-                {% if settings %}
-
-                    <div class="social-links">
-
-                        {% if settings.facebook_url %}
-
-                            <a
-                                href="{{ settings.facebook_url }}"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                title="Facebook"
-                                aria-label="Facebook">
-
-                                <i class="fa-brands fa-facebook-f"></i>
-
-                            </a>
-
-                        {% endif %}
-
-
-                        {% if settings.twitter_url %}
-
-                            <a
-                                href="{{ settings.twitter_url }}"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                title="X/Twitter"
-                                aria-label="X/Twitter">
-
-                                <i class="fa-brands fa-x-twitter"></i>
-
-                            </a>
-
-                        {% endif %}
-
-
-                        {% if settings.instagram_url %}
-
-                            <a
-                                href="{{ settings.instagram_url }}"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                title="Instagram"
-                                aria-label="Instagram">
-
-                                <i class="fa-brands fa-instagram"></i>
-
-                            </a>
-
-                        {% endif %}
-
-
-                        {% if settings.linkedin_url %}
-
-                            <a
-                                href="{{ settings.linkedin_url }}"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                title="LinkedIn"
-                                aria-label="LinkedIn">
-
-                                <i class="fa-brands fa-linkedin-in"></i>
-
-                            </a>
-
-                        {% endif %}
-
-                    </div>
-
-                {% endif %}
-
-
-                <!-- IT SUPPORT -->
-
-                {% if settings and settings.whatsapp_number %}
-
-                    <div style="margin-top:25px;">
-
-                        <button
-                            onclick="revealWhatsApp()"
-                            id="whatsappBtn"
-                            style="
-                                display:inline-flex;
-                                align-items:center;
-                                gap:10px;
-                                background:#25D366;
-                                color:white;
-                                padding:12px 20px;
-                                border-radius:25px;
-                                font-weight:600;
-                                border:none;
-                                cursor:pointer;
-                                transition:var(--transition-premium);
-                            ">
-
-                            <i
-                                class="fa-brands fa-whatsapp"
-                                style="font-size:1.3rem;">
-                            </i>
-
-                            <span>
-                                Contact IT Support
-                            </span>
-
-                        </button>
-
-
-                        {% if settings.it_support_message %}
-
-                            <p
-                                style="
-                                    color:#8892b0;
-                                    font-size:0.85rem;
-                                    margin-top:8px;
-                                ">
-
-                                {{ settings.it_support_message }}
-
-                            </p>
-
-                        {% endif %}
-
-                    </div>
-
-
-                    <script>
-
-                        function revealWhatsApp() {
-
-                            const whatsappNumber =
-                                "{{ settings.whatsapp_number|cut:'+' }}";
-
-                            const message =
-                                "{{ settings.it_support_message|default:'Hello, I need help with my KUSS member portal account.'|urlencode }}";
-
-                            const url =
-                                "https://wa.me/"
-                                + whatsappNumber
-                                + "?text="
-                                + message;
-
-                            window.open(
-                                url,
-                                "_blank",
-                                "noopener,noreferrer"
-                            );
-                        }
-
-                    </script>
-
-                {% endif %}
 
             </div>
 
@@ -2600,47 +943,39 @@
 
             <div>
 
-                <h4>
+                <h3>
                     Quick Links
-                </h4>
+                </h3>
 
-                <ul>
+                <p>
+                    <a href="{% url 'about' %}">
+                        About KUSS
+                    </a>
+                </p>
 
-                    <li>
-                        <a href="{% url 'about' %}">
-                            Our Constitution
-                        </a>
-                    </li>
+                <p>
+                    <a href="{% url 'research' %}">
+                        Research
+                    </a>
+                </p>
 
-                    <li>
-                        <a href="{% url 'research' %}">
-                            Research Publications
-                        </a>
-                    </li>
+                <p>
+                    <a href="{% url 'news' %}">
+                        News
+                    </a>
+                </p>
 
-                    <li>
-                        <a href="{% url 'news' %}">
-                            Latest News
-                        </a>
-                    </li>
+                <p>
+                    <a href="{% url 'announcements' %}">
+                        Announcements
+                    </a>
+                </p>
 
-                    <li>
-                        <a href="{% url 'leadership' %}">
-                            Meet the Executive
-                        </a>
-                    </li>
-
-                    <li>
-                        <a
-                            href="{% url 'privacy' %}"
-                            style="color:var(--teal-light);">
-
-                            Privacy Policy
-
-                        </a>
-                    </li>
-
-                </ul>
+                <p>
+                    <a href="{% url 'join' %}">
+                        Join KUSS
+                    </a>
+                </p>
 
             </div>
 
@@ -2649,85 +984,91 @@
 
             <div>
 
-                <h4>
-                    Contact Us
-                </h4>
-
+                <h3>
+                    Contact KUSS
+                </h3>
 
                 {% if settings %}
 
-                    {% if settings.contact_email %}
+                    {% if settings.email %}
 
                         <p>
+                            <i class="fas fa-envelope"></i>
 
-                            <i
-                                class="fa-solid fa-envelope"
-                                style="color:var(--teal-light);margin-right:8px;">
-                            </i>
-
-                            {{ settings.contact_email }}
-
+                            <a
+                                href="mailto:{{ settings.email }}"
+                            >
+                                {{ settings.email }}
+                            </a>
                         </p>
 
                     {% endif %}
 
 
-                    {% if request.session.member_id and settings.contact_phone %}
+                    {% if settings.phone %}
 
                         <p>
+                            <i class="fas fa-phone"></i>
 
-                            <i
-                                class="fa-solid fa-phone"
-                                style="color:var(--teal-light);margin-right:8px;">
-                            </i>
-
-                            {{ settings.contact_phone }}
-
+                            <a
+                                href="tel:{{ settings.phone }}"
+                            >
+                                {{ settings.phone }}
+                            </a>
                         </p>
 
                     {% endif %}
 
 
-                    {% if settings.contact_location %}
+                    {% if settings.facebook_url %}
 
                         <p>
+                            <i class="fab fa-facebook"></i>
 
-                            <i
-                                class="fa-solid fa-location-dot"
-                                style="color:var(--teal-light);margin-right:8px;">
-                            </i>
-
-                            {{ settings.contact_location }}
-
+                            <a
+                                href="{{ settings.facebook_url }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Facebook
+                            </a>
                         </p>
 
                     {% endif %}
 
 
-                {% else %}
+                    {% if settings.instagram_url %}
 
-                    <p>
+                        <p>
+                            <i class="fab fa-instagram"></i>
 
-                        <i
-                            class="fa-solid fa-envelope"
-                            style="color:var(--teal-light);margin-right:8px;">
-                        </i>
+                            <a
+                                href="{{ settings.instagram_url }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Instagram
+                            </a>
+                        </p>
 
-                        kabsurgicalsociety@gmail.com
-
-                    </p>
+                    {% endif %}
 
 
-                    <p>
+                    {% if settings.linkedin_url %}
 
-                        <i
-                            class="fa-solid fa-location-dot"
-                            style="color:var(--teal-light);margin-right:8px;">
-                        </i>
+                        <p>
+                            <i class="fab fa-linkedin"></i>
 
-                        Kabale, Uganda
+                            <a
+                                href="{{ settings.linkedin_url }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                LinkedIn
+                            </a>
+                        </p>
 
-                    </p>
+                    {% endif %}
 
                 {% endif %}
 
@@ -2736,23 +1077,21 @@
         </div>
 
 
-        <!-- COPYRIGHT -->
+        <!-- FOOTER BOTTOM -->
 
         <div class="footer-bottom">
 
             <p>
-
                 &copy;
                 {% now "Y" %}
+                Kabale University Surgical Society.
+                All rights reserved.
+            </p>
 
-                {% if settings %}
-                    {{ settings.site_name }}
-                {% else %}
-                    KUSS
-                {% endif %}
-
-                . All rights reserved.
-
+            <p>
+                <a href="{% url 'privacy' %}">
+                    Privacy Policy
+                </a>
             </p>
 
         </div>
@@ -2766,137 +1105,84 @@
 
     <script>
 
-        function toggleMobileMenu() {
+        const menuToggle = document.getElementById("menuToggle");
+        const navLinks = document.getElementById("navLinks");
 
-            const menu =
-                document.getElementById("navMenu");
+        if (menuToggle && navLinks) {
 
-            const toggle =
-                document.getElementById("mobileMenuToggle");
+            menuToggle.addEventListener("click", function () {
 
-            const isExpanded =
-                menu.classList.toggle("active");
+                navLinks.classList.toggle("active");
 
-            toggle.setAttribute(
-                "aria-expanded",
-                isExpanded
-            );
+            });
 
 
-            const icon =
-                toggle.querySelector("i");
-
-
-            if (isExpanded) {
-
-                icon.classList.remove(
-                    "fa-bars"
-                );
-
-                icon.classList.add(
-                    "fa-xmark"
-                );
-
-            } else {
-
-                icon.classList.remove(
-                    "fa-xmark"
-                );
-
-                icon.classList.add(
-                    "fa-bars"
-                );
-
-            }
-
-        }
-
-
-        /* Close menu when clicking outside */
-
-        document.addEventListener(
-            "click",
-            function(event) {
-
-                const menu =
-                    document.getElementById("navMenu");
-
-                const toggle =
-                    document.getElementById(
-                        "mobileMenuToggle"
-                    );
-
+            menuToggle.addEventListener("keydown", function (event) {
 
                 if (
-                    menu &&
-                    toggle &&
-                    !menu.contains(event.target) &&
-                    !toggle.contains(event.target) &&
-                    menu.classList.contains("active")
+                    event.key === "Enter" ||
+                    event.key === " "
                 ) {
 
-                    toggleMobileMenu();
+                    event.preventDefault();
+
+                    navLinks.classList.toggle("active");
 
                 }
 
-            }
-        );
+            });
 
 
-        /* Close mobile menu after clicking a link */
+            document.querySelectorAll(".nav-links a").forEach(
+                function (link) {
 
-        document.querySelectorAll(
-            "#navMenu a"
-        ).forEach(function(link) {
+                    link.addEventListener("click", function () {
 
-            link.addEventListener(
-                "click",
-                function() {
+                        navLinks.classList.remove("active");
 
-                    const menu =
-                        document.getElementById("navMenu");
-
-                    const toggle =
-                        document.getElementById(
-                            "mobileMenuToggle"
-                        );
-
-
-                    if (
-                        menu.classList.contains("active")
-                    ) {
-
-                        menu.classList.remove(
-                            "active"
-                        );
-
-                        toggle.setAttribute(
-                            "aria-expanded",
-                            "false"
-                        );
-
-
-                        const icon =
-                            toggle.querySelector("i");
-
-
-                        icon.classList.remove(
-                            "fa-xmark"
-                        );
-
-                        icon.classList.add(
-                            "fa-bars"
-                        );
-
-                    }
+                    });
 
                 }
             );
 
-        });
+        }
 
     </script>
 
 
+    <!-- =========================================================
+         WHATSAPP BUTTON
+    ========================================================== -->
+
+    {% if settings and settings.whatsapp_number %}
+
+    <a
+        href="https://wa.me/{{ settings.whatsapp_number }}"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Contact KUSS on WhatsApp"
+        style="
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            background: #25D366;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 27px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.25);
+            z-index: 9999;
+        "
+    >
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    {% endif %}
+
+
 </body>
-    </html>
+</html>
