@@ -308,7 +308,7 @@ urlpatterns = [
 
     path(
         "sitemap.xml",
-        views.sitemap_view,
+        views.sitemap,
         name="sitemap"
     ),
 
