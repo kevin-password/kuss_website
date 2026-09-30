@@ -1,74 +1,68 @@
-from django.contrib.sitemaps import Sitemap
-from django.conf import settings
-from django.urls import reverse
-
-from .models import Event, Product
+from django.http import HttpResponse
 
 
-SITE_DOMAIN = getattr(
-    settings,
-    "SITE_DOMAIN",
-    "https://kabsurgicalsociety.com"
-).rstrip("/")
+def sitemap_view(request):
+    xml = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 
+    <url>
+        <loc>https://kabsurgicalsociety.com/</loc>
+        <changefreq>weekly</changefreq>
+        <priority>1.0</priority>
+    </url>
 
-class StaticViewSitemap(Sitemap):
-    priority = 0.8
-    changefreq = "weekly"
+    <url>
+        <loc>https://kabsurgicalsociety.com/about/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.8</priority>
+    </url>
 
-    def items(self):
-        return [
-            "home",
-            "about",
-            "news",
-            "announcements",
-            "leadership",
-            "join",
-            "research",
-            "privacy",
-            "marketplace",
-        ]
+    <url>
+        <loc>https://kabsurgicalsociety.com/news/</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
 
-    def location(self, item):
-        return SITE_DOMAIN + reverse(item)
+    <url>
+        <loc>https://kabsurgicalsociety.com/announcements/</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.8</priority>
+    </url>
 
+    <url>
+        <loc>https://kabsurgicalsociety.com/leadership/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
 
-class EventSitemap(Sitemap):
-    priority = 0.9
-    changefreq = "weekly"
+    <url>
+        <loc>https://kabsurgicalsociety.com/join/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.9</priority>
+    </url>
 
-    def items(self):
-        return Event.objects.all()
+    <url>
+        <loc>https://kabsurgicalsociety.com/research/</loc>
+        <changefreq>monthly</changefreq>
+        <priority>0.7</priority>
+    </url>
 
-    def location(self, obj):
-        return (
-            SITE_DOMAIN
-            + reverse(
-                "event_detail",
-                kwargs={"event_id": obj.pk}
-            )
-        )
+    <url>
+        <loc>https://kabsurgicalsociety.com/privacy/</loc>
+        <changefreq>yearly</changefreq>
+        <priority>0.3</priority>
+    </url>
 
+    <url>
+        <loc>https://kabsurgicalsociety.com/marketplace/</loc>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+    </url>
 
-class ProductSitemap(Sitemap):
-    priority = 0.6
-    changefreq = "weekly"
+</urlset>
+"""
 
-    def items(self):
-        return Product.objects.filter(is_active=True)
-
-    def location(self, obj):
-        return (
-            SITE_DOMAIN
-            + reverse(
-                "product_detail",
-                kwargs={"product_id": obj.pk}
-            )
-        )
-
-
-sitemaps = {
-    "static": StaticViewSitemap,
-    "events": EventSitemap,
-    "products": ProductSitemap,
-}
+    return HttpResponse(
+        xml,
+        content_type="application/xml"
+    )
