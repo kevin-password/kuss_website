@@ -1,25 +1,200 @@
 {% extends 'base.html' %}
+
 {% block title %}Create News - KUSS{% endblock %}
+
 {% block content %}
-<section class="page-header"><h1>Create News Post</h1></section>
-<section class="section container">
-    <div class="form-container">
-        <form method="POST" enctype="multipart/form-data">
-            {% csrf_token %}
-            <div style="margin-bottom: 20px;">
-                <label>Title</label>
-                <input type="text" name="title" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;">
-            </div>
-            <div style="margin-bottom: 20px;">
-                <label>Content</label>
-                <textarea name="content" rows="6" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;"></textarea>
-            </div>
-            <div style="margin-bottom: 20px;">
-                <label>Image (optional)</label>
-                <input type="file" name="image" accept="image/*" style="width: 100%; padding: 10px;">
-            </div>
-            <button type="submit" class="btn-submit">Publish News</button>
-        </form>
-    </div>
+
+<section class="page-header">
+    <h1>Create News Post</h1>
 </section>
+
+<section class="section container">
+
+    <div class="form-container">
+
+        <form method="POST" enctype="multipart/form-data">
+
+            {% csrf_token %}
+
+            <!-- TITLE -->
+            <div style="margin-bottom: 20px;">
+                <label for="title">
+                    <strong>Title</strong>
+                </label>
+
+                <input
+                    type="text"
+                    id="title"
+                    name="title"
+                    required
+                    placeholder="Enter the news title"
+                    style="
+                        width: 100%;
+                        padding: 12px;
+                        border: 1px solid #ddd;
+                        border-radius: 6px;
+                        margin-top: 6px;
+                    "
+                >
+            </div>
+
+
+            <!-- CONTENT -->
+            <div style="margin-bottom: 20px;">
+                <label for="content">
+                    <strong>Content</strong>
+                </label>
+
+                <textarea
+                    id="content"
+                    name="content"
+                    rows="8"
+                    required
+                    placeholder="Write the news content here..."
+                    style="
+                        width: 100%;
+                        padding: 12px;
+                        border: 1px solid #ddd;
+                        border-radius: 6px;
+                        margin-top: 6px;
+                        resize: vertical;
+                    "
+                ></textarea>
+            </div>
+
+
+            <!-- MAIN IMAGE -->
+            <div style="margin-bottom: 25px;">
+
+                <label for="image">
+                    <strong>Main / Cover Image</strong>
+                </label>
+
+                <p style="
+                    color: #666;
+                    font-size: 14px;
+                    margin: 6px 0 10px;
+                ">
+                    This will be the main image displayed for the news article.
+                </p>
+
+                <input
+                    type="file"
+                    id="image"
+                    name="image"
+                    accept="image/*"
+                    style="
+                        width: 100%;
+                        padding: 10px;
+                        border: 1px solid #ddd;
+                        border-radius: 6px;
+                    "
+                >
+
+            </div>
+
+
+            <!-- ADDITIONAL IMAGES -->
+            <div style="margin-bottom: 25px;">
+
+                <label for="additional_images">
+                    <strong>Additional News Photos</strong>
+                </label>
+
+                <p style="
+                    color: #666;
+                    font-size: 14px;
+                    margin: 6px 0 10px;
+                ">
+                    Select multiple photos to create a gallery for this news article.
+                    You can select as many pictures as you need.
+                </p>
+
+                <input
+                    type="file"
+                    id="additional_images"
+                    name="additional_images"
+                    accept="image/*"
+                    multiple
+                    style="
+                        width: 100%;
+                        padding: 10px;
+                        border: 1px solid #ddd;
+                        border-radius: 6px;
+                    "
+                >
+
+                <div
+                    id="selected-files"
+                    style="
+                        margin-top: 12px;
+                        font-size: 14px;
+                        color: #555;
+                    "
+                ></div>
+
+            </div>
+
+
+            <!-- SUBMIT -->
+            <button
+                type="submit"
+                class="btn-submit"
+            >
+                Publish News
+            </button>
+
+        </form>
+
+    </div>
+
+</section>
+
+
+<!-- SHOW SELECTED FILES -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const input = document.getElementById('additional_images');
+    const display = document.getElementById('selected-files');
+
+    input.addEventListener('change', function () {
+
+        display.innerHTML = '';
+
+        if (this.files.length === 0) {
+            return;
+        }
+
+        const heading = document.createElement('div');
+
+        heading.innerHTML =
+            '<strong>' +
+            this.files.length +
+            ' photo' +
+            (this.files.length === 1 ? '' : 's') +
+            ' selected</strong>';
+
+        display.appendChild(heading);
+
+        const list = document.createElement('ul');
+
+        list.style.marginTop = '8px';
+        list.style.paddingLeft = '20px';
+
+        Array.from(this.files).forEach(function (file) {
+
+            const item = document.createElement('li');
+
+            item.textContent = file.name;
+
+            list.appendChild(item);
+        });
+
+        display.appendChild(list);
+    });
+
+});
+</script>
+
 {% endblock %}
