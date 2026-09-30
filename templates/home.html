@@ -5,1332 +5,1148 @@
 {% block content %}
 
 <style>
-    /* =========================================================
-       KUSS PREMIUM HOMEPAGE
-       Page-specific styles
-    ========================================================= */
-
-    .kuss-home {
-        overflow: hidden;
-    }
-
-    /* =========================
-       HERO
-    ========================= */
-
-    .kuss-hero {
-        position: relative;
-        min-height: 720px;
-        display: flex;
-        align-items: center;
-        background:
-            linear-gradient(
-                115deg,
-                rgba(5, 18, 38, 0.98) 0%,
-                rgba(7, 28, 52, 0.94) 48%,
-                rgba(0, 90, 82, 0.88) 100%
-            );
-        color: #fff;
-        overflow: hidden;
-    }
-
-    .kuss-hero::before {
-        content: "";
-        position: absolute;
-        width: 650px;
-        height: 650px;
-        border-radius: 50%;
-        border: 1px solid rgba(255,255,255,0.08);
-        right: -180px;
-        top: -180px;
-    }
-
-    .kuss-hero::after {
-        content: "";
-        position: absolute;
-        width: 420px;
-        height: 420px;
-        border-radius: 50%;
-        border: 1px solid rgba(0, 150, 136, 0.20);
-        right: 50px;
-        bottom: -250px;
-    }
-
-    .kuss-hero-grid {
-        width: min(1180px, 92%);
-        margin: 0 auto;
-        display: grid;
-        grid-template-columns: 1.2fr 0.8fr;
-        gap: 70px;
-        align-items: center;
-        position: relative;
-        z-index: 2;
-    }
-
-    .kuss-hero-content {
-        max-width: 760px;
-    }
-
-    .kuss-eyebrow {
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        padding: 9px 15px;
-        border: 1px solid rgba(255,255,255,0.18);
-        background: rgba(255,255,255,0.06);
-        border-radius: 50px;
-        font-size: 0.78rem;
-        font-weight: 700;
-        letter-spacing: 0.13em;
-        text-transform: uppercase;
-        margin-bottom: 25px;
-        color: #d9fffb;
-    }
-
-    .kuss-eyebrow-line {
-        width: 26px;
-        height: 2px;
-        background: var(--teal-light);
-    }
-
-    .kuss-hero h1 {
-        font-family: "Playfair Display", serif;
-        font-size: clamp(3.2rem, 6vw, 5.7rem);
-        line-height: 0.98;
-        letter-spacing: -0.045em;
-        margin: 0 0 28px;
-        color: #fff;
-    }
-
-    .kuss-hero h1 span {
-        color: #65d8ce;
-    }
-
-    .kuss-hero-description {
-        max-width: 680px;
-        font-size: 1.12rem;
-        line-height: 1.85;
-        color: rgba(255,255,255,0.78);
-        margin-bottom: 35px;
-    }
-
-    .kuss-hero-actions {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 13px;
-    }
-
-    .kuss-btn {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        min-height: 52px;
-        padding: 0 23px;
-        border-radius: 4px;
-        text-decoration: none;
-        font-size: 0.9rem;
-        font-weight: 700;
-        transition: all 0.25s ease;
-    }
-
-    .kuss-btn-primary {
-        background: var(--teal-light);
-        color: #fff;
-        border: 1px solid var(--teal-light);
-    }
-
-    .kuss-btn-primary:hover {
-        transform: translateY(-2px);
-        background: #00a99a;
-        color: #fff;
-        box-shadow: 0 12px 30px rgba(0,150,136,0.25);
-    }
-
-    .kuss-btn-secondary {
-        background: transparent;
-        color: #fff;
-        border: 1px solid rgba(255,255,255,0.3);
-    }
-
-    .kuss-btn-secondary:hover {
-        background: rgba(255,255,255,0.08);
-        border-color: rgba(255,255,255,0.65);
-        color: #fff;
-        transform: translateY(-2px);
-    }
-
-    /* Hero visual */
-
-    .kuss-hero-visual {
-        display: flex;
-        justify-content: flex-end;
-    }
-
-    .kuss-emblem {
-        width: 380px;
-        height: 380px;
-        border: 1px solid rgba(255,255,255,0.12);
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-        background: radial-gradient(
-            circle,
-            rgba(255,255,255,0.07),
-            rgba(255,255,255,0.015) 65%,
-            transparent 66%
-        );
-    }
-
-    .kuss-emblem::before,
-    .kuss-emblem::after {
-        content: "";
-        position: absolute;
-        border-radius: 50%;
-        border: 1px solid rgba(0,150,136,0.25);
-    }
-
-    .kuss-emblem::before {
-        width: 300px;
-        height: 300px;
-    }
-
-    .kuss-emblem::after {
-        width: 220px;
-        height: 220px;
-    }
-
-    .kuss-emblem-inner {
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        background: rgba(255,255,255,0.96);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        box-shadow: 0 25px 70px rgba(0,0,0,0.25);
-        position: relative;
-        z-index: 2;
-    }
-
-    .kuss-emblem-inner i {
-        font-size: 4.2rem;
-        color: var(--teal);
-    }
-
-    .kuss-hero-label {
-        position: absolute;
-        bottom: 35px;
-        right: 0;
-        padding: 13px 20px;
-        background: rgba(255,255,255,0.96);
-        color: var(--navy);
-        font-size: 0.78rem;
-        font-weight: 800;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        box-shadow: 0 15px 40px rgba(0,0,0,0.2);
-    }
-
-    /* =========================
-       TRUST STRIP
-    ========================= */
-
-    .kuss-trust-strip {
-        background: #fff;
-        border-bottom: 1px solid #e9ecef;
-    }
-
-    .kuss-trust-inner {
-        width: min(1180px, 92%);
-        margin: 0 auto;
-        min-height: 105px;
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        align-items: center;
-    }
-
-    .kuss-trust-item {
-        padding: 15px 30px;
-        border-right: 1px solid #e9ecef;
-    }
-
-    .kuss-trust-item:first-child {
-        padding-left: 0;
-    }
-
-    .kuss-trust-item:last-child {
-        border-right: none;
-    }
-
-    .kuss-trust-item strong {
-        display: block;
-        color: var(--navy);
-        font-size: 0.95rem;
-        margin-bottom: 5px;
-    }
-
-    .kuss-trust-item span {
-        color: var(--text-light);
-        font-size: 0.82rem;
-    }
-
-    /* =========================
-       INTRODUCTION
-    ========================= */
-
-    .kuss-section {
-        padding: 105px 0;
-    }
-
-    .kuss-container {
-        width: min(1180px, 92%);
-        margin: 0 auto;
-    }
-
-    .kuss-intro-grid {
-        display: grid;
-        grid-template-columns: 0.85fr 1.15fr;
-        gap: 90px;
-        align-items: center;
-    }
-
-    .kuss-section-label {
-        display: inline-block;
-        color: var(--teal);
-        font-size: 0.75rem;
-        font-weight: 800;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-        margin-bottom: 17px;
-    }
-
-    .kuss-section-heading {
-        font-family: "Playfair Display", serif;
-        color: var(--navy);
-        font-size: clamp(2.3rem, 4vw, 3.5rem);
-        line-height: 1.1;
-        letter-spacing: -0.03em;
-        margin: 0 0 22px;
-    }
-
-    .kuss-section-text {
-        color: var(--text-light);
-        font-size: 1rem;
-        line-height: 1.9;
-        margin: 0 0 18px;
-    }
-
-    .kuss-intro-mark {
-        border-left: 4px solid var(--teal);
-        padding: 28px 30px;
-        background: #f5f8f8;
-    }
-
-    .kuss-intro-mark p {
-        font-family: "Playfair Display", serif;
-        font-size: 1.45rem;
-        line-height: 1.5;
-        color: var(--navy);
-        margin: 0;
-    }
-
-    /* =========================
-       PILLARS
-    ========================= */
-
-    .kuss-pillars-section {
-        background: #f7f9fa;
-    }
-
-    .kuss-section-heading-center {
-        text-align: center;
-        max-width: 700px;
-        margin: 0 auto 55px;
-    }
-
-    .kuss-pillars-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 22px;
-    }
-
-    .kuss-pillar {
-        background: #fff;
-        padding: 38px 32px;
-        border: 1px solid #e7ebed;
-        position: relative;
-        transition: all 0.3s ease;
-    }
-
-    .kuss-pillar::before {
-        content: "";
-        position: absolute;
-        left: 0;
-        top: 0;
-        width: 0;
-        height: 3px;
-        background: var(--teal);
-        transition: width 0.3s ease;
-    }
-
-    .kuss-pillar:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 18px 45px rgba(10,25,47,0.09);
-    }
-
-    .kuss-pillar:hover::before {
-        width: 100%;
-    }
-
-    .kuss-pillar-number {
-        font-size: 0.72rem;
-        font-weight: 800;
-        color: #a7afb5;
-        letter-spacing: 0.1em;
-        margin-bottom: 28px;
-    }
-
-    .kuss-pillar-icon {
-        width: 54px;
-        height: 54px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #edf8f7;
-        color: var(--teal);
-        margin-bottom: 23px;
-    }
-
-    .kuss-pillar-icon i {
-        font-size: 1.35rem;
-    }
-
-    .kuss-pillar h3 {
-        color: var(--navy);
-        font-size: 1.15rem;
-        margin: 0 0 13px;
-    }
-
-    .kuss-pillar p {
-        color: var(--text-light);
-        font-size: 0.9rem;
-        line-height: 1.75;
-        margin: 0;
-    }
-
-    /* =========================
-       EVENTS
-    ========================= */
-
-    .kuss-events-section {
-        background: #fff;
-    }
-
-    .kuss-section-header {
-        display: flex;
-        align-items: flex-end;
-        justify-content: space-between;
-        gap: 30px;
-        margin-bottom: 45px;
-    }
-
-    .kuss-section-header .kuss-section-heading {
-        margin-bottom: 0;
-    }
-
-    .kuss-events-grid {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 24px;
-    }
-
-    .kuss-event-link {
-        text-decoration: none;
-        color: inherit;
-    }
-
-    .kuss-event-card {
-        min-height: 280px;
-        border: 1px solid #e4e9eb;
-        background: #fff;
-        padding: 35px;
-        position: relative;
-        overflow: hidden;
-        transition: all 0.3s ease;
-    }
-
-    .kuss-event-card::after {
-        content: "";
-        position: absolute;
-        width: 150px;
-        height: 150px;
-        border-radius: 50%;
-        border: 1px solid rgba(0,121,107,0.08);
-        right: -70px;
-        bottom: -70px;
-    }
-
-    .kuss-event-card:hover {
-        transform: translateY(-5px);
-        border-color: rgba(0,121,107,0.35);
-        box-shadow: 0 18px 45px rgba(10,25,47,0.08);
-    }
-
-    .kuss-event-date {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        font-size: 0.75rem;
-        color: var(--teal);
-        font-weight: 800;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        margin-bottom: 23px;
-    }
-
-    .kuss-event-card h3 {
-        font-family: "Playfair Display", serif;
-        color: var(--navy);
-        font-size: 1.7rem;
-        line-height: 1.25;
-        margin: 0 0 15px;
-    }
-
-    .kuss-event-meta {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        color: #69747c;
-        font-size: 0.82rem;
-        margin-bottom: 17px;
-    }
-
-    .kuss-event-meta i {
-        color: var(--teal);
-    }
-
-    .kuss-event-description {
-        color: var(--text-light);
-        font-size: 0.9rem;
-        line-height: 1.7;
-        margin: 0;
-    }
-
-    .kuss-event-arrow {
-        position: absolute;
-        right: 30px;
-        bottom: 28px;
-        color: var(--teal);
-        font-size: 1rem;
-    }
-
-    .kuss-empty {
-        border: 1px dashed #ccd4d8;
-        padding: 50px;
-        text-align: center;
-        color: var(--text-light);
-    }
-
-    /* =========================
-       STATEMENT / CTA
-    ========================= */
-
-    .kuss-statement {
-        background:
-            linear-gradient(115deg, #081a31, #0b3444);
-        color: #fff;
-        position: relative;
-        overflow: hidden;
-    }
-
-    .kuss-statement::after {
-        content: "";
-        position: absolute;
-        width: 500px;
-        height: 500px;
-        border: 1px solid rgba(255,255,255,0.06);
-        border-radius: 50%;
-        right: -220px;
-        top: -220px;
-    }
-
-    .kuss-statement-inner {
-        width: min(950px, 92%);
-        margin: 0 auto;
-        text-align: center;
-        position: relative;
-        z-index: 2;
-    }
-
-    .kuss-statement h2 {
-        font-family: "Playfair Display", serif;
-        font-size: clamp(2.3rem, 4vw, 3.7rem);
-        line-height: 1.15;
-        margin: 0 0 20px;
-    }
-
-    .kuss-statement p {
-        max-width: 700px;
-        margin: 0 auto 30px;
-        color: rgba(255,255,255,0.72);
-        line-height: 1.8;
-    }
-
-    /* =========================
-       NEWS
-    ========================= */
-
-    .kuss-news-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 24px;
-    }
-
-    .kuss-news-card {
-        border: 1px solid #e4e9eb;
-        background: #fff;
-        overflow: hidden;
-        transition: all 0.3s ease;
-    }
-
-    .kuss-news-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 18px 45px rgba(10,25,47,0.08);
-    }
-
-    .kuss-news-image {
-        width: 100%;
-        height: 205px;
-        object-fit: cover;
-        display: block;
-    }
-
-    .kuss-news-placeholder {
-        height: 205px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #eef3f4;
-        color: var(--teal);
-        font-size: 2rem;
-    }
-
-    .kuss-news-content {
-        padding: 28px;
-    }
-
-    .kuss-news-date {
-        display: block;
-        color: var(--teal);
-        font-size: 0.72rem;
-        font-weight: 800;
-        letter-spacing: 0.08em;
-        text-transform: uppercase;
-        margin-bottom: 12px;
-    }
-
-    .kuss-news-title {
-        color: var(--navy);
-        font-family: "Playfair Display", serif;
-        font-size: 1.3rem;
-        line-height: 1.35;
-        margin: 0 0 12px;
-    }
-
-    .kuss-news-excerpt {
-        color: var(--text-light);
-        font-size: 0.87rem;
-        line-height: 1.7;
-        margin: 0 0 20px;
-    }
-
-    .kuss-read-more {
-        color: var(--teal);
-        font-size: 0.8rem;
-        font-weight: 800;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .kuss-read-more:hover {
-        color: var(--navy);
-    }
-
-    /* =========================
-       FINAL CTA
-    ========================= */
-
-    .kuss-membership {
-        padding: 90px 0;
-        background: #f7f9fa;
-    }
-
-    .kuss-membership-card {
-        width: min(1180px, 92%);
-        margin: 0 auto;
-        padding: 65px 70px;
-        background: #fff;
-        border: 1px solid #e1e7e9;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 40px;
-        box-shadow: 0 15px 50px rgba(10,25,47,0.05);
-    }
-
-    .kuss-membership-card h2 {
-        color: var(--navy);
-        font-family: "Playfair Display", serif;
-        font-size: clamp(2rem, 3vw, 2.8rem);
-        margin: 0 0 12px;
-    }
-
-    .kuss-membership-card p {
-        color: var(--text-light);
-        max-width: 650px;
-        line-height: 1.7;
-        margin: 0;
-    }
-
-    /* =========================
-       RESPONSIVE
-    ========================= */
-
-    @media (max-width: 900px) {
-
-        .kuss-hero {
-            min-height: auto;
-            padding: 100px 0;
-        }
-
-        .kuss-hero-grid {
-            grid-template-columns: 1fr;
-            gap: 55px;
-        }
-
-        .kuss-hero-visual {
-            justify-content: center;
-        }
-
-        .kuss-emblem {
-            width: 280px;
-            height: 280px;
-        }
-
-        .kuss-emblem::before {
-            width: 220px;
-            height: 220px;
-        }
-
-        .kuss-emblem::after {
-            width: 165px;
-            height: 165px;
-        }
-
-        .kuss-intro-grid {
-            grid-template-columns: 1fr;
-            gap: 45px;
-        }
-
-        .kuss-pillars-grid,
-        .kuss-news-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .kuss-events-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .kuss-membership-card {
-            flex-direction: column;
-            align-items: flex-start;
-            padding: 45px;
-        }
-    }
-
-    @media (max-width: 650px) {
-
-        .kuss-hero {
-            padding: 75px 0;
-        }
-
-        .kuss-hero h1 {
-            font-size: 3rem;
-        }
-
-        .kuss-hero-description {
-            font-size: 1rem;
-        }
-
-        .kuss-hero-actions {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .kuss-btn {
-            width: 100%;
-        }
-
-        .kuss-trust-inner {
-            grid-template-columns: 1fr;
-            padding: 20px 0;
-        }
-
-        .kuss-trust-item,
-        .kuss-trust-item:first-child {
-            border-right: none;
-            border-bottom: 1px solid #e9ecef;
-            padding: 16px 0;
-        }
-
-        .kuss-trust-item:last-child {
-            border-bottom: none;
-        }
-
-        .kuss-section {
-            padding: 75px 0;
-        }
-
-        .kuss-section-header {
-            display: block;
-        }
-
-        .kuss-section-header .kuss-section-label {
-            margin-bottom: 12px;
-        }
-
-        .kuss-event-card {
-            padding: 28px;
-        }
-
-        .kuss-membership-card {
-            width: 92%;
-            padding: 35px 28px;
-        }
-    }
+/* =========================================================
+   KUSS PREMIUM HOMEPAGE
+   No backend changes required.
+   Uses the existing home_view context and URL names.
+========================================================= */
+
+.kuss-home {
+    --kh-navy: #07182d;
+    --kh-navy-2: #0c2942;
+    --kh-teal: #00796b;
+    --kh-teal-bright: #16a394;
+    --kh-ink: #14202b;
+    --kh-muted: #65717c;
+    --kh-line: #e4e9ed;
+    --kh-soft: #f4f7f8;
+    --kh-white: #ffffff;
+    overflow: hidden;
+    background: var(--kh-white);
+}
+
+.kuss-home * { box-sizing: border-box; }
+.kuss-home a { text-decoration: none; }
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.kh-hero {
+    position: relative;
+    min-height: 690px;
+    display: flex;
+    align-items: center;
+    color: #fff;
+    background:
+        radial-gradient(circle at 82% 25%, rgba(22,163,148,.20), transparent 28%),
+        radial-gradient(circle at 18% 85%, rgba(0,121,107,.14), transparent 28%),
+        linear-gradient(120deg, #061426 0%, #091f36 52%, #0a3041 100%);
+    isolation: isolate;
+}
+
+.kh-hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    opacity: .55;
+    background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size: 52px 52px;
+    mask-image: linear-gradient(to bottom, black, transparent 92%);
+    pointer-events: none;
+}
+
+.kh-hero::after {
+    content: "";
+    position: absolute;
+    width: 760px;
+    height: 760px;
+    right: -350px;
+    top: -300px;
+    border: 1px solid rgba(255,255,255,.075);
+    border-radius: 50%;
+    box-shadow:
+        0 0 0 80px rgba(255,255,255,.018),
+        0 0 0 160px rgba(255,255,255,.012);
+    pointer-events: none;
+}
+
+.kh-hero-inner {
+    width: min(1220px, calc(100% - 48px));
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(360px, .72fr);
+    gap: 70px;
+    align-items: center;
+    padding: 86px 0;
+}
+
+.kh-hero-copy { max-width: 760px; }
+
+.kh-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    color: #bcece7;
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .19em;
+    text-transform: uppercase;
+    margin-bottom: 25px;
+}
+
+.kh-kicker::before {
+    content: "";
+    width: 34px;
+    height: 2px;
+    background: var(--kh-teal-bright);
+}
+
+.kh-hero h1 {
+    font-family: "Playfair Display", serif;
+    font-size: clamp(3.45rem, 7vw, 6.45rem);
+    line-height: .94;
+    letter-spacing: -.055em;
+    margin: 0 0 30px;
+    max-width: 820px;
+}
+
+.kh-hero h1 em {
+    color: #63d5cb;
+    font-style: normal;
+}
+
+.kh-lead {
+    max-width: 680px;
+    color: rgba(255,255,255,.73);
+    font-size: 1.08rem;
+    line-height: 1.9;
+    margin: 0 0 36px;
+}
+
+.kh-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.kh-btn {
+    min-height: 52px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 11px;
+    padding: 0 22px;
+    border-radius: 3px;
+    font-size: .83rem;
+    font-weight: 800;
+    letter-spacing: .01em;
+    transition: transform .25s ease, background .25s ease, border-color .25s ease, box-shadow .25s ease;
+}
+
+.kh-btn-primary {
+    color: #fff;
+    background: var(--kh-teal);
+    border: 1px solid var(--kh-teal);
+}
+
+.kh-btn-primary:hover {
+    color: #fff;
+    background: var(--kh-teal-bright);
+    border-color: var(--kh-teal-bright);
+    transform: translateY(-2px);
+    box-shadow: 0 14px 35px rgba(0,121,107,.28);
+}
+
+.kh-btn-ghost {
+    color: #fff;
+    background: rgba(255,255,255,.035);
+    border: 1px solid rgba(255,255,255,.25);
+}
+
+.kh-btn-ghost:hover {
+    color: #fff;
+    background: rgba(255,255,255,.09);
+    border-color: rgba(255,255,255,.52);
+    transform: translateY(-2px);
+}
+
+.kh-hero-visual {
+    min-height: 470px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.kh-ring {
+    position: absolute;
+    width: 430px;
+    height: 430px;
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius: 50%;
+}
+
+.kh-ring::before,
+.kh-ring::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    border: 1px solid rgba(22,163,148,.24);
+}
+
+.kh-ring::before { inset: 45px; }
+.kh-ring::after { inset: 105px; }
+
+.kh-brand-card {
+    width: 260px;
+    min-height: 300px;
+    position: relative;
+    z-index: 2;
+    padding: 28px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background: rgba(255,255,255,.96);
+    color: var(--kh-navy);
+    border: 1px solid rgba(255,255,255,.7);
+    box-shadow: 0 35px 90px rgba(0,0,0,.28);
+}
+
+.kh-brand-logo {
+    width: 112px;
+    height: 112px;
+    object-fit: contain;
+    padding: 8px;
+    background: #fff;
+    margin-bottom: 20px;
+}
+
+.kh-brand-card .fallback-mark {
+    width: 112px;
+    height: 112px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    background: #eef7f6;
+    color: var(--kh-teal);
+    font-size: 3rem;
+}
+
+.kh-brand-name {
+    font-family: "Playfair Display", serif;
+    font-size: 1.5rem;
+    margin-bottom: 5px;
+}
+
+.kh-brand-sub {
+    color: var(--kh-teal);
+    font-size: .66rem;
+    font-weight: 800;
+    letter-spacing: .17em;
+    text-transform: uppercase;
+}
+
+.kh-brand-motto {
+    margin-top: 21px;
+    padding-top: 17px;
+    width: 100%;
+    border-top: 1px solid #e2e7e8;
+    color: #6a747c;
+    font-size: .73rem;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.kh-floating-note {
+    position: absolute;
+    z-index: 3;
+    right: -4px;
+    bottom: 38px;
+    padding: 14px 18px;
+    background: #fff;
+    color: var(--kh-navy);
+    box-shadow: 0 18px 45px rgba(0,0,0,.20);
+    border-left: 3px solid var(--kh-teal);
+}
+
+.kh-floating-note strong {
+    display: block;
+    font-size: .77rem;
+    text-transform: uppercase;
+    letter-spacing: .11em;
+}
+
+.kh-floating-note span {
+    display: block;
+    color: #778188;
+    font-size: .72rem;
+    margin-top: 3px;
+}
+
+/* =========================================================
+   STRIP
+========================================================= */
+
+.kh-strip {
+    background: #fff;
+    border-bottom: 1px solid var(--kh-line);
+}
+
+.kh-strip-inner {
+    width: min(1220px, calc(100% - 48px));
+    min-height: 102px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.kh-strip-item {
+    display: flex;
+    align-items: center;
+    gap: 17px;
+    padding: 20px 34px;
+    border-right: 1px solid var(--kh-line);
+}
+
+.kh-strip-item:first-child { padding-left: 0; }
+.kh-strip-item:last-child { border-right: 0; }
+
+.kh-strip-icon {
+    width: 42px;
+    height: 42px;
+    flex: 0 0 42px;
+    display: grid;
+    place-items: center;
+    color: var(--kh-teal);
+    background: #edf7f6;
+}
+
+.kh-strip strong {
+    display: block;
+    color: var(--kh-navy);
+    font-size: .88rem;
+    margin-bottom: 3px;
+}
+
+.kh-strip span {
+    color: #778188;
+    font-size: .76rem;
+}
+
+/* =========================================================
+   GENERAL SECTIONS
+========================================================= */
+
+.kh-section { padding: 112px 0; }
+.kh-section-soft { background: var(--kh-soft); }
+
+.kh-container {
+    width: min(1220px, calc(100% - 48px));
+    margin: 0 auto;
+}
+
+.kh-overline {
+    display: block;
+    color: var(--kh-teal);
+    font-size: .69rem;
+    font-weight: 900;
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+.kh-heading {
+    font-family: "Playfair Display", serif;
+    color: var(--kh-navy);
+    font-size: clamp(2.3rem, 4.3vw, 3.8rem);
+    line-height: 1.06;
+    letter-spacing: -.035em;
+    margin: 0;
+}
+
+.kh-copy {
+    color: var(--kh-muted);
+    font-size: .96rem;
+    line-height: 1.9;
+}
+
+.kh-intro-grid {
+    display: grid;
+    grid-template-columns: .85fr 1.15fr;
+    gap: 105px;
+    align-items: center;
+}
+
+.kh-intro-copy { max-width: 690px; }
+.kh-intro-copy .kh-copy { margin: 0 0 18px; }
+
+.kh-quote {
+    margin-top: 31px;
+    padding: 25px 28px;
+    border-left: 3px solid var(--kh-teal);
+    background: #f1f6f5;
+}
+
+.kh-quote p {
+    margin: 0;
+    font-family: "Playfair Display", serif;
+    color: var(--kh-navy);
+    font-size: 1.28rem;
+    line-height: 1.55;
+}
+
+.kh-quote small {
+    display: block;
+    margin-top: 11px;
+    color: var(--kh-teal);
+    font-size: .67rem;
+    font-weight: 800;
+    letter-spacing: .13em;
+    text-transform: uppercase;
+}
+
+/* =========================================================
+   PILLARS
+========================================================= */
+
+.kh-centered-head {
+    max-width: 720px;
+    margin: 0 auto 54px;
+    text-align: center;
+}
+
+.kh-centered-head .kh-copy { margin-top: 18px; }
+
+.kh-pillars {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.kh-pillar {
+    position: relative;
+    min-height: 315px;
+    padding: 34px 32px;
+    background: #fff;
+    border: 1px solid var(--kh-line);
+    transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+
+.kh-pillar::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 0;
+    height: 3px;
+    background: var(--kh-teal);
+    transition: width .3s ease;
+}
+
+.kh-pillar:hover {
+    transform: translateY(-7px);
+    border-color: #d4e2e1;
+    box-shadow: 0 22px 55px rgba(7,24,45,.09);
+}
+
+.kh-pillar:hover::before { width: 100%; }
+
+.kh-pillar-no {
+    color: #a4adb4;
+    font-size: .68rem;
+    font-weight: 900;
+    letter-spacing: .15em;
+}
+
+.kh-pillar-icon {
+    width: 54px;
+    height: 54px;
+    margin: 25px 0 23px;
+    display: grid;
+    place-items: center;
+    color: var(--kh-teal);
+    background: #edf7f6;
+}
+
+.kh-pillar h3 {
+    margin: 0 0 12px;
+    color: var(--kh-navy);
+    font-size: 1.12rem;
+}
+
+.kh-pillar p {
+    margin: 0;
+    color: var(--kh-muted);
+    font-size: .86rem;
+    line-height: 1.78;
+}
+
+/* =========================================================
+   EVENTS
+========================================================= */
+
+.kh-section-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 30px;
+    margin-bottom: 48px;
+}
+
+.kh-section-head .kh-heading { margin-top: 0; }
+
+.kh-text-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    color: var(--kh-teal);
+    font-size: .78rem;
+    font-weight: 900;
+    white-space: nowrap;
+}
+
+.kh-text-link:hover { color: var(--kh-navy); }
+
+.kh-events {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.kh-event {
+    position: relative;
+    min-height: 300px;
+    padding: 34px;
+    border: 1px solid var(--kh-line);
+    background: #fff;
+    overflow: hidden;
+    transition: transform .3s ease, box-shadow .3s ease, border-color .3s ease;
+}
+
+.kh-event::after {
+    content: "";
+    position: absolute;
+    width: 210px;
+    height: 210px;
+    right: -115px;
+    bottom: -125px;
+    border: 1px solid rgba(0,121,107,.10);
+    border-radius: 50%;
+}
+
+.kh-event:hover {
+    transform: translateY(-6px);
+    border-color: rgba(0,121,107,.30);
+    box-shadow: 0 22px 55px rgba(7,24,45,.08);
+}
+
+.kh-event-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--kh-teal);
+    font-size: .68rem;
+    font-weight: 900;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: 22px;
+}
+
+.kh-event h3 {
+    max-width: 650px;
+    margin: 0 0 15px;
+    color: var(--kh-navy);
+    font-family: "Playfair Display", serif;
+    font-size: 1.7rem;
+    line-height: 1.25;
+}
+
+.kh-event-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 18px;
+    color: #727d84;
+    font-size: .76rem;
+}
+
+.kh-event-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.kh-event-meta i { color: var(--kh-teal); }
+
+.kh-event p {
+    max-width: 650px;
+    margin: 0;
+    color: var(--kh-muted);
+    font-size: .86rem;
+    line-height: 1.75;
+}
+
+.kh-event-arrow {
+    position: absolute;
+    right: 28px;
+    bottom: 27px;
+    z-index: 2;
+    width: 37px;
+    height: 37px;
+    display: grid;
+    place-items: center;
+    color: var(--kh-teal);
+    border: 1px solid #dbe6e5;
+    background: #fff;
+}
+
+.kh-empty {
+    padding: 55px 25px;
+    text-align: center;
+    color: var(--kh-muted);
+    border: 1px dashed #cbd4d8;
+    background: #fafbfb;
+}
+
+/* =========================================================
+   STATEMENT
+========================================================= */
+
+.kh-statement {
+    position: relative;
+    padding: 120px 0;
+    color: #fff;
+    background:
+        radial-gradient(circle at 50% 0%, rgba(22,163,148,.17), transparent 36%),
+        linear-gradient(125deg, #061426, #0b3140);
+    overflow: hidden;
+    text-align: center;
+}
+
+.kh-statement::before,
+.kh-statement::after {
+    content: "";
+    position: absolute;
+    border: 1px solid rgba(255,255,255,.055);
+    border-radius: 50%;
+}
+
+.kh-statement::before {
+    width: 600px;
+    height: 600px;
+    left: -350px;
+    top: -180px;
+}
+
+.kh-statement::after {
+    width: 470px;
+    height: 470px;
+    right: -270px;
+    bottom: -280px;
+}
+
+.kh-statement-inner {
+    width: min(850px, calc(100% - 48px));
+    margin: 0 auto;
+    position: relative;
+    z-index: 2;
+}
+
+.kh-statement .kh-overline { color: #62d4ca; }
+
+.kh-statement h2 {
+    margin: 0 0 22px;
+    font-family: "Playfair Display", serif;
+    font-size: clamp(2.55rem, 5vw, 4.45rem);
+    line-height: 1.04;
+    letter-spacing: -.04em;
+}
+
+.kh-statement p {
+    max-width: 700px;
+    margin: 0 auto 34px;
+    color: rgba(255,255,255,.68);
+    line-height: 1.85;
+}
+
+/* =========================================================
+   NEWS
+========================================================= */
+
+.kh-news {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.kh-news-card {
+    overflow: hidden;
+    background: #fff;
+    border: 1px solid var(--kh-line);
+    transition: transform .3s ease, box-shadow .3s ease;
+}
+
+.kh-news-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 22px 55px rgba(7,24,45,.08);
+}
+
+.kh-news-media {
+    height: 215px;
+    background: #edf2f3;
+    overflow: hidden;
+}
+
+.kh-news-media img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+    transition: transform .5s ease;
+}
+
+.kh-news-card:hover .kh-news-media img { transform: scale(1.035); }
+
+.kh-news-placeholder {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    place-items: center;
+    color: var(--kh-teal);
+    font-size: 1.8rem;
+}
+
+.kh-news-body { padding: 27px; }
+
+.kh-news-date {
+    display: block;
+    margin-bottom: 11px;
+    color: var(--kh-teal);
+    font-size: .66rem;
+    font-weight: 900;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.kh-news-title {
+    margin: 0 0 12px;
+    color: var(--kh-navy);
+    font-family: "Playfair Display", serif;
+    font-size: 1.28rem;
+    line-height: 1.35;
+}
+
+.kh-news-excerpt {
+    margin: 0 0 20px;
+    color: var(--kh-muted);
+    font-size: .84rem;
+    line-height: 1.75;
+}
+
+/* =========================================================
+   MEMBERSHIP CTA
+========================================================= */
+
+.kh-membership {
+    padding: 95px 0;
+    background: var(--kh-soft);
+}
+
+.kh-membership-card {
+    width: min(1220px, calc(100% - 48px));
+    margin: 0 auto;
+    padding: 60px 68px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 45px;
+    background: #fff;
+    border: 1px solid var(--kh-line);
+    box-shadow: 0 18px 55px rgba(7,24,45,.055);
+}
+
+.kh-membership-card h2 {
+    margin: 0 0 12px;
+    color: var(--kh-navy);
+    font-family: "Playfair Display", serif;
+    font-size: clamp(2rem, 3.5vw, 3rem);
+    line-height: 1.08;
+}
+
+.kh-membership-card p {
+    max-width: 680px;
+    margin: 0;
+    color: var(--kh-muted);
+    line-height: 1.8;
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 980px) {
+    .kh-hero-inner { grid-template-columns: 1fr; gap: 50px; }
+    .kh-hero-visual { min-height: 390px; }
+    .kh-intro-grid { grid-template-columns: 1fr; gap: 45px; }
+    .kh-pillars, .kh-news { grid-template-columns: 1fr; }
+    .kh-events { grid-template-columns: 1fr; }
+    .kh-membership-card { flex-direction: column; align-items: flex-start; }
+}
+
+@media (max-width: 700px) {
+    .kh-hero { min-height: auto; }
+    .kh-hero-inner,
+    .kh-container,
+    .kh-strip-inner,
+    .kh-membership-card { width: min(100% - 34px, 1220px); }
+    .kh-hero-inner { padding: 70px 0; }
+    .kh-hero h1 { font-size: clamp(3rem, 15vw, 4.4rem); }
+    .kh-lead { font-size: .98rem; }
+    .kh-actions { flex-direction: column; align-items: stretch; }
+    .kh-btn { width: 100%; }
+    .kh-hero-visual { min-height: 320px; }
+    .kh-ring { width: 285px; height: 285px; }
+    .kh-ring::before { inset: 32px; }
+    .kh-ring::after { inset: 72px; }
+    .kh-brand-card { width: 205px; min-height: 245px; padding: 20px; }
+    .kh-brand-logo, .kh-brand-card .fallback-mark { width: 82px; height: 82px; margin-bottom: 13px; }
+    .kh-brand-card .fallback-mark { font-size: 2.3rem; }
+    .kh-brand-name { font-size: 1.18rem; }
+    .kh-floating-note { right: -2px; bottom: 10px; }
+    .kh-strip-inner { grid-template-columns: 1fr; padding: 13px 0; }
+    .kh-strip-item,
+    .kh-strip-item:first-child { border-right: 0; border-bottom: 1px solid var(--kh-line); padding: 15px 0; }
+    .kh-strip-item:last-child { border-bottom: 0; }
+    .kh-section { padding: 78px 0; }
+    .kh-section-head { display: block; margin-bottom: 35px; }
+    .kh-section-head .kh-text-link { margin-top: 18px; }
+    .kh-event { min-height: 285px; padding: 28px; }
+    .kh-event h3 { font-size: 1.42rem; }
+    .kh-statement { padding: 85px 0; }
+    .kh-membership { padding: 65px 0; }
+    .kh-membership-card { padding: 38px 27px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .kuss-home *, .kuss-home *::before, .kuss-home *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
+}
 </style>
-
 
 <div class="kuss-home">
 
-    <!-- =====================================================
-         HERO
-    ====================================================== -->
-
-    <section class="kuss-hero">
-
-        <div class="kuss-hero-grid">
-
-            <div class="kuss-hero-content">
-
-                <div class="kuss-eyebrow">
-                    <span class="kuss-eyebrow-line"></span>
-                    Kabale University Surgical Society
-                </div>
+    <!-- HERO -->
+    <section class="kh-hero">
+        <div class="kh-hero-inner">
+            <div class="kh-hero-copy">
+                <span class="kh-kicker">Kabale University Surgical Society</span>
 
                 <h1>
                     Advancing<br>
-                    <span>Surgical Excellence.</span>
+                    <em>Surgical Excellence.</em>
                 </h1>
 
-                <p class="kuss-hero-description">
-                    Equipping the next generation of surgeons at Kabale University
-                    through surgical education, research, mentorship, and meaningful
-                    clinical engagement.
+                <p class="kh-lead">
+                    A student-led community developing the knowledge, clinical curiosity,
+                    research mindset, and professional foundations of tomorrow's surgeons
+                    at Kabale University.
                 </p>
 
-                <div class="kuss-hero-actions">
-
-                    <a href="{% url 'join' %}" class="kuss-btn kuss-btn-primary">
+                <div class="kh-actions">
+                    <a href="{% url 'join' %}" class="kh-btn kh-btn-primary">
                         Become a Member
                         <i class="fa-solid fa-arrow-right"></i>
                     </a>
-
-                    <a href="{% url 'about' %}" class="kuss-btn kuss-btn-secondary">
+                    <a href="{% url 'about' %}" class="kh-btn kh-btn-ghost">
                         Discover KUSS
                     </a>
-
-                    <a href="{% url 'login' %}" class="kuss-btn kuss-btn-secondary">
-                        <i class="fa-solid fa-right-to-bracket"></i>
+                    <a href="{% url 'login' %}" class="kh-btn kh-btn-ghost">
                         Member Login
+                        <i class="fa-solid fa-arrow-right-to-bracket"></i>
                     </a>
-
                 </div>
-
             </div>
 
+            <div class="kh-hero-visual" aria-hidden="true">
+                <div class="kh-ring"></div>
 
-            <div class="kuss-hero-visual">
+                <div class="kh-brand-card">
+                    {% if settings and settings.logo %}
+                        <img src="{{ settings.logo.url }}" alt="" class="kh-brand-logo">
+                    {% else %}
+                        <div class="fallback-mark">
+                            <i class="fa-solid fa-user-doctor"></i>
+                        </div>
+                    {% endif %}
 
-                <div class="kuss-emblem">
+                    <div class="kh-brand-name">KUSS</div>
+                    <div class="kh-brand-sub">Surgical Society</div>
 
-                    <div class="kuss-emblem-inner">
-                        <i class="fa-solid fa-user-doctor"></i>
+                    <div class="kh-brand-motto">
+                        {% if settings and settings.motto %}
+                            {{ settings.motto }}
+                        {% else %}
+                            Supra et Ultra
+                        {% endif %}
                     </div>
-
-                    <div class="kuss-hero-label">
-                        Supra et Ultra
-                    </div>
-
                 </div>
 
+                <div class="kh-floating-note">
+                    <strong>Education · Research · Mentorship</strong>
+                    <span>Kabale University School of Medicine</span>
+                </div>
             </div>
-
         </div>
-
     </section>
 
-
-    <!-- =====================================================
-         TRUST STRIP
-    ====================================================== -->
-
-    <section class="kuss-trust-strip">
-
-        <div class="kuss-trust-inner">
-
-            <div class="kuss-trust-item">
-                <strong>Surgical Education</strong>
-                <span>Learn beyond the classroom.</span>
+    <!-- THREE CORE AREAS -->
+    <section class="kh-strip">
+        <div class="kh-strip-inner">
+            <div class="kh-strip-item">
+                <div class="kh-strip-icon"><i class="fa-solid fa-book-medical"></i></div>
+                <div>
+                    <strong>Surgical Education</strong>
+                    <span>Learn beyond the classroom.</span>
+                </div>
             </div>
-
-            <div class="kuss-trust-item">
-                <strong>Research & Innovation</strong>
-                <span>Ask better questions. Create knowledge.</span>
+            <div class="kh-strip-item">
+                <div class="kh-strip-icon"><i class="fa-solid fa-microscope"></i></div>
+                <div>
+                    <strong>Research & Innovation</strong>
+                    <span>Ask better questions. Create knowledge.</span>
+                </div>
             </div>
-
-            <div class="kuss-trust-item">
-                <strong>Mentorship</strong>
-                <span>Connect with the surgical community.</span>
+            <div class="kh-strip-item">
+                <div class="kh-strip-icon"><i class="fa-solid fa-user-doctor"></i></div>
+                <div>
+                    <strong>Mentorship</strong>
+                    <span>Grow within the surgical community.</span>
+                </div>
             </div>
-
         </div>
-
     </section>
 
-
-    <!-- =====================================================
-         INTRODUCTION
-    ====================================================== -->
-
-    <section class="kuss-section">
-
-        <div class="kuss-container">
-
-            <div class="kuss-intro-grid">
-
+    <!-- INTRODUCTION -->
+    <section class="kh-section">
+        <div class="kh-container">
+            <div class="kh-intro-grid">
                 <div>
-
-                    <span class="kuss-section-label">
-                        Who We Are
-                    </span>
-
-                    <h2 class="kuss-section-heading">
-                        Building the future of surgery from Kabale.
-                    </h2>
-
+                    <span class="kh-overline">Who We Are</span>
+                    <h2 class="kh-heading">Building the future of surgery from Kabale.</h2>
                 </div>
 
-                <div>
-
-                    <p class="kuss-section-text">
-                        The Kabale University Surgical Society is a student-led
-                        platform dedicated to advancing surgical education,
-                        research, mentorship, and professional development.
+                <div class="kh-intro-copy">
+                    <p class="kh-copy">
+                        The Kabale University Surgical Society is a student-led platform
+                        dedicated to advancing surgical education, research, mentorship,
+                        and professional development.
+                    </p>
+                    <p class="kh-copy">
+                        Through case presentations, skills sessions, research activities,
+                        mentorship, and academic collaboration, KUSS creates opportunities
+                        for medical students to engage with surgery beyond the traditional
+                        classroom.
                     </p>
 
-                    <p class="kuss-section-text">
-                        We create opportunities for medical students to engage
-                        with surgery beyond the traditional classroom through
-                        case discussions, skills sessions, research activities,
-                        mentorship, and meaningful academic collaboration.
-                    </p>
-
-                    <div class="kuss-intro-mark">
-                        <p>
-                            “Above and beyond — in learning, service,
-                            research, and surgical excellence.”
-                        </p>
+                    <div class="kh-quote">
+                        <p>“Above and beyond — in learning, service, research, and surgical excellence.”</p>
+                        <small>Supra et Ultra</small>
                     </div>
-
                 </div>
-
             </div>
-
         </div>
-
     </section>
 
-
-    <!-- =====================================================
-         PILLARS
-    ====================================================== -->
-
-    <section class="kuss-section kuss-pillars-section">
-
-        <div class="kuss-container">
-
-            <div class="kuss-section-heading-center">
-
-                <span class="kuss-section-label">
-                    What We Do
-                </span>
-
-                <h2 class="kuss-section-heading">
-                    The pillars of KUSS
-                </h2>
-
-                <p class="kuss-section-text">
-                    A platform designed to complement medical education with
-                    practical exposure, academic curiosity, and professional
-                    mentorship.
+    <!-- PILLARS -->
+    <section class="kh-section kh-section-soft">
+        <div class="kh-container">
+            <div class="kh-centered-head">
+                <span class="kh-overline">What We Do</span>
+                <h2 class="kh-heading">The pillars of KUSS</h2>
+                <p class="kh-copy">
+                    A platform designed to complement medical education with practical
+                    exposure, academic curiosity, and professional mentorship.
                 </p>
-
             </div>
 
-
-            <div class="kuss-pillars-grid">
-
-                <div class="kuss-pillar">
-
-                    <div class="kuss-pillar-number">
-                        01
-                    </div>
-
-                    <div class="kuss-pillar-icon">
-                        <i class="fa-solid fa-book-medical"></i>
-                    </div>
-
-                    <h3>
-                        Surgical Education
-                    </h3>
-
+            <div class="kh-pillars">
+                <article class="kh-pillar">
+                    <div class="kh-pillar-no">01</div>
+                    <div class="kh-pillar-icon"><i class="fa-solid fa-book-medical"></i></div>
+                    <h3>Surgical Education</h3>
                     <p>
-                        Hands-on workshops, seminars, case presentations,
-                        surgical skills sessions, and academic discussions
-                        designed to deepen clinical understanding.
+                        Workshops, seminars, case presentations, surgical skills sessions,
+                        and academic discussions designed to deepen clinical understanding.
                     </p>
+                </article>
 
-                </div>
-
-
-                <div class="kuss-pillar">
-
-                    <div class="kuss-pillar-number">
-                        02
-                    </div>
-
-                    <div class="kuss-pillar-icon">
-                        <i class="fa-solid fa-microscope"></i>
-                    </div>
-
-                    <h3>
-                        Research & Innovation
-                    </h3>
-
+                <article class="kh-pillar">
+                    <div class="kh-pillar-no">02</div>
+                    <div class="kh-pillar-icon"><i class="fa-solid fa-microscope"></i></div>
+                    <h3>Research & Innovation</h3>
                     <p>
-                        Fostering a culture of inquiry through journal clubs,
-                        research activities, academic collaboration, and
-                        student-led projects.
+                        Journal clubs, research activities, academic collaboration, and
+                        student-led projects that foster a culture of inquiry.
                     </p>
+                </article>
 
-                </div>
-
-
-                <div class="kuss-pillar">
-
-                    <div class="kuss-pillar-number">
-                        03
-                    </div>
-
-                    <div class="kuss-pillar-icon">
-                        <i class="fa-solid fa-user-doctor"></i>
-                    </div>
-
-                    <h3>
-                        Mentorship & Advocacy
-                    </h3>
-
+                <article class="kh-pillar">
+                    <div class="kh-pillar-no">03</div>
+                    <div class="kh-pillar-icon"><i class="fa-solid fa-user-doctor"></i></div>
+                    <h3>Mentorship & Advocacy</h3>
                     <p>
-                        Connecting students with surgical professionals while
-                        encouraging professional development, leadership, and
-                        advocacy within the medical community.
+                        Connecting students with the surgical community while encouraging
+                        professional development, leadership, and advocacy.
                     </p>
-
-                </div>
-
+                </article>
             </div>
-
         </div>
-
     </section>
 
-
-    <!-- =====================================================
-         UPCOMING EVENTS
-    ====================================================== -->
-
-    <section class="kuss-section kuss-events-section">
-
-        <div class="kuss-container">
-
-            <div class="kuss-section-header">
-
+    <!-- EVENTS -->
+    <section class="kh-section">
+        <div class="kh-container">
+            <div class="kh-section-head">
                 <div>
-
-                    <span class="kuss-section-label">
-                        Calendar
-                    </span>
-
-                    <h2 class="kuss-section-heading">
-                        Upcoming events
-                    </h2>
-
+                    <span class="kh-overline">Calendar</span>
+                    <h2 class="kh-heading">Upcoming events</h2>
                 </div>
-
-                <a href="{% url 'news' %}" class="kuss-read-more">
-                    Explore updates
-                    <i class="fa-solid fa-arrow-right"></i>
+                <a href="{% url 'news' %}" class="kh-text-link">
+                    Explore updates <i class="fa-solid fa-arrow-right"></i>
                 </a>
-
             </div>
-
 
             {% if upcoming_events %}
-
-                <div class="kuss-events-grid">
-
+                <div class="kh-events">
                     {% for event in upcoming_events %}
-
-                        <a
-                            href="{% url 'event_detail' event.id %}"
-                            class="kuss-event-link"
-                        >
-
-                            <article class="kuss-event-card">
-
-                                <div class="kuss-event-date">
+                        <a href="{% url 'event_detail' event.id %}" class="kh-event-link">
+                            <article class="kh-event">
+                                <div class="kh-event-date">
                                     <i class="fa-regular fa-calendar"></i>
-
                                     {{ event.date|date:"M d, Y" }}
                                 </div>
 
-                                <h3>
-                                    {{ event.title }}
-                                </h3>
+                                <h3>{{ event.title }}</h3>
 
-                                <div class="kuss-event-meta">
-
-                                    <i class="fa-solid fa-location-dot"></i>
-
-                                    <span>
-                                        {{ event.venue }}
-                                    </span>
-
+                                <div class="kh-event-meta">
+                                    {% if event.time %}
+                                        <span><i class="fa-regular fa-clock"></i> {{ event.time }}</span>
+                                    {% endif %}
+                                    {% if event.venue %}
+                                        <span><i class="fa-solid fa-location-dot"></i> {{ event.venue }}</span>
+                                    {% endif %}
                                 </div>
 
-                                <p class="kuss-event-description">
-                                    {{ event.description|truncatewords_html:25|urlize }}
-                                </p>
+                                <p>{{ event.description|truncatewords_html:25|urlize }}</p>
 
-                                <span class="kuss-event-arrow">
+                                <span class="kh-event-arrow">
                                     <i class="fa-solid fa-arrow-right"></i>
                                 </span>
-
                             </article>
-
                         </a>
-
                     {% endfor %}
-
                 </div>
-
             {% else %}
-
-                <div class="kuss-empty">
-                    No upcoming events are currently scheduled.
-                    Check back soon for new announcements.
+                <div class="kh-empty">
+                    No upcoming events are currently scheduled. Check back soon for new announcements.
                 </div>
-
             {% endif %}
-
         </div>
-
     </section>
 
-
-    <!-- =====================================================
-         STATEMENT
-    ====================================================== -->
-
-    <section class="kuss-section kuss-statement">
-
-        <div class="kuss-statement-inner">
-
-            <span class="kuss-section-label" style="color:#65d8ce;">
-                The KUSS Vision
-            </span>
-
-            <h2>
-                Learn. Operate. Research. Lead.
-            </h2>
-
+    <!-- VISION STATEMENT -->
+    <section class="kh-statement">
+        <div class="kh-statement-inner">
+            <span class="kh-overline">The KUSS Vision</span>
+            <h2>Learn. Operate. Research. Lead.</h2>
             <p>
-                Surgery demands knowledge, technical skill, judgement,
-                teamwork, and lifelong learning. KUSS exists to help students
-                begin developing those foundations early.
+                Surgery demands knowledge, technical skill, judgement, teamwork, and
+                lifelong learning. KUSS exists to help students begin developing those
+                foundations early.
             </p>
-
-            <a href="{% url 'about' %}" class="kuss-btn kuss-btn-primary">
+            <a href="{% url 'about' %}" class="kh-btn kh-btn-primary">
                 Learn More About KUSS
                 <i class="fa-solid fa-arrow-right"></i>
             </a>
-
         </div>
-
     </section>
 
-
-    <!-- =====================================================
-         LATEST NEWS
-    ====================================================== -->
-
-    <section class="kuss-section">
-
-        <div class="kuss-container">
-
-            <div class="kuss-section-header">
-
+    <!-- NEWS -->
+    <section class="kh-section">
+        <div class="kh-container">
+            <div class="kh-section-head">
                 <div>
-
-                    <span class="kuss-section-label">
-                        From KUSS
-                    </span>
-
-                    <h2 class="kuss-section-heading">
-                        Latest news
-                    </h2>
-
+                    <span class="kh-overline">From KUSS</span>
+                    <h2 class="kh-heading">Latest news</h2>
                 </div>
-
-                <a href="{% url 'news' %}" class="kuss-read-more">
-                    View all news
-                    <i class="fa-solid fa-arrow-right"></i>
+                <a href="{% url 'news' %}" class="kh-text-link">
+                    View all news <i class="fa-solid fa-arrow-right"></i>
                 </a>
-
             </div>
-
 
             {% if latest_news %}
-
-                <div class="kuss-news-grid">
-
+                <div class="kh-news">
                     {% for post in latest_news %}
-
-                        <article class="kuss-news-card">
-
-                            {% if post.image %}
-
-                                <img
-                                    src="{{ post.image.url }}"
-                                    alt="{{ post.title }}"
-                                    class="kuss-news-image"
-                                    loading="lazy"
-                                    decoding="async"
-                                >
-
-                            {% else %}
-
-                                <div class="kuss-news-placeholder">
-                                    <i class="fa-solid fa-newspaper"></i>
-                                </div>
-
-                            {% endif %}
-
-
-                            <div class="kuss-news-content">
-
-                                <span class="kuss-news-date">
-                                    {{ post.created_at|date:"F d, Y" }}
-                                </span>
-
-                                <h3 class="kuss-news-title">
-                                    {{ post.title }}
-                                </h3>
-
-                                <p class="kuss-news-excerpt">
-                                    {{ post.content|truncatewords:20 }}
-                                </p>
-
-                                <a
-                                    href="{% url 'news' %}"
-                                    class="kuss-read-more"
-                                >
-                                    Read More
-                                    <i class="fa-solid fa-arrow-right"></i>
-                                </a>
-
+                        <article class="kh-news-card">
+                            <div class="kh-news-media">
+                                {% if post.image %}
+                                    <img
+                                        src="{{ post.image.url }}"
+                                        alt="{{ post.title }}"
+                                        loading="lazy"
+                                        decoding="async"
+                                    >
+                                {% else %}
+                                    <div class="kh-news-placeholder">
+                                        <i class="fa-solid fa-newspaper"></i>
+                                    </div>
+                                {% endif %}
                             </div>
 
+                            <div class="kh-news-body">
+                                <span class="kh-news-date">{{ post.created_at|date:"F d, Y" }}</span>
+                                <h3 class="kh-news-title">{{ post.title }}</h3>
+                                <p class="kh-news-excerpt">{{ post.content|truncatewords:20 }}</p>
+                                <a href="{% url 'news' %}" class="kh-text-link">
+                                    Read More <i class="fa-solid fa-arrow-right"></i>
+                                </a>
+                            </div>
                         </article>
-
                     {% endfor %}
-
                 </div>
-
             {% else %}
-
-                <div class="kuss-empty">
-                    <strong>No news updates yet.</strong>
-                    <br>
+                <div class="kh-empty">
+                    <strong>No news updates yet.</strong><br>
                     New announcements and society updates will appear here.
                 </div>
-
             {% endif %}
-
         </div>
-
     </section>
 
-
-    <!-- =====================================================
-         MEMBERSHIP CTA
-    ====================================================== -->
-
-    <section class="kuss-membership">
-
-        <div class="kuss-membership-card">
-
+    <!-- MEMBERSHIP CTA -->
+    <section class="kh-membership">
+        <div class="kh-membership-card">
             <div>
-
-                <span class="kuss-section-label">
-                    Join The Society
-                </span>
-
-                <h2>
-                    Your surgical journey starts here.
-                </h2>
-
+                <span class="kh-overline">Join The Society</span>
+                <h2>Your surgical journey starts here.</h2>
                 <p>
-                    Become part of a community committed to surgical learning,
-                    research, mentorship, and professional growth at
-                    Kabale University.
+                    Become part of a community committed to surgical learning, research,
+                    mentorship, and professional growth at Kabale University.
                 </p>
-
             </div>
 
-            <a href="{% url 'join' %}" class="kuss-btn kuss-btn-primary">
+            <a href="{% url 'join' %}" class="kh-btn kh-btn-primary">
                 Become a Member
                 <i class="fa-solid fa-arrow-right"></i>
             </a>
-
         </div>
-
     </section>
 
 </div>
