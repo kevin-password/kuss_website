@@ -597,22 +597,49 @@
    NEWS
 ========================================================= */
 
+/* =========================================================
+   NEWS — CSS-ONLY FLY-IN ROTATION
+   Latest stories rotate automatically every 5 seconds.
+   No JavaScript or backend changes required.
+========================================================= */
+
 .kh-news {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 20px;
+    position: relative;
+    min-height: 430px;
+    display: block;
+    overflow: hidden;
 }
 
 .kh-news-card {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    display: grid;
+    grid-template-columns: minmax(280px, .95fr) minmax(0, 1.05fr);
     overflow: hidden;
     background: #fff;
     border: 1px solid var(--kh-line);
-    transition: transform .3s ease, box-shadow .3s ease;
+    opacity: 0;
+    visibility: hidden;
+    transform: translate3d(70px, 0, 0) scale(.985);
+    animation: khNewsFly 15s infinite;
+    will-change: transform, opacity;
 }
 
+.kh-news-card:nth-child(1) { animation-delay: 0s; }
+.kh-news-card:nth-child(2) { animation-delay: -5s; }
+.kh-news-card:nth-child(3) { animation-delay: -10s; }
+
 .kh-news-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 22px 55px rgba(7,24,45,.08);
+    box-shadow: 0 22px 55px rgba(7,24,45,.10);
+}
+
+@keyframes khNewsFly {
+    0% { opacity: 0; visibility: hidden; transform: translate3d(70px, 0, 0) scale(.985); }
+    5% { opacity: 1; visibility: visible; transform: translate3d(0, 0, 0) scale(1); }
+    28% { opacity: 1; visibility: visible; transform: translate3d(0, 0, 0) scale(1); }
+    33% { opacity: 0; visibility: hidden; transform: translate3d(-55px, 0, 0) scale(.985); }
+    100% { opacity: 0; visibility: hidden; transform: translate3d(-55px, 0, 0) scale(.985); }
 }
 
 .kh-news-media {
@@ -712,7 +739,7 @@
     .kh-hero-inner { grid-template-columns: 1fr; gap: 50px; }
     .kh-hero-visual { min-height: 390px; }
     .kh-intro-grid { grid-template-columns: 1fr; gap: 45px; }
-    .kh-pillars, .kh-news { grid-template-columns: 1fr; }
+    .kh-pillars { grid-template-columns: 1fr; }
     .kh-events { grid-template-columns: 1fr; }
     .kh-membership-card { flex-direction: column; align-items: flex-start; }
 }
@@ -729,6 +756,12 @@
     .kh-actions { flex-direction: column; align-items: stretch; }
     .kh-btn { width: 100%; }
     .kh-hero-visual { min-height: 320px; }
+    .kh-news { min-height: 560px; }
+    .kh-news-card {
+        grid-template-columns: 1fr;
+        grid-template-rows: 210px 1fr;
+    }
+    .kh-news-media { height: 210px; }
     .kh-ring { width: 285px; height: 285px; }
     .kh-ring::before { inset: 32px; }
     .kh-ring::after { inset: 72px; }
@@ -749,6 +782,19 @@
 @media (prefers-reduced-motion: reduce) {
     .kuss-home *, .kuss-home *::before, .kuss-home *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
 }
+@media (prefers-reduced-motion: reduce) {
+    .kh-news-card {
+        animation: none;
+        opacity: 0;
+        visibility: hidden;
+        transform: none;
+    }
+    .kh-news-card:first-child {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
 </style>
 
 <div class="kuss-home">
