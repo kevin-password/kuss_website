@@ -23,15 +23,24 @@ SECRET_KEY = os.environ.get(
     'django-insecure-local-dev-key-change-me-12345'
 )
 
-DEBUG = os.environ.get('DEBUG', 'False') == 'True'
+DEBUG = os.environ.get(
+    'DEBUG',
+    'False'
+) == 'True'
 
 
 # ============================================================
 # ALLOWED HOSTS
 # ============================================================
+#
+# Production:
+# Render + KUSS custom domain
+#
+# Local development:
+# localhost + 127.0.0.1
+# ============================================================
 
 ALLOWED_HOSTS = [
-    '.pythonanywhere.com',
     '.onrender.com',
     'localhost',
     '127.0.0.1',
@@ -39,13 +48,36 @@ ALLOWED_HOSTS = [
     'www.kabsurgicalsociety.com',
 ]
 
+
 # Render provides this environment variable automatically
+
 RENDER_EXTERNAL_HOSTNAME = os.environ.get(
     'RENDER_EXTERNAL_HOSTNAME'
 )
 
 if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+    ALLOWED_HOSTS.append(
+        RENDER_EXTERNAL_HOSTNAME
+    )
+
+
+# ============================================================
+# CANONICAL SITE DOMAIN
+# ============================================================
+#
+# This is the official public KUSS website.
+#
+# Used by:
+# - Sitemap
+# - SEO
+# - Canonical URLs
+# - Structured data
+# - Social metadata
+#
+# PythonAnywhere is intentionally NOT included.
+# ============================================================
+
+SITE_DOMAIN = 'https://kabsurgicalsociety.com'
 
 
 # ============================================================
@@ -53,9 +85,13 @@ if RENDER_EXTERNAL_HOSTNAME:
 # ============================================================
 
 CSRF_TRUSTED_ORIGINS = [
+
     'https://*.onrender.com',
+
     'https://kabsurgicalsociety.com',
+
     'https://www.kabsurgicalsociety.com',
+
 ]
 
 
@@ -70,11 +106,17 @@ INSTALLED_APPS = [
     # --------------------------------------------------------
 
     'django.contrib.admin',
+
     'django.contrib.auth',
+
     'django.contrib.contenttypes',
+
     'django.contrib.sessions',
+
     'django.contrib.messages',
+
     'django.contrib.staticfiles',
+
 
     # --------------------------------------------------------
     # Sitemap / SEO
@@ -82,18 +124,22 @@ INSTALLED_APPS = [
 
     'django.contrib.sitemaps',
 
+
     # --------------------------------------------------------
     # Cloudinary
     # --------------------------------------------------------
 
     'cloudinary',
+
     'cloudinary_storage',
+
 
     # --------------------------------------------------------
     # KUSS application
     # --------------------------------------------------------
 
     'core',
+
 ]
 
 
@@ -119,6 +165,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
 
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+
 ]
 
 
@@ -134,8 +181,11 @@ ROOT_URLCONF = 'kuss_website.urls'
 # ============================================================
 
 TEMPLATES = [
+
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
+
+        'BACKEND':
+            'django.template.backends.django.DjangoTemplates',
 
         'DIRS': [
             BASE_DIR / 'templates'
@@ -144,6 +194,7 @@ TEMPLATES = [
         'APP_DIRS': True,
 
         'OPTIONS': {
+
             'context_processors': [
 
                 'django.template.context_processors.debug',
@@ -155,9 +206,13 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
 
                 'core.context_processors.leadership_context',
+
             ],
+
         },
+
     },
+
 ]
 
 
@@ -176,17 +231,23 @@ WSGI_APPLICATION = 'kuss_website.wsgi.application'
 # Neon PostgreSQL through DATABASE_URL.
 #
 # Local development:
-# Falls back to SQLite if DATABASE_URL is not available.
+# SQLite fallback if DATABASE_URL is unavailable.
 #
 # DO NOT CHANGE THIS.
 # ============================================================
 
 DATABASES = {
+
     'default': dj_database_url.config(
+
         default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+
         conn_max_age=600,
+
         ssl_require=True
+
     )
+
 }
 
 
@@ -215,6 +276,7 @@ AUTH_PASSWORD_VALIDATORS = [
         'NAME':
         'django.contrib.auth.password_validation.NumericPasswordValidator'
     },
+
 ]
 
 
@@ -259,22 +321,25 @@ STATIC_ROOT = os.path.join(
 STORAGES = {
 
     'default': {
+
         'BACKEND':
-        'cloudinary_storage.storage.MediaCloudinaryStorage',
+            'cloudinary_storage.storage.MediaCloudinaryStorage',
+
     },
 
     'staticfiles': {
+
         'BACKEND':
-        'whitenoise.storage.CompressedManifestStaticFilesStorage',
+            'whitenoise.storage.CompressedManifestStaticFilesStorage',
+
     },
+
 }
 
 
 # ============================================================
 # MEDIA FILES
 # ============================================================
-#
-# Kept for compatibility with Django and local development.
 #
 # Production uploads are handled by Cloudinary through
 # STORAGES['default'].
