@@ -9,3 +9,5 @@ sqlparse==0.5.5
 tzdata==2026.2
 requests
 Pillow
+cloudinary
+django-cloudinary-storage
