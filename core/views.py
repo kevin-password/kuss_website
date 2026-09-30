@@ -21,12 +21,30 @@ from django.http import HttpResponse, JsonResponse
 from django.views.decorators.http import require_GET
 
 from .models import (
-    NewsPost, Announcement, Leadership, Member, FoundingMember,
-    MembershipTier, Event, SiteSettings, Subscription, Notification,
-    Transaction, TransactionCategory, ResearchLink,
-    Product, Order, OrderItem
+    NewsPost,
+    NewsImage,
+    Announcement,
+    Leadership,
+    Member,
+    FoundingMember,
+    MembershipTier,
+    Event,
+    SiteSettings,
+    Subscription,
+    Notification,
+    Transaction,
+    TransactionCategory,
+    ResearchLink,
+    Product,
+    Order,
+    OrderItem
 )
-from .forms import MemberJoinForm, MemberLoginForm, MemberProfileForm
+
+from .forms import (
+    MemberJoinForm,
+    MemberLoginForm,
+    MemberProfileForm
+)
 
 
 # ==========================================
@@ -50,13 +68,16 @@ TECH_WHATSAPP = 'YOUR_EXISTING_TECH_WHATSAPP'
 
 
 # ==========================================
-# BACKEND EMAIL HELPER (NON-BLOCKING)
-# These will fail on PythonAnywhere FREE but won't crash the site
-# The frontend will handle actual email sending
+# BACKEND EMAIL HELPER
 # ==========================================
 
-def send_email_via_web3forms(to_email, subject, message, from_name=None):
-    """Send email using Web3Forms API - will fail on PA FREE but won't crash."""
+def send_email_via_web3forms(
+    to_email,
+    subject,
+    message,
+    from_name=None
+):
+    """Send email using Web3Forms API."""
 
     if from_name is None:
         from_name = FROM_NAME
@@ -81,36 +102,42 @@ def send_email_via_web3forms(to_email, subject, message, from_name=None):
             result = response.json()
 
             if result.get('success'):
-                print(f"Email sent to {to_email} via Web3Forms")
+                print(
+                    f"Email sent to {to_email} via Web3Forms"
+                )
                 return True
+
             else:
                 print(
                     f"Web3Forms error: "
                     f"{result.get('message')}"
                 )
+
                 return False
 
         else:
             print(
                 f"Web3Forms HTTP {response.status_code}"
             )
+
             return False
 
     except Exception as e:
-        # Silently fail - frontend will handle email sending
+
         print(
             f"Backend email failed "
             f"(frontend will handle): {e}"
         )
+
         return False
 
 
 # ==========================================
-# BACKEND WHATSAPP HELPER (NON-BLOCKING)
+# BACKEND WHATSAPP HELPER
 # ==========================================
 
 def clean_phone_number(phone):
-    """Convert phone number to international format for CallMeBot."""
+    """Convert phone number to international format."""
 
     if not phone:
         return None
@@ -134,15 +161,20 @@ def clean_phone_number(phone):
 
 
 def send_whatsapp(phone_number, message):
-    """Send WhatsApp message - will fail on PA FREE but won't crash."""
+    """Send WhatsApp message."""
 
-    clean_phone = clean_phone_number(phone_number)
+    clean_phone = clean_phone_number(
+        phone_number
+    )
 
     if not clean_phone:
         return False
 
     try:
-        encoded_message = urllib.parse.quote(message)
+
+        encoded_message = urllib.parse.quote(
+            message
+        )
 
         url = (
             "https://api.callmebot.com/whatsapp.php"
@@ -157,9 +189,15 @@ def send_whatsapp(phone_number, message):
         )
 
         if response.status_code == 200:
-            response_text = response.text.lower()
 
-            if 'error' in response_text or 'failed' in response_text:
+            response_text = (
+                response.text.lower()
+            )
+
+            if (
+                'error' in response_text
+                or 'failed' in response_text
+            ):
                 return False
 
             print(
@@ -171,26 +209,26 @@ def send_whatsapp(phone_number, message):
         return False
 
     except Exception as e:
+
         print(
             f"Backend WhatsApp failed "
             f"(frontend will handle): {e}"
         )
+
         return False
 
 
 # ==========================================
 # FRONTEND API ENDPOINTS
-# The frontend JavaScript will use these
-# to send emails from the browser
 # ==========================================
 
 @require_GET
 def api_get_recipients(request):
-    """API: Get all member emails for frontend email sending."""
 
     member = get_member_from_session(request)
 
     if not member or not is_leader(member):
+
         return JsonResponse(
             {'error': 'Not authorized'},
             status=403
@@ -217,50 +255,75 @@ def api_get_recipients(request):
 
 @require_GET
 def api_get_new_member_info(request):
-    """
-    API: Get newly registered member info for welcome email.
-    Used by join_success page.
-    """
 
-    member_id = request.session.get('new_member_id')
-    password = request.session.get('new_member_password')
+    member_id = request.session.get(
+        'new_member_id'
+    )
+
+    password = request.session.get(
+        'new_member_password'
+    )
 
     if not member_id or not password:
+
         return JsonResponse(
             {'error': 'No new member data'},
             status=404
         )
 
     try:
-        member = Member.objects.get(id=member_id)
+
+        member = Member.objects.get(
+            id=member_id
+        )
+
         settings = SiteSettings.load()
 
-        # Clear the session data after retrieving.
-        del request.session['new_member_id']
-        del request.session['new_member_password']
+        del request.session[
+            'new_member_id'
+        ]
+
+        del request.session[
+            'new_member_password'
+        ]
 
         return JsonResponse({
+
             'first_name': member.first_name,
+
             'last_name': member.last_name,
+
             'email': member.email,
+
             'password': password,
+
             'treasurer_name': (
-                settings.treasurer_name or 'Treasurer'
+                settings.treasurer_name
+                or 'Treasurer'
             ),
+
             'treasurer_phone': (
-                settings.treasurer_phone or ''
+                settings.treasurer_phone
+                or ''
             ),
+
             'payment_instructions': (
                 settings.payment_instructions
-                or 'Contact the Treasurer for payment details.'
+                or (
+                    'Contact the Treasurer '
+                    'for payment details.'
+                )
             ),
+
             'contact_email': (
                 settings.contact_email
                 or 'kabsurgicalsociety@gmail.com'
             ),
+
         })
 
     except Member.DoesNotExist:
+
         return JsonResponse(
             {'error': 'Member not found'},
             status=404
@@ -268,33 +331,50 @@ def api_get_new_member_info(request):
 
 
 @require_GET
-def api_get_news_content(request, news_id):
-    """API: Get news post content for frontend email sending."""
+def api_get_news_content(
+    request,
+    news_id
+):
+    """API: Get news content for frontend email."""
 
     member = get_member_from_session(request)
 
     if not member or not is_leader(member):
+
         return JsonResponse(
             {'error': 'Not authorized'},
             status=403
         )
 
     try:
-        news = NewsPost.objects.get(id=news_id)
+
+        news = NewsPost.objects.get(
+            id=news_id
+        )
 
         return JsonResponse({
+
             'title': news.title,
+
             'content': news.content,
+
             'author': (
                 f"{news.author.first_name} "
                 f"{news.author.last_name}"
+                if news.author
+                else ''
             ),
-            'created_at': news.created_at.strftime(
-                '%B %d, %Y'
+
+            'created_at': (
+                news.created_at.strftime(
+                    '%B %d, %Y'
+                )
             ),
+
         })
 
     except NewsPost.DoesNotExist:
+
         return JsonResponse(
             {'error': 'News not found'},
             status=404
@@ -302,31 +382,46 @@ def api_get_news_content(request, news_id):
 
 
 @require_GET
-def api_get_announcement_content(request, announcement_id):
-    """API: Get announcement content for frontend email sending."""
+def api_get_announcement_content(
+    request,
+    announcement_id
+):
 
     member = get_member_from_session(request)
 
     if not member or not is_leader(member):
+
         return JsonResponse(
             {'error': 'Not authorized'},
             status=403
         )
 
     try:
-        announcement = Announcement.objects.get(
-            id=announcement_id
+
+        announcement = (
+            Announcement.objects.get(
+                id=announcement_id
+            )
         )
 
         return JsonResponse({
+
             'title': announcement.title,
-            'description': announcement.description,
-            'created_at': announcement.created_at.strftime(
-                '%B %d, %Y'
+
+            'description': (
+                announcement.description
             ),
+
+            'created_at': (
+                announcement.created_at.strftime(
+                    '%B %d, %Y'
+                )
+            ),
+
         })
 
     except Announcement.DoesNotExist:
+
         return JsonResponse(
             {'error': 'Announcement not found'},
             status=404
@@ -334,33 +429,52 @@ def api_get_announcement_content(request, announcement_id):
 
 
 @require_GET
-def api_get_event_content(request, event_id):
-    """API: Get event content for frontend email sending."""
+def api_get_event_content(
+    request,
+    event_id
+):
 
     member = get_member_from_session(request)
 
     if not member or not is_leader(member):
+
         return JsonResponse(
             {'error': 'Not authorized'},
             status=403
         )
 
     try:
-        event = Event.objects.get(id=event_id)
+
+        event = Event.objects.get(
+            id=event_id
+        )
 
         return JsonResponse({
+
             'title': event.title,
+
             'description': event.description,
-            'date': event.date.strftime('%B %d, %Y'),
+
+            'date': (
+                event.date.strftime(
+                    '%B %d, %Y'
+                )
+            ),
+
             'time': (
-                event.time.strftime('%I:%M %p')
+                event.time.strftime(
+                    '%I:%M %p'
+                )
                 if event.time
                 else ''
             ),
+
             'venue': event.venue,
+
         })
 
     except Event.DoesNotExist:
+
         return JsonResponse(
             {'error': 'Event not found'},
             status=404
@@ -372,25 +486,28 @@ def api_get_event_content(request, event_id):
 # ==========================================
 
 def get_member_from_session(request):
-    """Helper to get the logged-in member from the session."""
 
-    member_id = request.session.get('member_id')
+    member_id = request.session.get(
+        'member_id'
+    )
 
     if member_id:
+
         try:
+
             return Member.objects.get(
                 id=member_id,
                 is_active=True
             )
 
         except Member.DoesNotExist:
+
             return None
 
     return None
 
 
 def is_treasurer(member):
-    """Check if a member is currently assigned as a Treasurer."""
 
     return Leadership.objects.filter(
         member=member,
@@ -403,7 +520,6 @@ def is_treasurer(member):
 
 
 def is_leader(member):
-    """Check if member has any current leadership role."""
 
     return Leadership.objects.filter(
         member=member,
@@ -412,7 +528,6 @@ def is_leader(member):
 
 
 def get_leader_roles(member):
-    """Get all current leadership roles for a member."""
 
     return list(
         Leadership.objects
@@ -427,11 +542,18 @@ def get_leader_roles(member):
     )
 
 
-def has_role(member, role_codes):
-    """Check if member has any of the specified roles."""
+def has_role(
+    member,
+    role_codes
+):
 
-    if isinstance(role_codes, str):
-        role_codes = [role_codes]
+    if isinstance(
+        role_codes,
+        str
+    ):
+        role_codes = [
+            role_codes
+        ]
 
     return Leadership.objects.filter(
         member=member,
@@ -455,7 +577,10 @@ def home_view(request):
     upcoming_events = (
         Event.objects
         .filter(is_upcoming=True)
-        .order_by('date', 'time')[:3]
+        .order_by(
+            'date',
+            'time'
+        )[:3]
     )
 
     settings = SiteSettings.load()
@@ -473,8 +598,14 @@ def home_view(request):
 
 def about_view(request):
 
-    founders = FoundingMember.objects.all()
-    tiers = MembershipTier.objects.all()
+    founders = (
+        FoundingMember.objects.all()
+    )
+
+    tiers = (
+        MembershipTier.objects.all()
+    )
+
     settings = SiteSettings.load()
 
     current_leaders = (
@@ -497,7 +628,14 @@ def about_view(request):
 
 def news_view(request):
 
-    news_posts = NewsPost.objects.all()
+    news_posts = (
+        NewsPost.objects
+        .prefetch_related(
+            'additional_images'
+        )
+        .all()
+    )
+
     settings = SiteSettings.load()
 
     return render(
@@ -512,7 +650,10 @@ def news_view(request):
 
 def announcements_view(request):
 
-    announcements = Announcement.objects.all()
+    announcements = (
+        Announcement.objects.all()
+    )
+
     settings = SiteSettings.load()
 
     return render(
@@ -546,11 +687,13 @@ def leadership_view(request):
 
 
 # ==========================================
-# EVENT DETAIL VIEW
+# EVENT DETAIL
 # ==========================================
 
-def event_detail_view(request, event_id):
-    """Display details of a specific event with flyer and social sharing."""
+def event_detail_view(
+    request,
+    event_id
+):
 
     event = get_object_or_404(
         Event,
@@ -574,13 +717,12 @@ def event_detail_view(request, event_id):
 # ==========================================
 
 def join_view(request):
-    """
-    Handle member registration.
-    Stores password in session for frontend email.
-    """
 
     settings = SiteSettings.load()
-    tiers = MembershipTier.objects.all()
+
+    tiers = (
+        MembershipTier.objects.all()
+    )
 
     if request.method == 'POST':
 
@@ -595,22 +737,22 @@ def join_view(request):
                 commit=False
             )
 
-            # Generate random password.
             random_password = ''.join(
                 random.choices(
-                    string.ascii_letters + string.digits,
+                    string.ascii_letters
+                    + string.digits,
                     k=10
                 )
             )
 
-            member.password = make_password(
-                random_password
+            member.password = (
+                make_password(
+                    random_password
+                )
             )
 
             member.save()
 
-            # Store member information in session
-            # for the frontend welcome email.
             request.session[
                 'new_member_id'
             ] = member.id
@@ -619,7 +761,6 @@ def join_view(request):
                 'new_member_password'
             ] = random_password
 
-            # KEEP EXISTING EMAIL WORKFLOW.
             send_email_via_web3forms(
                 TECH_EMAIL,
                 (
@@ -641,6 +782,7 @@ def join_view(request):
             )
 
     else:
+
         form = MemberJoinForm()
 
     return render(
@@ -655,10 +797,6 @@ def join_view(request):
 
 
 def join_success_view(request):
-    """
-    Success page.
-    Frontend JS sends welcome email from browser.
-    """
 
     settings = SiteSettings.load()
 
@@ -678,6 +816,7 @@ def join_success_view(request):
 def login_view(request):
 
     settings = SiteSettings.load()
+
     error = None
 
     if request.method == 'POST':
@@ -688,8 +827,13 @@ def login_view(request):
 
         if form.is_valid():
 
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
+            email = form.cleaned_data[
+                'email'
+            ]
+
+            password = form.cleaned_data[
+                'password'
+            ]
 
             try:
 
@@ -711,6 +855,7 @@ def login_view(request):
                     ] = member.id
 
                     if is_treasurer(member):
+
                         return redirect(
                             'treasurer_dashboard'
                         )
@@ -719,16 +864,19 @@ def login_view(request):
                         member,
                         ['CLASS_REP']
                     ):
+
                         return redirect(
                             'class_rep_dashboard'
                         )
 
                     elif is_leader(member):
+
                         return redirect(
                             'leadership_portal'
                         )
 
                     else:
+
                         return redirect(
                             'dashboard'
                         )
@@ -737,8 +885,9 @@ def login_view(request):
 
                     error = (
                         "Invalid password. "
-                        "Please contact the General Secretary "
-                        "to set your password."
+                        "Please contact the "
+                        "General Secretary to "
+                        "set your password."
                     )
 
             except Member.DoesNotExist:
@@ -749,6 +898,7 @@ def login_view(request):
                 )
 
     else:
+
         form = MemberLoginForm()
 
     return render(
@@ -765,15 +915,23 @@ def login_view(request):
 def logout_view(request):
 
     if 'member_id' in request.session:
-        del request.session['member_id']
 
-    return redirect('home')
+        del request.session[
+            'member_id'
+        ]
+
+    return redirect(
+        'home'
+    )
 
 
 def dashboard_view(request):
 
     settings = SiteSettings.load()
-    member = get_member_from_session(request)
+
+    member = get_member_from_session(
+        request
+    )
 
     if not member:
         return redirect('login')
@@ -781,7 +939,10 @@ def dashboard_view(request):
     upcoming_events = (
         Event.objects
         .filter(is_upcoming=True)
-        .order_by('date', 'time')[:5]
+        .order_by(
+            'date',
+            'time'
+        )[:5]
     )
 
     latest_news = (
@@ -810,8 +971,8 @@ def dashboard_view(request):
         .order_by('-created_at')[:10]
     )
 
-    member_is_treasurer = is_treasurer(
-        member
+    member_is_treasurer = (
+        is_treasurer(member)
     )
 
     return render(
@@ -833,7 +994,10 @@ def dashboard_view(request):
 def profile_view(request):
 
     settings = SiteSettings.load()
-    member = get_member_from_session(request)
+
+    member = get_member_from_session(
+        request
+    )
 
     if not member:
         return redirect('login')
@@ -847,10 +1011,15 @@ def profile_view(request):
         )
 
         if form.is_valid():
+
             form.save()
-            return redirect('dashboard')
+
+            return redirect(
+                'dashboard'
+            )
 
     else:
+
         form = MemberProfileForm(
             instance=member
         )
@@ -872,7 +1041,9 @@ def profile_view(request):
 
 def treasurer_dashboard(request):
 
-    member = get_member_from_session(request)
+    member = get_member_from_session(
+        request
+    )
 
     if not member:
         return redirect('login')
@@ -881,10 +1052,15 @@ def treasurer_dashboard(request):
 
         messages.error(
             request,
-            'You are not authorized to access the Treasurer dashboard.'
+            (
+                'You are not authorized '
+                'to access the Treasurer dashboard.'
+            )
         )
 
-        return redirect('dashboard')
+        return redirect(
+            'dashboard'
+        )
 
     current_year = datetime.now().year
 
@@ -1030,7 +1206,9 @@ def treasurer_dashboard(request):
 
 def transaction_list(request):
 
-    member = get_member_from_session(request)
+    member = get_member_from_session(
+        request
+    )
 
     if not member or not is_treasurer(member):
         return redirect('login')
@@ -1100,7 +1278,9 @@ def transaction_list(request):
 
 def add_transaction(request):
 
-    member = get_member_from_session(request)
+    member = get_member_from_session(
+        request
+    )
 
     if not member or not is_treasurer(member):
         return redirect('login')
@@ -1108,27 +1288,34 @@ def add_transaction(request):
     if request.method == 'POST':
 
         Transaction.objects.create(
+
             transaction_type=request.POST.get(
                 'transaction_type'
             ),
+
             category_id=request.POST.get(
                 'category'
             ),
+
             amount=Decimal(
                 request.POST.get(
                     'amount',
                     0
                 )
             ),
+
             description=request.POST.get(
                 'description'
             ),
+
             reference_number=request.POST.get(
                 'reference_number'
             ),
+
             date=request.POST.get(
                 'date'
             ),
+
             recorded_by=member
         )
 
@@ -1156,9 +1343,14 @@ def add_transaction(request):
     )
 
 
-def toggle_subscription(request, member_id):
+def toggle_subscription(
+    request,
+    member_id
+):
 
-    member = get_member_from_session(request)
+    member = get_member_from_session(
+        request
+    )
 
     if not member or not is_treasurer(member):
         return redirect('login')
@@ -1168,8 +1360,11 @@ def toggle_subscription(request, member_id):
         id=member_id
     )
 
-    sub, _ = Subscription.objects.get_or_create(
-        member=target_member
+    sub, _ = (
+        Subscription.objects
+        .get_or_create(
+            member=target_member
+        )
     )
 
     if request.method == 'POST':
@@ -1180,7 +1375,9 @@ def toggle_subscription(request, member_id):
 
         if action == 'toggle_paid':
 
-            sub.is_paid = not sub.is_paid
+            sub.is_paid = (
+                not sub.is_paid
+            )
 
             if sub.is_paid:
 
@@ -1188,7 +1385,9 @@ def toggle_subscription(request, member_id):
                     timezone.now().date()
                 )
 
-                for tier in MembershipTier.objects.all():
+                for tier in (
+                    MembershipTier.objects.all()
+                ):
 
                     if (
                         tier.name.lower()
@@ -1204,7 +1403,10 @@ def toggle_subscription(request, member_id):
             else:
 
                 sub.payment_date = None
-                sub.amount_paid = Decimal('0')
+
+                sub.amount_paid = (
+                    Decimal('0')
+                )
 
             sub.save()
 
@@ -1220,9 +1422,17 @@ def toggle_subscription(request, member_id):
         elif action == 'send_reminder':
 
             Notification.objects.create(
+
                 member=target_member,
-                notification_type='PAYMENT_REMINDER',
-                title='Subscription Fee Reminder',
+
+                notification_type=(
+                    'PAYMENT_REMINDER'
+                ),
+
+                title=(
+                    'Subscription Fee Reminder'
+                ),
+
                 message=(
                     f'Dear {target_member.first_name}, '
                     f'this is a reminder to pay your '
@@ -1230,26 +1440,35 @@ def toggle_subscription(request, member_id):
                 )
             )
 
-            # KEEP EMAIL / WHATSAPP WORKFLOW.
             send_email_via_web3forms(
+
                 target_member.email,
+
                 'Payment Reminder',
+
                 (
                     f'Dear {target_member.first_name}, '
-                    f'please pay your KUSS subscription fees.'
+                    f'please pay your KUSS '
+                    f'subscription fees.'
                 )
             )
 
             send_whatsapp(
+
                 target_member.phone_number,
+
                 (
                     'PAYMENT REMINDER\n\n'
                     f'Dear {target_member.first_name}, '
-                    f'your KUSS subscription fees are pending.'
+                    f'your KUSS subscription fees '
+                    f'are pending.'
                 )
             )
 
-            sub.last_reminder_sent = timezone.now()
+            sub.last_reminder_sent = (
+                timezone.now()
+            )
+
             sub.save()
 
             messages.success(
@@ -1268,7 +1487,9 @@ def toggle_subscription(request, member_id):
 
 def export_transactions(request):
 
-    member = get_member_from_session(request)
+    member = get_member_from_session(
+        request
+    )
 
     if not member or not is_treasurer(member):
         return redirect('login')
@@ -1282,9 +1503,12 @@ def export_transactions(request):
         .all()
     )
 
-    t_type = request.GET.get('type')
+    t_type = request.GET.get(
+        'type'
+    )
 
     if t_type:
+
         transactions = transactions.filter(
             transaction_type=t_type
         )
@@ -1294,6 +1518,7 @@ def export_transactions(request):
     )
 
     if date_from:
+
         transactions = transactions.filter(
             date__gte=date_from
         )
@@ -1303,6 +1528,7 @@ def export_transactions(request):
     )
 
     if date_to:
+
         transactions = transactions.filter(
             date__lte=date_to
         )
@@ -1318,7 +1544,9 @@ def export_transactions(request):
         f'{datetime.now().strftime("%Y%m%d")}.csv"'
     )
 
-    writer = csv.writer(response)
+    writer = csv.writer(
+        response
+    )
 
     writer.writerow([
         'Date',
@@ -1333,22 +1561,32 @@ def export_transactions(request):
     for t in transactions:
 
         writer.writerow([
-            t.date.strftime('%Y-%m-%d'),
+
+            t.date.strftime(
+                '%Y-%m-%d'
+            ),
+
             t.get_transaction_type_display(),
+
             (
                 t.category.name
                 if t.category
                 else 'N/A'
             ),
+
             t.amount,
+
             t.description,
+
             t.reference_number or '',
+
             (
                 f"{t.recorded_by.first_name} "
                 f"{t.recorded_by.last_name}"
                 if t.recorded_by
                 else 'System'
             )
+
         ])
 
     return response
@@ -1356,7 +1594,9 @@ def export_transactions(request):
 
 def export_members(request):
 
-    member = get_member_from_session(request)
+    member = get_member_from_session(
+        request
+    )
 
     if not member or not is_treasurer(member):
         return redirect('login')
@@ -1378,7 +1618,9 @@ def export_members(request):
         f'{datetime.now().strftime("%Y%m%d")}.csv"'
     )
 
-    writer = csv.writer(response)
+    writer = csv.writer(
+        response
+    )
 
     writer.writerow([
         'Name',
@@ -1394,27 +1636,39 @@ def export_members(request):
     for m in members:
 
         paid = (
-            hasattr(m, 'subscription')
+            hasattr(
+                m,
+                'subscription'
+            )
             and m.subscription.is_paid
         )
 
         writer.writerow([
+
             f"{m.first_name} {m.last_name}",
+
             m.email,
+
             m.phone_number,
+
             m.get_membership_type_display(),
+
             m.registration_number or 'N/A',
+
             'Paid' if paid else 'Unpaid',
+
             (
                 m.subscription.amount_paid
                 if paid
                 else 0
             ),
+
             (
                 m.subscription.payment_date
                 if paid
                 else ''
             )
+
         ])
 
     return response
@@ -1426,7 +1680,9 @@ def export_members(request):
 
 def leadership_portal(request):
 
-    member = get_member_from_session(request)
+    member = get_member_from_session(
+        request
+    )
 
     if not member:
         return redirect('login')
@@ -1438,19 +1694,31 @@ def leadership_portal(request):
             'You do not have leadership access.'
         )
 
-        return redirect('dashboard')
+        return redirect(
+            'dashboard'
+        )
 
-    roles = get_leader_roles(member)
+    roles = get_leader_roles(
+        member
+    )
+
     settings = SiteSettings.load()
 
     context = {
+
         'member': member,
+
         'roles': roles,
+
         'role_display': [
-            Leadership(role=r).get_role_display()
+            Leadership(
+                role=r
+            ).get_role_display()
             for r in roles
         ],
+
         'settings': settings,
+
     }
 
     if has_role(
@@ -1477,7 +1745,9 @@ def leadership_portal(request):
         context['recent_members'] = (
             Member.objects
             .filter(is_active=True)
-            .order_by('-date_joined')[:10]
+            .order_by(
+                '-date_joined'
+            )[:10]
         )
 
         context['all_leaders'] = (
@@ -1489,7 +1759,10 @@ def leadership_portal(request):
         context['upcoming_events'] = (
             Event.objects
             .filter(is_upcoming=True)
-            .order_by('date', 'time')[:5]
+            .order_by(
+                'date',
+                'time'
+            )[:5]
         )
 
     if has_role(
@@ -1510,14 +1783,21 @@ def leadership_portal(request):
 
         context['news_posts'] = (
             NewsPost.objects
+            .prefetch_related(
+                'additional_images'
+            )
             .all()
-            .order_by('-created_at')[:10]
+            .order_by(
+                '-created_at'
+            )[:10]
         )
 
         context['announcements'] = (
             Announcement.objects
             .all()
-            .order_by('-created_at')[:10]
+            .order_by(
+                '-created_at'
+            )[:10]
         )
 
     if has_role(
@@ -1528,7 +1808,9 @@ def leadership_portal(request):
         context['events'] = (
             Event.objects
             .all()
-            .order_by('-date')[:10]
+            .order_by(
+                '-date'
+            )[:10]
         )
 
     if has_role(
@@ -1539,7 +1821,9 @@ def leadership_portal(request):
         context['research_news'] = (
             NewsPost.objects
             .all()
-            .order_by('-created_at')[:10]
+            .order_by(
+                '-created_at'
+            )[:10]
         )
 
     if has_role(
@@ -1549,7 +1833,9 @@ def leadership_portal(request):
 
         context['mentorship_members'] = (
             Member.objects
-            .filter(is_active=True)[:20]
+            .filter(
+                is_active=True
+            )[:20]
         )
 
     if has_role(
@@ -1572,9 +1858,15 @@ def leadership_portal(request):
     )
 
 
+# ==========================================
+# CREATE NEWS POST
+# ==========================================
+
 def create_news_post(request):
 
-    member = get_member_from_session(request)
+    member = get_member_from_session(
+        request
+    )
 
     if not member or not has_role(
         member,
@@ -1600,21 +1892,76 @@ def create_news_post(request):
 
     if request.method == 'POST':
 
+        # ======================================
+        # CREATE MAIN NEWS POST
+        # ======================================
+
         news_post = NewsPost.objects.create(
-            title=request.POST.get('title'),
-            content=request.POST.get('content'),
-            image=request.FILES.get('image'),
+
+            title=request.POST.get(
+                'title'
+            ),
+
+            content=request.POST.get(
+                'content'
+            ),
+
+            image=request.FILES.get(
+                'image'
+            ),
+
             author=member
         )
 
-        messages.success(
-            request,
-            (
-                'News post created! Use the '
-                '"Send Notifications" button to '
-                'email members about this news.'
+        # ======================================
+        # GET ALL ADDITIONAL IMAGES
+        # ======================================
+
+        additional_images = (
+            request.FILES.getlist(
+                'additional_images'
             )
         )
+
+        # ======================================
+        # SAVE EACH ADDITIONAL IMAGE
+        # ======================================
+
+        for image in additional_images:
+
+            NewsImage.objects.create(
+
+                news_post=news_post,
+
+                image=image
+            )
+
+        # ======================================
+        # SUCCESS MESSAGE
+        # ======================================
+
+        if additional_images:
+
+            image_count = len(
+                additional_images
+            )
+
+            messages.success(
+                request,
+                (
+                    f'News post created successfully '
+                    f'with {image_count} additional '
+                    f'photo'
+                    f'{"s" if image_count != 1 else ""}.'
+                )
+            )
+
+        else:
+
+            messages.success(
+                request,
+                'News post created successfully!'
+            )
 
         return redirect(
             'leadership_portal'
@@ -1629,9 +1976,15 @@ def create_news_post(request):
     )
 
 
+# ==========================================
+# CREATE ANNOUNCEMENT
+# ==========================================
+
 def create_announcement(request):
 
-    member = get_member_from_session(request)
+    member = get_member_from_session(
+        request
+    )
 
     if not member or not has_role(
         member,
@@ -1657,11 +2010,16 @@ def create_announcement(request):
 
     if request.method == 'POST':
 
-        announcement = Announcement.objects.create(
-            title=request.POST.get('title'),
+        Announcement.objects.create(
+
+            title=request.POST.get(
+                'title'
+            ),
+
             description=request.POST.get(
                 'description'
             ),
+
             document=request.FILES.get(
                 'document'
             )
@@ -1689,9 +2047,15 @@ def create_announcement(request):
     )
 
 
+# ==========================================
+# CREATE EVENT
+# ==========================================
+
 def create_event(request):
 
-    member = get_member_from_session(request)
+    member = get_member_from_session(
+        request
+    )
 
     if not member or not has_role(
         member,
@@ -1718,14 +2082,34 @@ def create_event(request):
     if request.method == 'POST':
 
         Event.objects.create(
-            title=request.POST.get('title'),
+
+            title=request.POST.get(
+                'title'
+            ),
+
             description=request.POST.get(
                 'description'
             ),
-            date=request.POST.get('date'),
-            time=request.POST.get('time') or None,
-            venue=request.POST.get('venue'),
-            flyer=request.FILES.get('flyer'),
+
+            date=request.POST.get(
+                'date'
+            ),
+
+            time=(
+                request.POST.get(
+                    'time'
+                )
+                or None
+            ),
+
+            venue=request.POST.get(
+                'venue'
+            ),
+
+            flyer=request.FILES.get(
+                'flyer'
+            ),
+
             is_upcoming=True
         )
 
@@ -1733,8 +2117,8 @@ def create_event(request):
             request,
             (
                 'Event created! Use the '
-                '"Send Notifications" button to '
-                'email members.'
+                '"Send Notifications" button '
+                'to email members.'
             )
         )
 
@@ -1751,9 +2135,15 @@ def create_event(request):
     )
 
 
+# ==========================================
+# EXPORT MEMBERS
+# ==========================================
+
 def export_members_csv(request):
 
-    member = get_member_from_session(request)
+    member = get_member_from_session(
+        request
+    )
 
     if not member or not has_role(
         member,
@@ -1790,7 +2180,9 @@ def export_members_csv(request):
         f'{datetime.now().strftime("%Y%m%d")}.csv"'
     )
 
-    writer = csv.writer(response)
+    writer = csv.writer(
+        response
+    )
 
     writer.writerow([
         'Name',
@@ -1804,30 +2196,35 @@ def export_members_csv(request):
     for m in members:
 
         writer.writerow([
+
             f"{m.first_name} {m.last_name}",
+
             m.email,
+
             m.phone_number,
+
             m.get_membership_type_display(),
+
             m.registration_number or '',
+
             m.date_joined.strftime(
                 '%Y-%m-%d'
             )
+
         ])
 
     return response
 
 
 # ==========================================
-# SEND NOTIFICATIONS PAGE
+# SEND NOTIFICATIONS
 # ==========================================
 
 def send_notifications_view(request):
-    """
-    Page where leaders can send bulk emails
-    from their browser.
-    """
 
-    member = get_member_from_session(request)
+    member = get_member_from_session(
+        request
+    )
 
     if not member or not is_leader(member):
 
@@ -1853,12 +2250,14 @@ def send_notifications_view(request):
 
 
 # ==========================================
-# CLASS REP SPECIFIC VIEWS
+# CLASS REP
 # ==========================================
 
 def class_rep_dashboard(request):
 
-    member = get_member_from_session(request)
+    member = get_member_from_session(
+        request
+    )
 
     if not member or not has_role(
         member,
@@ -1903,30 +2302,52 @@ def class_rep_dashboard(request):
 
     recent_members = (
         class_members
-        .order_by('-date_joined')[:10]
+        .order_by(
+            '-date_joined'
+        )[:10]
     )
 
     class_events = (
         Event.objects
         .filter(is_upcoming=True)
-        .order_by('date', 'time')[:10]
+        .order_by(
+            'date',
+            'time'
+        )[:10]
     )
 
     class_announcements = (
         Announcement.objects
         .all()
-        .order_by('-created_at')[:10]
+        .order_by(
+            '-created_at'
+        )[:10]
     )
 
     context = {
+
         'member': member,
+
         'class_members': class_members,
-        'total_class_members': total_class_members,
-        'members_this_month': members_this_month,
+
+        'total_class_members': (
+            total_class_members
+        ),
+
+        'members_this_month': (
+            members_this_month
+        ),
+
         'recent_members': recent_members,
+
         'class_events': class_events,
-        'class_announcements': class_announcements,
+
+        'class_announcements': (
+            class_announcements
+        ),
+
         'settings': settings,
+
     }
 
     return render(
@@ -1938,7 +2359,9 @@ def class_rep_dashboard(request):
 
 def create_class_announcement(request):
 
-    member = get_member_from_session(request)
+    member = get_member_from_session(
+        request
+    )
 
     if not member or not has_role(
         member,
@@ -1969,8 +2392,11 @@ def create_class_announcement(request):
         )
 
         Announcement.objects.create(
+
             title=full_title,
+
             description=description,
+
             document=request.FILES.get(
                 'document'
             )
@@ -1996,7 +2422,9 @@ def create_class_announcement(request):
 
 def create_class_event(request):
 
-    member = get_member_from_session(request)
+    member = get_member_from_session(
+        request
+    )
 
     if not member or not has_role(
         member,
@@ -2026,9 +2454,12 @@ def create_class_event(request):
             'date'
         )
 
-        time = request.POST.get(
-            'time'
-        ) or None
+        time = (
+            request.POST.get(
+                'time'
+            )
+            or None
+        )
 
         venue = request.POST.get(
             'venue'
@@ -2039,14 +2470,21 @@ def create_class_event(request):
         )
 
         Event.objects.create(
+
             title=full_title,
+
             description=description,
+
             date=date,
+
             time=time,
+
             venue=venue,
+
             flyer=request.FILES.get(
                 'flyer'
             ),
+
             is_upcoming=True
         )
 
@@ -2070,7 +2508,9 @@ def create_class_event(request):
 
 def export_class_members(request):
 
-    member = get_member_from_session(request)
+    member = get_member_from_session(
+        request
+    )
 
     if not member or not has_role(
         member,
@@ -2106,7 +2546,9 @@ def export_class_members(request):
         f'{datetime.now().strftime("%Y%m%d")}.csv"'
     )
 
-    writer = csv.writer(response)
+    writer = csv.writer(
+        response
+    )
 
     writer.writerow([
         'Name',
@@ -2119,26 +2561,34 @@ def export_class_members(request):
     for m in class_members:
 
         writer.writerow([
+
             f"{m.first_name} {m.last_name}",
+
             m.email,
+
             m.phone_number,
+
             m.registration_number or '',
+
             m.date_joined.strftime(
                 '%Y-%m-%d'
             )
+
         ])
 
     return response
 
 
 # ==========================================
-# RESEARCH LINKS VIEW
+# RESEARCH LINKS
 # ==========================================
 
 def research_links_view(request):
-    """Display all research paper links."""
 
-    papers = ResearchLink.objects.all()
+    papers = (
+        ResearchLink.objects.all()
+    )
+
     settings = SiteSettings.load()
 
     return render(
@@ -2152,11 +2602,10 @@ def research_links_view(request):
 
 
 # ==========================================
-# MARKETPLACE VIEWS
+# MARKETPLACE
 # ==========================================
 
 def marketplace_view(request):
-    """Display all available products."""
 
     products = (
         Product.objects
@@ -2178,8 +2627,10 @@ def marketplace_view(request):
     )
 
 
-def product_detail_view(request, product_id):
-    """Display product details."""
+def product_detail_view(
+    request,
+    product_id
+):
 
     product = get_object_or_404(
         Product,
@@ -2199,8 +2650,10 @@ def product_detail_view(request, product_id):
     )
 
 
-def add_to_cart(request, product_id):
-    """Add product to cart (stored in session)."""
+def add_to_cart(
+    request,
+    product_id
+):
 
     product = get_object_or_404(
         Product,
@@ -2224,11 +2677,12 @@ def add_to_cart(request, product_id):
         {}
     )
 
-    product_id_str = str(product_id)
+    product_id_str = str(
+        product_id
+    )
 
     if product_id_str in cart:
 
-        # Prevent adding beyond available stock.
         if (
             cart[product_id_str]['quantity']
             >= product.stock
@@ -2247,22 +2701,35 @@ def add_to_cart(request, product_id):
                 'marketplace'
             )
 
-        cart[product_id_str]['quantity'] += 1
+        cart[
+            product_id_str
+        ]['quantity'] += 1
 
     else:
 
-        cart[product_id_str] = {
+        cart[
+            product_id_str
+        ] = {
+
             'name': product.name,
-            'price': str(product.price),
+
+            'price': str(
+                product.price
+            ),
+
             'quantity': 1,
+
             'image': (
                 product.image.url
                 if product.image
                 else None
             )
+
         }
 
-    request.session['cart'] = cart
+    request.session[
+        'cart'
+    ] = cart
 
     messages.success(
         request,
@@ -2275,7 +2742,6 @@ def add_to_cart(request, product_id):
 
 
 def view_cart(request):
-    """Display shopping cart."""
 
     cart = request.session.get(
         'cart',
@@ -2285,48 +2751,71 @@ def view_cart(request):
     settings = SiteSettings.load()
 
     cart_items = []
+
     total = Decimal('0')
 
     for product_id, item in cart.items():
 
         try:
+
             quantity = int(
-                item.get('quantity', 1)
+                item.get(
+                    'quantity',
+                    1
+                )
             )
+
         except (
             TypeError,
             ValueError
         ):
+
             quantity = 1
 
         if quantity < 1:
             quantity = 1
 
         try:
+
             price = Decimal(
-                item.get('price', '0')
+                item.get(
+                    'price',
+                    '0'
+                )
             )
+
         except (
             TypeError,
             ValueError
         ):
+
             price = Decimal('0')
 
-        subtotal = price * quantity
+        subtotal = (
+            price * quantity
+        )
+
         total += subtotal
 
         cart_items.append({
+
             'product_id': product_id,
+
             'name': item.get(
                 'name',
                 'Product'
             ),
+
             'price': price,
+
             'quantity': quantity,
+
             'subtotal': subtotal,
+
             'image': item.get(
                 'image'
             )
+
         })
 
     return render(
@@ -2340,8 +2829,10 @@ def view_cart(request):
     )
 
 
-def remove_from_cart(request, product_id):
-    """Remove item from cart."""
+def remove_from_cart(
+    request,
+    product_id
+):
 
     cart = request.session.get(
         'cart',
@@ -2354,9 +2845,13 @@ def remove_from_cart(request, product_id):
 
     if product_id_str in cart:
 
-        del cart[product_id_str]
+        del cart[
+            product_id_str
+        ]
 
-        request.session['cart'] = cart
+        request.session[
+            'cart'
+        ] = cart
 
         messages.success(
             request,
@@ -2368,12 +2863,15 @@ def remove_from_cart(request, product_id):
     )
 
 
-def update_cart_quantity(request, product_id):
-    """Update item quantity in cart safely."""
+def update_cart_quantity(
+    request,
+    product_id
+):
 
     if request.method == 'POST':
 
         try:
+
             quantity = int(
                 request.POST.get(
                     'quantity',
@@ -2385,6 +2883,7 @@ def update_cart_quantity(request, product_id):
             TypeError,
             ValueError
         ):
+
             quantity = 1
 
         cart = request.session.get(
@@ -2400,9 +2899,8 @@ def update_cart_quantity(request, product_id):
 
             if quantity > 0:
 
-                # Do not allow the cart to request
-                # more than current stock.
                 try:
+
                     product = Product.objects.get(
                         id=product_id
                     )
@@ -2415,17 +2913,21 @@ def update_cart_quantity(request, product_id):
                         )
 
                     else:
+
                         quantity = 0
 
                 except Product.DoesNotExist:
+
                     quantity = 0
 
                 if quantity > 0:
+
                     cart[
                         product_id_str
                     ]['quantity'] = quantity
 
                 else:
+
                     del cart[
                         product_id_str
                     ]
@@ -2436,7 +2938,9 @@ def update_cart_quantity(request, product_id):
                     product_id_str
                 ]
 
-            request.session['cart'] = cart
+            request.session[
+                'cart'
+            ] = cart
 
     return redirect(
         'view_cart'
@@ -2448,9 +2952,10 @@ def update_cart_quantity(request, product_id):
 # ==========================================
 
 def checkout(request):
-    """Process order and create order record safely."""
 
-    member = get_member_from_session(request)
+    member = get_member_from_session(
+        request
+    )
 
     if not member:
 
@@ -2495,6 +3000,7 @@ def checkout(request):
                 for product_id in cart.keys():
 
                     try:
+
                         product_ids.append(
                             int(product_id)
                         )
@@ -2505,7 +3011,8 @@ def checkout(request):
                     ):
 
                         raise ValueError(
-                            'Your cart contains an invalid product.'
+                            'Your cart contains '
+                            'an invalid product.'
                         )
 
                 products = {
@@ -2578,9 +3085,6 @@ def checkout(request):
                             f'are available.'
                         )
 
-                    # IMPORTANT:
-                    # Use current database price.
-                    # Do not trust the session price.
                     price = product.price
 
                     subtotal = (
@@ -2590,30 +3094,49 @@ def checkout(request):
                     total += subtotal
 
                     validated_items.append({
+
                         'product': product,
+
                         'quantity': quantity,
+
                         'price': price,
+
                     })
 
-                # Create order only after every
-                # item has passed validation.
                 order = Order.objects.create(
+
                     member=member,
+
                     notes=notes,
+
                     total_amount=total
+
                 )
 
                 for item in validated_items:
 
-                    product = item['product']
-                    quantity = item['quantity']
-                    price = item['price']
+                    product = item[
+                        'product'
+                    ]
+
+                    quantity = item[
+                        'quantity'
+                    ]
+
+                    price = item[
+                        'price'
+                    ]
 
                     OrderItem.objects.create(
+
                         order=order,
+
                         product=product,
+
                         quantity=quantity,
+
                         price=price
+
                     )
 
                     product.stock -= quantity
@@ -2624,7 +3147,10 @@ def checkout(request):
                         ]
                     )
 
-                request.session['cart'] = {}
+                request.session[
+                    'cart'
+                ] = {}
+
                 request.session.modified = True
 
         except ValueError as e:
@@ -2656,16 +3182,15 @@ def checkout(request):
                 'view_cart'
             )
 
-        # ======================================
-        # KEEP EXISTING EMAIL WORKFLOW
-        # ======================================
-
         send_email_via_web3forms(
+
             TECH_EMAIL,
+
             (
                 f'New Order: '
                 f'{order.order_number}'
             ),
+
             (
                 f'New order from '
                 f'{order.member.first_name} '
@@ -2699,11 +3224,10 @@ def checkout(request):
     )
 
 
-def order_success(request, order_id):
-    """
-    Display order confirmation only
-    to the member who placed it.
-    """
+def order_success(
+    request,
+    order_id
+):
 
     member = get_member_from_session(
         request
@@ -2739,20 +3263,22 @@ def order_success(request, order_id):
 
 
 def my_orders(request):
-    """Display member's order history."""
 
     member = get_member_from_session(
         request
     )
 
     if not member:
+
         return redirect(
             'login'
         )
 
     orders = (
         Order.objects
-        .filter(member=member)
+        .filter(
+            member=member
+        )
         .prefetch_related(
             'items__product'
         )
