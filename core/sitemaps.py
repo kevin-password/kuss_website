@@ -9,10 +9,6 @@ from .models import Event, Product
 # ============================================================
 
 class StaticViewSitemap(Sitemap):
-    """
-    Sitemap for KUSS public pages that do not require
-    database objects.
-    """
 
     priority = 0.8
     changefreq = "weekly"
@@ -39,14 +35,6 @@ class StaticViewSitemap(Sitemap):
 # ============================================================
 
 class EventSitemap(Sitemap):
-    """
-    Sitemap for individual public KUSS event pages.
-
-    Example:
-    /event/1/
-    /event/2/
-    /event/3/
-    """
 
     changefreq = "weekly"
     priority = 0.9
@@ -55,10 +43,6 @@ class EventSitemap(Sitemap):
         return Event.objects.all()
 
     def lastmod(self, obj):
-        """
-        Event currently has no updated_at field,
-        so use the event date.
-        """
         return obj.date
 
     def location(self, obj):
@@ -75,9 +59,6 @@ class EventSitemap(Sitemap):
 # ============================================================
 
 class ProductSitemap(Sitemap):
-    """
-    Sitemap for active KUSS marketplace products.
-    """
 
     changefreq = "weekly"
     priority = 0.6
