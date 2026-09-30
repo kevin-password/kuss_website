@@ -174,7 +174,7 @@ class Leadership(models.Model):
         ('PATRON', 'Patron'),
         ('BOARD_CHAIR', 'Board of Governors - Chairperson'),
         ('BOARD_TREASURER', 'Board of Governors - Treasurer'),
-        ('BOARD_STUDENT_REP', 'Board of Governors - Student Rep'),
+        ('BOARD_STUDENT_REP', 'Class Representative'),
         ('BOARD_UNI_ADMIN', 'Board of Governors - University Admin'),
         ('EXEC_CHAIR', 'Executive - Chairperson'),
         ('EXEC_VICE_CHAIR', 'Executive - Vice Chairperson'),
@@ -220,10 +220,13 @@ class Leadership(models.Model):
 class NewsPost(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
+
+    # Main / cover image
     image = models.FileField(
         upload_to='news_images/',
-        help_text="Upload the main image for the news post."
+        help_text="Upload the main/cover image for the news post."
     )
+
     author = models.ForeignKey(
         Member,
         on_delete=models.SET_NULL,
@@ -231,6 +234,7 @@ class NewsPost(models.Model):
         blank=True,
         help_text="Who wrote this?"
     )
+
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -239,6 +243,47 @@ class NewsPost(models.Model):
 
     def __str__(self):
         return self.title
+
+
+class NewsImage(models.Model):
+    """
+    Additional images belonging to a NewsPost.
+
+    A single NewsPost can have any number of
+    additional images.
+
+    The actual files are stored using the project's
+    default storage backend, which is Cloudinary
+    in production.
+    """
+
+    news_post = models.ForeignKey(
+        NewsPost,
+        on_delete=models.CASCADE,
+        related_name='additional_images'
+    )
+
+    image = models.FileField(
+        upload_to='news_images/gallery/',
+        help_text="Upload an additional image for this news post."
+    )
+
+    caption = models.CharField(
+        max_length=300,
+        blank=True,
+        null=True,
+        help_text="Optional caption for this image."
+    )
+
+    uploaded_at = models.DateTimeField(
+        auto_now_add=True
+    )
+
+    class Meta:
+        ordering = ['uploaded_at']
+
+    def __str__(self):
+        return f"{self.news_post.title} - Additional Image"
 
 
 class Announcement(models.Model):
