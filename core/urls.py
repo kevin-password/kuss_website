@@ -1,24 +1,7 @@
 from django.urls import path
 from django.views.generic import TemplateView
-from django.contrib.sitemaps.views import sitemap
 
 from . import views
-from .sitemaps import (
-    StaticViewSitemap,
-    EventSitemap,
-    ProductSitemap,
-)
-
-
-# ============================================================
-# SITEMAPS
-# ============================================================
-
-sitemaps = {
-    "static": StaticViewSitemap,
-    "events": EventSitemap,
-    "products": ProductSitemap,
-}
 
 
 # ============================================================
@@ -320,15 +303,12 @@ urlpatterns = [
     ),
 
     # ========================================================
-    # SEO — DYNAMIC SITEMAP
+    # SEO — MANUAL SITEMAP
     # ========================================================
 
     path(
         "sitemap.xml",
-        sitemap,
-        {
-            "sitemaps": sitemaps
-        },
+        views.sitemap_view,
         name="sitemap"
     ),
 
