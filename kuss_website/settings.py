@@ -6,48 +6,69 @@ from pathlib import Path
 import os
 import dj_database_url
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+
+# ============================================================
+# BASE DIRECTORY
+# ============================================================
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# SECURITY WARNING: keep the secret key used in production secret!
-# Reads from Render environment variables, falls back to a local dev key
+
+# ============================================================
+# SECURITY
+# ============================================================
+
 SECRET_KEY = os.environ.get(
     'SECRET_KEY',
     'django-insecure-local-dev-key-change-me-12345'
 )
 
-# SECURITY WARNING: don't run with debug turned on in production!
-# Defaults to False for safety. Set DEBUG=True in your local environment if needed.
 DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-# Allowed Hosts
+
+# ============================================================
+# ALLOWED HOSTS
+# ============================================================
+
 ALLOWED_HOSTS = [
     '.pythonanywhere.com',
     '.onrender.com',
     'localhost',
     '127.0.0.1',
     'kabsurgicalsociety.com',
-    'www.kabsurgicalsociety.com'
+    'www.kabsurgicalsociety.com',
 ]
 
 # Render provides this environment variable automatically
-RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+RENDER_EXTERNAL_HOSTNAME = os.environ.get(
+    'RENDER_EXTERNAL_HOSTNAME'
+)
 
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
-# CSRF Trusted Origins
+
+# ============================================================
+# CSRF TRUSTED ORIGINS
+# ============================================================
+
 CSRF_TRUSTED_ORIGINS = [
     'https://*.onrender.com',
     'https://kabsurgicalsociety.com',
-    'https://www.kabsurgicalsociety.com'
+    'https://www.kabsurgicalsociety.com',
 ]
+
 
 # ============================================================
 # APPLICATION DEFINITION
 # ============================================================
 
 INSTALLED_APPS = [
+
+    # --------------------------------------------------------
+    # Django built-in applications
+    # --------------------------------------------------------
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -55,43 +76,94 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
+    # --------------------------------------------------------
+    # Sitemap / SEO
+    # --------------------------------------------------------
+
+    'django.contrib.sitemaps',
+
+    # --------------------------------------------------------
     # Cloudinary
+    # --------------------------------------------------------
+
     'cloudinary',
     'cloudinary_storage',
 
+    # --------------------------------------------------------
     # KUSS application
+    # --------------------------------------------------------
+
     'core',
 ]
 
+
+# ============================================================
+# MIDDLEWARE
+# ============================================================
+
 MIDDLEWARE = [
+
     'django.middleware.security.SecurityMiddleware',
+
+    # WhiteNoise for static files
     'whitenoise.middleware.WhiteNoiseMiddleware',
+
     'django.contrib.sessions.middleware.SessionMiddleware',
+
     'django.middleware.common.CommonMiddleware',
+
     'django.middleware.csrf.CsrfViewMiddleware',
+
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+
     'django.contrib.messages.middleware.MessageMiddleware',
+
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+
+# ============================================================
+# ROOT URL CONFIGURATION
+# ============================================================
+
 ROOT_URLCONF = 'kuss_website.urls'
+
+
+# ============================================================
+# TEMPLATES
+# ============================================================
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / 'templates'],
+
+        'DIRS': [
+            BASE_DIR / 'templates'
+        ],
+
         'APP_DIRS': True,
+
         'OPTIONS': {
             'context_processors': [
+
                 'django.template.context_processors.debug',
+
                 'django.template.context_processors.request',
+
                 'django.contrib.auth.context_processors.auth',
+
                 'django.contrib.messages.context_processors.messages',
+
                 'core.context_processors.leadership_context',
             ],
         },
     },
 ]
+
+
+# ============================================================
+# WSGI
+# ============================================================
 
 WSGI_APPLICATION = 'kuss_website.wsgi.application'
 
@@ -99,8 +171,15 @@ WSGI_APPLICATION = 'kuss_website.wsgi.application'
 # ============================================================
 # DATABASE
 # ============================================================
-# Neon PostgreSQL on Render
-# This section is intentionally unchanged.
+#
+# Production:
+# Neon PostgreSQL through DATABASE_URL.
+#
+# Local development:
+# Falls back to SQLite if DATABASE_URL is not available.
+#
+# DO NOT CHANGE THIS.
+# ============================================================
 
 DATABASES = {
     'default': dj_database_url.config(
@@ -116,18 +195,22 @@ DATABASES = {
 # ============================================================
 
 AUTH_PASSWORD_VALIDATORS = [
+
     {
         'NAME':
         'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'
     },
+
     {
         'NAME':
         'django.contrib.auth.password_validation.MinimumLengthValidator'
     },
+
     {
         'NAME':
         'django.contrib.auth.password_validation.CommonPasswordValidator'
     },
+
     {
         'NAME':
         'django.contrib.auth.password_validation.NumericPasswordValidator'
@@ -154,26 +237,35 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATIC_ROOT = os.path.join(
+    BASE_DIR,
+    'staticfiles'
+)
 
 
 # ============================================================
 # FILE STORAGE
 # ============================================================
 #
-# Static files remain on WhiteNoise.
+# Static files:
+# WhiteNoise
 #
-# User-uploaded media files now go to Cloudinary instead
-# of Render's temporary local filesystem.
+# User uploads:
+# Cloudinary
 #
+# This keeps media files persistent on Render.
+# ============================================================
 
 STORAGES = {
+
     'default': {
-        'BACKEND': 'cloudinary_storage.storage.MediaCloudinaryStorage',
+        'BACKEND':
+        'cloudinary_storage.storage.MediaCloudinaryStorage',
     },
 
     'staticfiles': {
-        'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage',
+        'BACKEND':
+        'whitenoise.storage.CompressedManifestStaticFilesStorage',
     },
 }
 
@@ -183,30 +275,40 @@ STORAGES = {
 # ============================================================
 #
 # Kept for compatibility with Django and local development.
-# Production uploads are handled by Cloudinary through STORAGES.
 #
+# Production uploads are handled by Cloudinary through
+# STORAGES['default'].
+# ============================================================
 
 MEDIA_URL = '/media/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_ROOT = os.path.join(
+    BASE_DIR,
+    'media'
+)
 
 
 # ============================================================
 # DEFAULT PRIMARY KEY
 # ============================================================
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+DEFAULT_AUTO_FIELD = (
+    'django.db.models.BigAutoField'
+)
 
 
 # ============================================================
 # EMAIL CONFIGURATION
 # ============================================================
 #
-# DO NOT CHANGE THIS SECTION.
-# Your existing email system remains exactly as it was.
+# Existing KUSS email system.
 #
+# DO NOT CHANGE.
+# ============================================================
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_BACKEND = (
+    'django.core.mail.backends.smtp.EmailBackend'
+)
 
 EMAIL_HOST = 'smtp.gmail.com'
 
@@ -223,4 +325,6 @@ EMAIL_HOST_PASSWORD = os.environ.get(
     'EMAIL_HOST_PASSWORD'
 )
 
-DEFAULT_FROM_EMAIL = 'KUSS <tumusiimekevin3@gmail.com>'
+DEFAULT_FROM_EMAIL = (
+    'KUSS <tumusiimekevin3@gmail.com>'
+)
