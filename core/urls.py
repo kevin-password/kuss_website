@@ -2,6 +2,7 @@ from django.urls import path
 from django.views.generic import TemplateView
 
 from . import views
+from .sitemaps import sitemap_view
 
 
 # ============================================================
@@ -308,7 +309,7 @@ urlpatterns = [
 
     path(
         "sitemap.xml",
-        views.sitemap,
+        sitemap_view,
         name="sitemap"
     ),
 
