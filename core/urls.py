@@ -10,283 +10,360 @@ from .sitemaps import (
 )
 
 
-# ==========================================
+# ============================================================
 # SITEMAPS
-# ==========================================
+# ============================================================
+
 sitemaps = {
-    'static': StaticViewSitemap,
-    'events': EventSitemap,
-    'products': ProductSitemap,
+    "static": StaticViewSitemap,
+    "events": EventSitemap,
+    "products": ProductSitemap,
 }
 
 
+# ============================================================
+# URL PATTERNS
+# ============================================================
+
 urlpatterns = [
 
-    # ==========================================
+    # ========================================================
     # PUBLIC PAGES
-    # ==========================================
-    path('', views.home_view, name='home'),
-    path('about/', views.about_view, name='about'),
-    path('news/', views.news_view, name='news'),
-    path('announcements/', views.announcements_view, name='announcements'),
-    path('leadership/', views.leadership_view, name='leadership'),
-    path('join/', views.join_view, name='join'),
-    path('join/success/', views.join_success_view, name='join_success'),
-    path('research/', views.research_links_view, name='research'),
+    # ========================================================
 
     path(
-        'privacy/',
-        TemplateView.as_view(template_name='privacy.html'),
-        name='privacy'
+        "",
+        views.home_view,
+        name="home"
     ),
 
-    # ==========================================
+    path(
+        "about/",
+        views.about_view,
+        name="about"
+    ),
+
+    path(
+        "news/",
+        views.news_view,
+        name="news"
+    ),
+
+    path(
+        "announcements/",
+        views.announcements_view,
+        name="announcements"
+    ),
+
+    path(
+        "leadership/",
+        views.leadership_view,
+        name="leadership"
+    ),
+
+    path(
+        "join/",
+        views.join_view,
+        name="join"
+    ),
+
+    path(
+        "join/success/",
+        views.join_success_view,
+        name="join_success"
+    ),
+
+    path(
+        "research/",
+        views.research_links_view,
+        name="research"
+    ),
+
+    path(
+        "privacy/",
+        TemplateView.as_view(
+            template_name="privacy.html"
+        ),
+        name="privacy"
+    ),
+
+    # ========================================================
     # MEMBER PORTAL
-    # ==========================================
-    path('login/', views.login_view, name='login'),
-    path('logout/', views.logout_view, name='logout'),
-    path('dashboard/', views.dashboard_view, name='dashboard'),
-    path('profile/', views.profile_view, name='profile'),
+    # ========================================================
 
-    # ==========================================
+    path(
+        "login/",
+        views.login_view,
+        name="login"
+    ),
+
+    path(
+        "logout/",
+        views.logout_view,
+        name="logout"
+    ),
+
+    path(
+        "dashboard/",
+        views.dashboard_view,
+        name="dashboard"
+    ),
+
+    path(
+        "profile/",
+        views.profile_view,
+        name="profile"
+    ),
+
+    # ========================================================
     # TREASURER PORTAL
-    # ==========================================
+    # ========================================================
+
     path(
-        'treasurer/dashboard/',
+        "treasurer/dashboard/",
         views.treasurer_dashboard,
-        name='treasurer_dashboard'
+        name="treasurer_dashboard"
     ),
 
     path(
-        'treasurer/transactions/',
+        "treasurer/transactions/",
         views.transaction_list,
-        name='transaction_list'
+        name="transaction_list"
     ),
 
     path(
-        'treasurer/transactions/add/',
+        "treasurer/transactions/add/",
         views.add_transaction,
-        name='add_transaction'
+        name="add_transaction"
     ),
 
     path(
-        'treasurer/toggle/<int:member_id>/',
+        "treasurer/toggle/<int:member_id>/",
         views.toggle_subscription,
-        name='toggle_subscription'
+        name="toggle_subscription"
     ),
 
     path(
-        'treasurer/export/transactions/',
+        "treasurer/export/transactions/",
         views.export_transactions,
-        name='export_transactions'
+        name="export_transactions"
     ),
 
     path(
-        'treasurer/export/members/',
+        "treasurer/export/members/",
         views.export_members,
-        name='export_members'
+        name="export_members"
     ),
 
-    # ==========================================
+    # ========================================================
     # LEADERSHIP PORTAL
-    # ==========================================
+    # ========================================================
+
     path(
-        'leadership-portal/',
+        "leadership-portal/",
         views.leadership_portal,
-        name='leadership_portal'
+        name="leadership_portal"
     ),
 
     path(
-        'leadership-portal/news/create/',
+        "leadership-portal/news/create/",
         views.create_news_post,
-        name='create_news'
+        name="create_news"
     ),
 
     path(
-        'leadership-portal/announcement/create/',
+        "leadership-portal/announcement/create/",
         views.create_announcement,
-        name='create_announcement'
+        name="create_announcement"
     ),
 
     path(
-        'leadership-portal/event/create/',
+        "leadership-portal/event/create/",
         views.create_event,
-        name='create_event'
+        name="create_event"
     ),
 
     path(
-        'leadership-portal/members/export/',
+        "leadership-portal/members/export/",
         views.export_members_csv,
-        name='export_members_csv'
+        name="export_members_csv"
     ),
 
-    # ==========================================
+    # ========================================================
     # CLASS REP PORTAL
-    # ==========================================
+    # ========================================================
+
     path(
-        'class-rep/dashboard/',
+        "class-rep/dashboard/",
         views.class_rep_dashboard,
-        name='class_rep_dashboard'
+        name="class_rep_dashboard"
     ),
 
     path(
-        'class-rep/announcement/create/',
+        "class-rep/announcement/create/",
         views.create_class_announcement,
-        name='create_class_announcement'
+        name="create_class_announcement"
     ),
 
     path(
-        'class-rep/event/create/',
+        "class-rep/event/create/",
         views.create_class_event,
-        name='create_class_event'
+        name="create_class_event"
     ),
 
     path(
-        'class-rep/members/export/',
+        "class-rep/members/export/",
         views.export_class_members,
-        name='export_class_members'
+        name="export_class_members"
     ),
 
-    # ==========================================
+    # ========================================================
     # MARKETPLACE
-    # ==========================================
+    # ========================================================
+
     path(
-        'marketplace/',
+        "marketplace/",
         views.marketplace_view,
-        name='marketplace'
+        name="marketplace"
     ),
 
     path(
-        'marketplace/product/<int:product_id>/',
+        "marketplace/product/<int:product_id>/",
         views.product_detail_view,
-        name='product_detail'
+        name="product_detail"
     ),
 
     path(
-        'marketplace/add-to-cart/<int:product_id>/',
+        "marketplace/add-to-cart/<int:product_id>/",
         views.add_to_cart,
-        name='add_to_cart'
+        name="add_to_cart"
     ),
 
     path(
-        'marketplace/cart/',
+        "marketplace/cart/",
         views.view_cart,
-        name='view_cart'
+        name="view_cart"
     ),
 
     path(
-        'marketplace/cart/remove/<int:product_id>/',
+        "marketplace/cart/remove/<int:product_id>/",
         views.remove_from_cart,
-        name='remove_from_cart'
+        name="remove_from_cart"
     ),
 
     path(
-        'marketplace/cart/update/<int:product_id>/',
+        "marketplace/cart/update/<int:product_id>/",
         views.update_cart_quantity,
-        name='update_cart_quantity'
+        name="update_cart_quantity"
     ),
 
     path(
-        'marketplace/checkout/',
+        "marketplace/checkout/",
         views.checkout,
-        name='checkout'
+        name="checkout"
     ),
 
     path(
-        'marketplace/order/success/<int:order_id>/',
+        "marketplace/order/success/<int:order_id>/",
         views.order_success,
-        name='order_success'
+        name="order_success"
     ),
 
     path(
-        'marketplace/my-orders/',
+        "marketplace/my-orders/",
         views.my_orders,
-        name='my_orders'
+        name="my_orders"
     ),
 
-    # ==========================================
-    # SEND NOTIFICATIONS
-    # ==========================================
+    # ========================================================
+    # NOTIFICATIONS
+    # ========================================================
+
     path(
-        'send-notifications/',
+        "send-notifications/",
         views.send_notifications_view,
-        name='send_notifications'
+        name="send_notifications"
     ),
 
-    # ==========================================
+    # ========================================================
     # API ENDPOINTS
-    # ==========================================
+    # ========================================================
+
     path(
-        'api/recipients/',
+        "api/recipients/",
         views.api_get_recipients,
-        name='api_recipients'
+        name="api_recipients"
     ),
 
     path(
-        'api/new-member-info/',
+        "api/new-member-info/",
         views.api_get_new_member_info,
-        name='api_new_member_info'
+        name="api_new_member_info"
     ),
 
     path(
-        'api/news/<int:news_id>/',
+        "api/news/<int:news_id>/",
         views.api_get_news_content,
-        name='api_news_content'
+        name="api_news_content"
     ),
 
     path(
-        'api/announcement/<int:announcement_id>/',
+        "api/announcement/<int:announcement_id>/",
         views.api_get_announcement_content,
-        name='api_announcement_content'
+        name="api_announcement_content"
     ),
 
     path(
-        'api/event/<int:event_id>/',
+        "api/event/<int:event_id>/",
         views.api_get_event_content,
-        name='api_event_content'
+        name="api_event_content"
     ),
 
-    # ==========================================
+    # ========================================================
     # SEO — DYNAMIC SITEMAP
-    # ==========================================
+    # ========================================================
+
     path(
-        'sitemap.xml',
+        "sitemap.xml",
         sitemap,
         {
-            'sitemaps': sitemaps
+            "sitemaps": sitemaps
         },
-        name='sitemap'
+        name="sitemap"
     ),
 
-    # ==========================================
+    # ========================================================
     # TEST EMAIL
-    # ==========================================
+    # ========================================================
+
     path(
-        'test-email/',
+        "test-email/",
         TemplateView.as_view(
-            template_name='test_email.html'
+            template_name="test_email.html"
         ),
-        name='test_email'
+        name="test_email"
     ),
 
-    # ==========================================
+    # ========================================================
     # PUBLIC EVENT DETAIL
-    # ==========================================
+    # ========================================================
+
     path(
-        'event/<int:event_id>/',
+        "event/<int:event_id>/",
         views.event_detail_view,
-        name='event_detail'
+        name="event_detail"
     ),
 
-    # ==========================================
+    # ========================================================
     # ROBOTS.TXT
-    # ==========================================
+    # ========================================================
+
     path(
-        'robots.txt',
+        "robots.txt",
         TemplateView.as_view(
-            template_name='robots.txt',
-            content_type='text/plain'
+            template_name="robots.txt",
+            content_type="text/plain"
         ),
-        name='robots'
+        name="robots"
     ),
 ]
