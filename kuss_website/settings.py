@@ -32,13 +32,6 @@ DEBUG = os.environ.get(
 # ============================================================
 # ALLOWED HOSTS
 # ============================================================
-#
-# Production:
-# Render + KUSS custom domain
-#
-# Local development:
-# localhost + 127.0.0.1
-# ============================================================
 
 ALLOWED_HOSTS = [
     '.onrender.com',
@@ -48,8 +41,6 @@ ALLOWED_HOSTS = [
     'www.kabsurgicalsociety.com',
 ]
 
-
-# Render provides this environment variable automatically
 
 RENDER_EXTERNAL_HOSTNAME = os.environ.get(
     'RENDER_EXTERNAL_HOSTNAME'
@@ -63,18 +54,6 @@ if RENDER_EXTERNAL_HOSTNAME:
 
 # ============================================================
 # CANONICAL SITE DOMAIN
-# ============================================================
-#
-# This is the official public KUSS website.
-#
-# Used by:
-# - Sitemap
-# - SEO
-# - Canonical URLs
-# - Structured data
-# - Social metadata
-#
-# PythonAnywhere is intentionally NOT included.
 # ============================================================
 
 SITE_DOMAIN = 'https://kabsurgicalsociety.com'
@@ -101,9 +80,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 INSTALLED_APPS = [
 
-    # --------------------------------------------------------
     # Django built-in applications
-    # --------------------------------------------------------
 
     'django.contrib.admin',
 
@@ -118,25 +95,19 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
 
-    # --------------------------------------------------------
     # Sitemap / SEO
-    # --------------------------------------------------------
 
     'django.contrib.sitemaps',
 
 
-    # --------------------------------------------------------
     # Cloudinary
-    # --------------------------------------------------------
 
     'cloudinary',
 
     'cloudinary_storage',
 
 
-    # --------------------------------------------------------
     # KUSS application
-    # --------------------------------------------------------
 
     'core',
 
@@ -151,7 +122,6 @@ MIDDLEWARE = [
 
     'django.middleware.security.SecurityMiddleware',
 
-    # WhiteNoise for static files
     'whitenoise.middleware.WhiteNoiseMiddleware',
 
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -224,27 +194,36 @@ WSGI_APPLICATION = 'kuss_website.wsgi.application'
 
 
 # ============================================================
-# DATABASE
+# DATABASE — NEON POSTGRESQL ONLY
 # ============================================================
 #
-# Production:
-# Neon PostgreSQL through DATABASE_URL.
+# KUSS production data must live in Neon PostgreSQL.
 #
-# Local development:
-# SQLite fallback if DATABASE_URL is unavailable.
+# There is intentionally NO SQLite fallback.
 #
-# DO NOT CHANGE THIS.
+# If DATABASE_URL is missing, the application will stop
+# instead of silently creating/using a local SQLite database.
 # ============================================================
+
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if not DATABASE_URL:
+    raise RuntimeError(
+        'DATABASE_URL is missing. '
+        'KUSS requires Neon PostgreSQL. '
+        'Configure DATABASE_URL in the Render environment.'
+    )
+
 
 DATABASES = {
 
-    'default': dj_database_url.config(
+    'default': dj_database_url.parse(
 
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
+        DATABASE_URL,
 
         conn_max_age=600,
 
-        ssl_require=True
+        ssl_require=True,
 
     )
 
@@ -309,13 +288,14 @@ STATIC_ROOT = os.path.join(
 # FILE STORAGE
 # ============================================================
 #
-# Static files:
-# WhiteNoise
-#
-# User uploads:
+# DEFAULT STORAGE:
 # Cloudinary
 #
-# This keeps media files persistent on Render.
+# STATIC FILE STORAGE:
+# WhiteNoise
+#
+# Uploaded media is therefore NOT dependent on the Render
+# filesystem.
 # ============================================================
 
 STORAGES = {
@@ -338,19 +318,15 @@ STORAGES = {
 
 
 # ============================================================
-# MEDIA FILES
+# MEDIA
 # ============================================================
 #
-# Production uploads are handled by Cloudinary through
-# STORAGES['default'].
+# User-uploaded files are handled by Cloudinary.
+#
+# No local MEDIA_ROOT is configured.
 # ============================================================
 
 MEDIA_URL = '/media/'
-
-MEDIA_ROOT = os.path.join(
-    BASE_DIR,
-    'media'
-)
 
 
 # ============================================================
