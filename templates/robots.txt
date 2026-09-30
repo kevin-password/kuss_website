@@ -1,12 +1,34 @@
 User-agent: *
+
 Allow: /
-Disallow: /admin/
+Allow: /about/
+Allow: /news/
+Allow: /announcements/
+Allow: /leadership/
+Allow: /join/
+Allow: /research/
+Allow: /privacy/
+Allow: /marketplace/
+Allow: /marketplace/product/
+Allow: /event/
+
 Disallow: /login/
 Disallow: /logout/
 Disallow: /dashboard/
 Disallow: /profile/
+
 Disallow: /treasurer/
 Disallow: /leadership-portal/
 Disallow: /class-rep/
 
-Sitemap: https://kabsurgicalsociety.pythonanywhere.com/sitemap.xml
+Disallow: /send-notifications/
+Disallow: /api/
+
+Disallow: /marketplace/cart/
+Disallow: /marketplace/checkout/
+Disallow: /marketplace/my-orders/
+Disallow: /marketplace/order/
+
+Disallow: /test-email/
+
+Sitemap: https://kabsurgicalsociety.com/sitemap.xml
