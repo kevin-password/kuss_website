@@ -1,10 +1,19 @@
 from django.contrib.sitemaps import Sitemap
 from django.urls import reverse
 
-from .models import Event, NewsPost, Announcement, Product
+from .models import Event, Product
 
+
+# ============================================================
+# STATIC PUBLIC PAGES
+# ============================================================
 
 class StaticViewSitemap(Sitemap):
+    """
+    Sitemap for KUSS public pages that do not require
+    database objects.
+    """
+
     priority = 0.8
     changefreq = "weekly"
 
@@ -25,7 +34,20 @@ class StaticViewSitemap(Sitemap):
         return reverse(item)
 
 
+# ============================================================
+# EVENTS
+# ============================================================
+
 class EventSitemap(Sitemap):
+    """
+    Sitemap for individual public KUSS event pages.
+
+    Example:
+    /event/1/
+    /event/2/
+    /event/3/
+    """
+
     changefreq = "weekly"
     priority = 0.9
 
@@ -33,54 +55,37 @@ class EventSitemap(Sitemap):
         return Event.objects.all()
 
     def lastmod(self, obj):
-        # Event model has no updated_at field,
-        # so use the event date.
+        """
+        Event currently has no updated_at field,
+        so use the event date.
+        """
         return obj.date
 
     def location(self, obj):
         return reverse(
             "event_detail",
-            kwargs={"event_id": obj.pk}
+            kwargs={
+                "event_id": obj.pk
+            }
         )
 
 
-class NewsPostSitemap(Sitemap):
-    changefreq = "weekly"
-    priority = 0.8
-
-    def items(self):
-        return NewsPost.objects.all()
-
-    def lastmod(self, obj):
-        return obj.updated_at
-
-    def location(self, obj):
-        # News currently has no individual public detail URL.
-        # Therefore the news listing is the canonical public page.
-        return reverse("news")
-
-
-class AnnouncementSitemap(Sitemap):
-    changefreq = "weekly"
-    priority = 0.7
-
-    def items(self):
-        return Announcement.objects.all()
-
-    def lastmod(self, obj):
-        return obj.created_at
-
-    def location(self, obj):
-        # Announcements currently have no individual public detail URL.
-        return reverse("announcements")
-
+# ============================================================
+# MARKETPLACE PRODUCTS
+# ============================================================
 
 class ProductSitemap(Sitemap):
+    """
+    Sitemap for active KUSS marketplace products.
+    """
+
     changefreq = "weekly"
     priority = 0.6
 
     def items(self):
-        return Product.objects.filter(is_active=True)
+        return Product.objects.filter(
+            is_active=True
+        )
 
     def lastmod(self, obj):
         return obj.updated_at
@@ -88,5 +93,7 @@ class ProductSitemap(Sitemap):
     def location(self, obj):
         return reverse(
             "product_detail",
-            kwargs={"product_id": obj.pk}
+            kwargs={
+                "product_id": obj.pk
+            }
         )
