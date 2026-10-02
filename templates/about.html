@@ -3,300 +3,1908 @@
 {% block title %}About Us - KUSS Constitution{% endblock %}
 
 {% block content %}
-    <!-- PAGE HEADER -->
-    <section class="page-header">
-        <h1>The KUSS Constitution</h1>
-        <p>The founding document that guides our mission, structure, and values.</p>
-    </section>
 
-    <!-- PREAMBLE -->
-    <section class="section container">
-        <div style="max-width: 900px; margin: 0 auto;">
-            <h2 class="section-title" style="text-align: left; font-size: 2rem;">
-                <i class="fa-solid fa-scroll" style="color: var(--teal); margin-right: 10px;"></i>
-                Preamble
-            </h2>
-            <div style="background: var(--light-gray); padding: 30px; border-left: 5px solid var(--teal); border-radius: 8px; margin-bottom: 60px;">
-                <p style="font-size: 1.15rem; font-style: italic; color: var(--text-dark); line-height: 1.8;">
-                    "We, the members of the Kabale University Surgical Society, united by a common dedication to the advancement of surgical knowledge and practice, establish this society to promote excellence in the field of surgery through education, research, and mentorship."
-                </p>
+<style>
+/* ============================================================
+   KUSS CONSTITUTION — PREMIUM RESPONSIVE DESIGN
+   ============================================================ */
+
+.kuss-constitution {
+    --kuss-teal: var(--teal, #0f766e);
+    --kuss-teal-dark: #0b5f59;
+    --kuss-teal-soft: #e8f5f3;
+    --kuss-navy: var(--navy, #102a43);
+    --kuss-navy-light: var(--navy-light, #173f5f);
+    --kuss-gold: #c69a45;
+    --kuss-bg: #f6f9fb;
+    --kuss-card: #ffffff;
+    --kuss-text: var(--text-dark, #172b4d);
+    --kuss-muted: var(--text-light, #6b7c93);
+    --kuss-border: #e3e9ef;
+    --kuss-light: var(--light-gray, #f1f4f6);
+    --kuss-shadow: 0 10px 35px rgba(16,42,67,.07);
+    --kuss-shadow-hover: 0 18px 45px rgba(16,42,67,.12);
+
+    background: var(--kuss-bg);
+    color: var(--kuss-text);
+    min-height: 100vh;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+
+.kuss-constitution-hero {
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 90% 15%, rgba(198,154,69,.18), transparent 28%),
+        radial-gradient(circle at 5% 90%, rgba(15,118,110,.22), transparent 32%),
+        linear-gradient(
+            135deg,
+            #081d2d 0%,
+            #102f46 48%,
+            #0f766e 100%
+        );
+    color: white;
+    padding: clamp(55px, 8vw, 95px) 20px;
+}
+
+.kuss-constitution-hero::before {
+    content: "";
+    position: absolute;
+    width: 420px;
+    height: 420px;
+    right: -170px;
+    top: -210px;
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 50%;
+}
+
+.kuss-constitution-hero::after {
+    content: "";
+    position: absolute;
+    width: 280px;
+    height: 280px;
+    right: -90px;
+    top: -140px;
+    border: 1px solid rgba(255,255,255,.06);
+    border-radius: 50%;
+}
+
+.kuss-hero-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 1050px;
+    margin: auto;
+    text-align: center;
+}
+
+.kuss-hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 15px;
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 999px;
+    background: rgba(255,255,255,.08);
+    backdrop-filter: blur(8px);
+    font-size: .75rem;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.kuss-hero-badge i {
+    color: #e5bd69;
+}
+
+.kuss-constitution-hero h1 {
+    margin: 22px 0 14px;
+    font-size: clamp(2.3rem, 6vw, 4.6rem);
+    line-height: 1.03;
+    letter-spacing: -.045em;
+    font-weight: 850;
+}
+
+.kuss-constitution-hero p {
+    max-width: 720px;
+    margin: auto;
+    color: rgba(255,255,255,.82);
+    font-size: clamp(.95rem, 2vw, 1.12rem);
+    line-height: 1.75;
+}
+
+/* ============================================================
+   CONTENT LAYOUT
+   ============================================================ */
+
+.kuss-constitution-body {
+    max-width: 1250px;
+    margin: auto;
+    padding: clamp(30px, 5vw, 65px) 20px 80px;
+}
+
+.kuss-layout {
+    display: grid;
+    grid-template-columns: 230px minmax(0, 1fr);
+    gap: 45px;
+    align-items: start;
+}
+
+/* ============================================================
+   TABLE OF CONTENTS
+   ============================================================ */
+
+.kuss-toc {
+    position: sticky;
+    top: 25px;
+}
+
+.kuss-toc-card {
+    background: white;
+    border: 1px solid var(--kuss-border);
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: var(--kuss-shadow);
+}
+
+.kuss-toc-title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 15px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--kuss-border);
+    color: var(--kuss-navy);
+    font-size: .78rem;
+    font-weight: 850;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+}
+
+.kuss-toc-title i {
+    color: var(--kuss-teal);
+}
+
+.kuss-toc a {
+    display: block;
+    padding: 7px 8px;
+    border-radius: 7px;
+    color: var(--kuss-muted);
+    font-size: .78rem;
+    line-height: 1.4;
+    text-decoration: none;
+    transition: .2s ease;
+}
+
+.kuss-toc a:hover {
+    background: var(--kuss-teal-soft);
+    color: var(--kuss-teal-dark);
+    padding-left: 12px;
+}
+
+/* ============================================================
+   MAIN DOCUMENT
+   ============================================================ */
+
+.kuss-document {
+    min-width: 0;
+}
+
+.kuss-section {
+    margin-bottom: 65px;
+    scroll-margin-top: 30px;
+}
+
+.kuss-section-header {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    margin-bottom: 20px;
+}
+
+.kuss-section-icon {
+    flex: 0 0 43px;
+    width: 43px;
+    height: 43px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: var(--kuss-teal-soft);
+    color: var(--kuss-teal);
+    font-size: 1rem;
+}
+
+.kuss-section-header h2 {
+    margin: 0;
+    color: var(--kuss-navy);
+    font-size: clamp(1.45rem, 3vw, 2rem);
+    line-height: 1.2;
+    font-weight: 850;
+}
+
+.kuss-section-label {
+    display: block;
+    margin-bottom: 3px;
+    color: var(--kuss-teal);
+    font-size: .68rem;
+    font-weight: 850;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+}
+
+/* ============================================================
+   PREAMBLE
+   ============================================================ */
+
+.kuss-preamble {
+    position: relative;
+    padding: clamp(25px, 5vw, 42px);
+    background: white;
+    border: 1px solid var(--kuss-border);
+    border-left: 5px solid var(--kuss-teal);
+    border-radius: 0 16px 16px 0;
+    box-shadow: var(--kuss-shadow);
+}
+
+.kuss-preamble::before {
+    content: "“";
+    position: absolute;
+    top: -20px;
+    left: 22px;
+    color: var(--kuss-teal);
+    font-family: Georgia, serif;
+    font-size: 5rem;
+    line-height: 1;
+    opacity: .12;
+}
+
+.kuss-preamble p {
+    position: relative;
+    margin: 0;
+    color: var(--kuss-text);
+    font-family: Georgia, serif;
+    font-size: clamp(1rem, 2vw, 1.18rem);
+    font-style: italic;
+    line-height: 1.9;
+}
+
+/* ============================================================
+   VISION / MISSION
+   ============================================================ */
+
+.kuss-vision {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(30px, 5vw, 50px);
+    background:
+        radial-gradient(circle at 100% 0%, rgba(198,154,69,.18), transparent 30%),
+        linear-gradient(135deg, var(--kuss-navy), var(--kuss-navy-light));
+    border-radius: 18px;
+    color: white;
+    box-shadow: var(--kuss-shadow);
+}
+
+.kuss-vision::after {
+    content: "VISION";
+    position: absolute;
+    right: -10px;
+    bottom: -20px;
+    font-size: 5rem;
+    font-weight: 900;
+    color: rgba(255,255,255,.035);
+}
+
+.kuss-vision p {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    color: white;
+    text-align: center;
+    font-family: Georgia, serif;
+    font-size: clamp(1.25rem, 3vw, 1.55rem);
+    font-style: italic;
+    line-height: 1.6;
+}
+
+.kuss-mission {
+    padding: 28px;
+    background: white;
+    border: 1px solid var(--kuss-border);
+    border-radius: 15px;
+    box-shadow: var(--kuss-shadow);
+}
+
+.kuss-mission p {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.85;
+}
+
+/* ============================================================
+   MOTTO
+   ============================================================ */
+
+.kuss-motto {
+    padding: clamp(30px, 5vw, 50px);
+    background: linear-gradient(
+        145deg,
+        #eef5f4,
+        #f7f8f8
+    );
+    border: 1px solid var(--kuss-border);
+    border-radius: 18px;
+    text-align: center;
+}
+
+.kuss-motto h3 {
+    margin: 0 0 8px;
+    color: var(--kuss-navy);
+    font-family: Georgia, serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-style: italic;
+}
+
+.kuss-motto p {
+    margin: 0;
+    color: var(--kuss-teal);
+    font-size: 1rem;
+    font-weight: 700;
+}
+
+/* ============================================================
+   OBJECTIVES
+   ============================================================ */
+
+.kuss-objectives {
+    display: grid;
+    gap: 12px;
+}
+
+.kuss-objective {
+    display: grid;
+    grid-template-columns: 38px minmax(0,1fr);
+    gap: 14px;
+    align-items: start;
+    padding: 18px;
+    background: white;
+    border: 1px solid var(--kuss-border);
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(16,42,67,.035);
+    transition: .2s ease;
+}
+
+.kuss-objective:hover {
+    transform: translateX(4px);
+    border-color: rgba(15,118,110,.25);
+    box-shadow: var(--kuss-shadow);
+}
+
+.kuss-objective-number {
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    background: var(--kuss-teal-soft);
+    color: var(--kuss-teal-dark);
+    font-weight: 850;
+    font-size: .85rem;
+}
+
+.kuss-objective p {
+    margin: 1px 0 0;
+    color: var(--kuss-text);
+    font-size: .92rem;
+    line-height: 1.65;
+}
+
+/* ============================================================
+   INFORMATION CARDS
+   ============================================================ */
+
+.kuss-info-card {
+    padding: 27px;
+    background: white;
+    border: 1px solid var(--kuss-border);
+    border-left: 4px solid var(--kuss-teal);
+    border-radius: 0 15px 15px 0;
+    box-shadow: var(--kuss-shadow);
+    margin-bottom: 18px;
+}
+
+.kuss-info-card h3 {
+    margin: 0 0 10px;
+    color: var(--kuss-navy);
+    font-size: 1.15rem;
+}
+
+.kuss-info-card p {
+    margin: 0;
+    color: var(--kuss-muted);
+    line-height: 1.75;
+}
+
+.kuss-current {
+    margin-top: 18px !important;
+    color: var(--kuss-text) !important;
+}
+
+.kuss-current strong {
+    color: var(--kuss-teal);
+}
+
+/* ============================================================
+   MEMBERSHIP TABLE
+   ============================================================ */
+
+.kuss-table-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    background: white;
+    border: 1px solid var(--kuss-border);
+    border-radius: 15px;
+    box-shadow: var(--kuss-shadow);
+}
+
+.kuss-table {
+    width: 100%;
+    min-width: 650px;
+    border-collapse: collapse;
+}
+
+.kuss-table th {
+    padding: 15px 17px;
+    background: var(--kuss-navy);
+    color: white;
+    font-size: .75rem;
+    font-weight: 800;
+    text-align: left;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.kuss-table td {
+    padding: 16px 17px;
+    border-bottom: 1px solid var(--kuss-border);
+    color: var(--kuss-muted);
+    font-size: .86rem;
+    line-height: 1.5;
+    vertical-align: top;
+}
+
+.kuss-table tr:last-child td {
+    border-bottom: none;
+}
+
+.kuss-table tbody tr:hover {
+    background: #f8fbfb;
+}
+
+.kuss-table td:first-child {
+    color: var(--kuss-navy);
+}
+
+.kuss-table td:nth-child(2),
+.kuss-table td:nth-child(3) {
+    white-space: nowrap;
+}
+
+/* ============================================================
+   RIGHTS BOX
+   ============================================================ */
+
+.kuss-rights {
+    display: grid;
+    grid-template-columns: auto minmax(0,1fr);
+    gap: 15px;
+    margin-top: 20px;
+    padding: 23px;
+    background: var(--kuss-teal-soft);
+    border: 1px solid rgba(15,118,110,.12);
+    border-radius: 14px;
+}
+
+.kuss-rights-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: white;
+    color: var(--kuss-teal);
+}
+
+.kuss-rights h4 {
+    margin: 0 0 8px;
+    color: var(--kuss-navy);
+}
+
+.kuss-rights p {
+    margin: 0;
+    color: var(--kuss-muted);
+    font-size: .9rem;
+    line-height: 1.7;
+}
+
+/* ============================================================
+   ORGANIZATIONAL STRUCTURE
+   ============================================================ */
+
+.kuss-structure {
+    display: grid;
+    gap: 18px;
+}
+
+.kuss-structure-card {
+    padding: 28px;
+    background: white;
+    border: 1px solid var(--kuss-border);
+    border-radius: 16px;
+    box-shadow: var(--kuss-shadow);
+}
+
+.kuss-structure-card h3 {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0 0 10px;
+    color: var(--kuss-navy);
+    font-size: 1.15rem;
+}
+
+.kuss-structure-card h3::before {
+    content: "";
+    width: 4px;
+    height: 22px;
+    border-radius: 5px;
+    background: var(--kuss-teal);
+}
+
+.kuss-structure-card > p {
+    margin: 0 0 17px;
+    color: var(--kuss-muted);
+    line-height: 1.7;
+}
+
+.kuss-roles {
+    display: grid;
+    gap: 8px;
+    margin: 0 0 20px;
+    padding: 0;
+    list-style: none;
+}
+
+.kuss-roles li {
+    position: relative;
+    padding-left: 22px;
+    color: var(--kuss-muted);
+    font-size: .9rem;
+    line-height: 1.65;
+}
+
+.kuss-roles li::before {
+    content: "•";
+    position: absolute;
+    left: 5px;
+    color: var(--kuss-teal);
+    font-size: 1.1rem;
+    font-weight: 900;
+}
+
+.kuss-roles strong {
+    color: var(--kuss-navy);
+}
+
+/* ============================================================
+   PEOPLE / FOUNDERS
+   ============================================================ */
+
+.founders-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0,1fr));
+    gap: 13px;
+}
+
+.founder-card {
+    padding: 19px;
+    background: #fafcfc;
+    border: 1px solid var(--kuss-border);
+    border-radius: 12px;
+    text-align: center;
+    transition: .2s ease;
+}
+
+.founder-card:hover {
+    transform: translateY(-3px);
+    box-shadow: var(--kuss-shadow);
+}
+
+.founder-card img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border: 3px solid var(--kuss-teal);
+}
+
+.founder-card h4 {
+    margin: 0 0 5px;
+    color: var(--kuss-navy);
+    font-size: .92rem;
+}
+
+.founder-card > p {
+    margin: 0;
+    color: var(--kuss-teal);
+    font-size: .78rem;
+    font-weight: 700;
+}
+
+.founder-card .founder-bio {
+    margin-top: 9px;
+    color: var(--kuss-muted);
+    font-size: .78rem;
+    line-height: 1.55;
+    font-weight: 400;
+}
+
+/* ============================================================
+   MEETINGS
+   ============================================================ */
+
+.kuss-meetings {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0,1fr));
+    gap: 14px;
+}
+
+.kuss-meeting {
+    padding: 24px;
+    background: white;
+    border: 1px solid var(--kuss-border);
+    border-radius: 14px;
+    box-shadow: var(--kuss-shadow);
+}
+
+.kuss-meeting-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    background: var(--kuss-teal-soft);
+    color: var(--kuss-teal);
+}
+
+.kuss-meeting h4 {
+    margin: 0 0 9px;
+    color: var(--kuss-navy);
+}
+
+.kuss-meeting p {
+    margin: 0;
+    color: var(--kuss-muted);
+    font-size: .86rem;
+    line-height: 1.7;
+}
+
+/* ============================================================
+   OATH
+   ============================================================ */
+
+.kuss-oath {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(28px, 5vw, 50px);
+    background:
+        radial-gradient(circle at 0% 100%, rgba(15,118,110,.18), transparent 30%),
+        linear-gradient(135deg, var(--kuss-navy), var(--kuss-navy-light));
+    border-radius: 18px;
+    box-shadow: var(--kuss-shadow);
+}
+
+.kuss-oath::before {
+    content: "KUSS";
+    position: absolute;
+    right: -20px;
+    top: -20px;
+    color: rgba(255,255,255,.035);
+    font-size: 6rem;
+    font-weight: 900;
+}
+
+.kuss-oath p {
+    position: relative;
+    z-index: 1;
+    margin: 0;
+    color: rgba(255,255,255,.9);
+    font-family: Georgia, serif;
+    font-size: clamp(.95rem, 2vw, 1.08rem);
+    font-style: italic;
+    line-height: 2;
+    text-align: center;
+}
+
+.kuss-oath strong {
+    color: #e5bd69;
+}
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+
+.kuss-empty {
+    padding: 35px 20px;
+    background: white;
+    border: 1px dashed var(--kuss-border);
+    border-radius: 14px;
+    color: var(--kuss-muted);
+    text-align: center;
+}
+
+/* ============================================================
+   CTA
+   ============================================================ */
+
+.kuss-cta {
+    position: relative;
+    overflow: hidden;
+    margin-top: 80px;
+    padding: clamp(35px, 7vw, 65px) 25px;
+    background:
+        radial-gradient(circle at 100% 0%, rgba(198,154,69,.2), transparent 30%),
+        linear-gradient(135deg, var(--kuss-navy), var(--kuss-navy-light));
+    border-radius: 20px;
+    color: white;
+    text-align: center;
+    box-shadow: var(--kuss-shadow);
+}
+
+.kuss-cta h2 {
+    margin: 0 0 12px;
+    color: white;
+    font-family: Georgia, serif;
+    font-size: clamp(1.7rem, 4vw, 2.4rem);
+}
+
+.kuss-cta p {
+    max-width: 620px;
+    margin: 0 auto 27px;
+    color: rgba(255,255,255,.76);
+    font-size: .98rem;
+    line-height: 1.7;
+}
+
+.kuss-cta .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 50px;
+    padding: 13px 28px;
+    border-radius: 10px;
+}
+
+/* ============================================================
+   RESPONSIVE — TABLET
+   ============================================================ */
+
+@media (max-width: 1050px) {
+
+    .kuss-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .kuss-toc {
+        position: static;
+    }
+
+    .kuss-toc-card {
+        display: none;
+    }
+
+    .kuss-meetings {
+        grid-template-columns: repeat(2, minmax(0,1fr));
+    }
+}
+
+/* ============================================================
+   RESPONSIVE — MOBILE
+   ============================================================ */
+
+@media (max-width: 650px) {
+
+    .kuss-constitution-hero {
+        padding: 48px 17px 55px;
+    }
+
+    .kuss-constitution-hero h1 {
+        font-size: 2.3rem;
+    }
+
+    .kuss-constitution-body {
+        padding: 30px 14px 55px;
+    }
+
+    .kuss-section {
+        margin-bottom: 48px;
+    }
+
+    .kuss-section-header {
+        align-items: flex-start;
+    }
+
+    .kuss-section-icon {
+        flex-basis: 38px;
+        width: 38px;
+        height: 38px;
+    }
+
+    .kuss-section-header h2 {
+        font-size: 1.42rem;
+    }
+
+    .kuss-preamble {
+        padding: 25px 20px;
+    }
+
+    .kuss-preamble p {
+        font-size: .95rem;
+        line-height: 1.8;
+    }
+
+    .kuss-objective {
+        grid-template-columns: 33px minmax(0,1fr);
+        gap: 11px;
+        padding: 15px;
+    }
+
+    .kuss-objective-number {
+        width: 31px;
+        height: 31px;
+        font-size: .75rem;
+    }
+
+    .kuss-objective p {
+        font-size: .85rem;
+    }
+
+    .kuss-info-card,
+    .kuss-structure-card {
+        padding: 22px 18px;
+    }
+
+    .founders-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .kuss-meetings {
+        grid-template-columns: 1fr;
+    }
+
+    .kuss-rights {
+        grid-template-columns: 1fr;
+    }
+
+    .kuss-rights-icon {
+        margin-bottom: -2px;
+    }
+
+    .kuss-cta {
+        margin-top: 55px;
+        border-radius: 16px;
+        padding: 38px 18px;
+    }
+
+    .kuss-cta .btn {
+        width: 100%;
+    }
+}
+
+/* ============================================================
+   ACCESSIBILITY
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .kuss-objective,
+    .founder-card,
+    .kuss-toc a {
+        transition: none;
+    }
+}
+</style>
+
+
+<div class="kuss-constitution">
+
+    <!-- ======================================================
+         HERO
+         ====================================================== -->
+
+    <section class="kuss-constitution-hero">
+
+        <div class="kuss-hero-inner">
+
+            <div class="kuss-hero-badge">
+                <i class="fa-solid fa-scroll"></i>
+                Official Society Constitution
             </div>
 
-            <!-- VISION & MISSION -->
-            <h2 class="section-title" style="text-align: left; font-size: 2rem;">
-                <i class="fa-solid fa-eye" style="color: var(--teal); margin-right: 10px;"></i>
-                Our Vision
-            </h2>
-            <div style="background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); padding: 40px; border-radius: 8px; margin-bottom: 40px;">
-                <p style="font-size: 1.4rem; color: var(--white); text-align: center; font-style: italic;">
-                    "To achieve a society that nurtures future holistic surgeons."
-                </p>
-            </div>
+            <h1>The KUSS Constitution</h1>
 
-            <h2 class="section-title" style="text-align: left; font-size: 2rem;">
-                <i class="fa-solid fa-bullseye" style="color: var(--teal); margin-right: 10px;"></i>
-                Our Mission
-            </h2>
-            <p style="font-size: 1.15rem; color: var(--text-dark); margin-bottom: 40px; line-height: 1.8;">
-                To equip society members with the capacity and opportunity to foster their aspirations for a future surgical career through surgical education, research, and mentorship.
+            <p>
+                The foundational document that defines the identity,
+                mission, governance, membership, responsibilities and
+                values of the Kabale University Surgical Society.
             </p>
 
-            <!-- MOTTO -->
-            <h2 class="section-title" style="text-align: left; font-size: 2rem;">
-                <i class="fa-solid fa-quote-left" style="color: var(--teal); margin-right: 10px;"></i>
-                Our Motto
-            </h2>
-            <div style="text-align: center; padding: 40px; background: var(--light-gray); border-radius: 8px; margin-bottom: 60px;">
-                <h3 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; color: var(--navy); margin-bottom: 10px;">
-                    "Supra et Ultra"
-                </h3>
-                <p style="color: var(--teal); font-size: 1.2rem; font-style: italic;">Above and Beyond</p>
-            </div>
-
-            <!-- OBJECTIVES -->
-            <h2 class="section-title" style="text-align: left; font-size: 2rem;">
-                <i class="fa-solid fa-list-check" style="color: var(--teal); margin-right: 10px;"></i>
-                Our Objectives
-            </h2>
-            <p style="margin-bottom: 20px; color: var(--text-light);">As outlined in Article 3 of the Constitution, the objectives of the Society are:</p>
-            <div style="display: grid; gap: 15px; margin-bottom: 60px;">
-                <div style="background: var(--light-gray); padding: 20px; border-left: 4px solid var(--teal); border-radius: 6px;">
-                    <strong style="color: var(--navy);">1.</strong> To advocate, develop and maintain high ethical professional standards among members.
-                </div>
-                <div style="background: var(--light-gray); padding: 20px; border-left: 4px solid var(--teal); border-radius: 6px;">
-                    <strong style="color: var(--navy);">2.</strong> To provide opportunities for medical students to be exposed to the surgical field.
-                </div>
-                <div style="background: var(--light-gray); padding: 20px; border-left: 4px solid var(--teal); border-radius: 6px;">
-                    <strong style="color: var(--navy);">3.</strong> To promote the development of skills necessary for advancing surgical techniques.
-                </div>
-                <div style="background: var(--light-gray); padding: 20px; border-left: 4px solid var(--teal); border-radius: 6px;">
-                    <strong style="color: var(--navy);">4.</strong> To promote a high standard of surgical care.
-                </div>
-                <div style="background: var(--light-gray); padding: 20px; border-left: 4px solid var(--teal); border-radius: 6px;">
-                    <strong style="color: var(--navy);">5.</strong> To liaise with other surgical organizations countrywide and worldwide to create global exchange opportunities.
-                </div>
-                <div style="background: var(--light-gray); padding: 20px; border-left: 4px solid var(--teal); border-radius: 6px;">
-                    <strong style="color: var(--navy);">6.</strong> To establish a mentorship programme between medical students and identified mentoring surgeons.
-                </div>
-                <div style="background: var(--light-gray); padding: 20px; border-left: 4px solid var(--teal); border-radius: 6px;">
-                    <strong style="color: var(--navy);">7.</strong> To conduct and partake in research for the advancement of surgery.
-                </div>
-                <div style="background: var(--light-gray); padding: 20px; border-left: 4px solid var(--teal); border-radius: 6px;">
-                    <strong style="color: var(--navy);">8.</strong> To establish a journal club and surgical skills sessions for members.
-                </div>
-            </div>
-
-            <!-- SECRETARIAT -->
-            <h2 class="section-title" style="text-align: left; font-size: 2rem;">
-                <i class="fa-solid fa-building-columns" style="color: var(--teal); margin-right: 10px;"></i>
-                The Secretariat
-            </h2>
-            <p style="font-size: 1.1rem; margin-bottom: 60px;">
-                The Secretariat of the Society shall be located at the <strong>Department of Surgery, Kabale University School of Medicine, Kabale, Uganda</strong>.
-            </p>
-
-            <!-- MEMBERSHIP CATEGORIES -->
-            <h2 class="section-title" style="text-align: left; font-size: 2rem;">
-                <i class="fa-solid fa-users" style="color: var(--teal); margin-right: 10px;"></i>
-                Membership Categories
-            </h2>
-            <p style="margin-bottom: 20px; color: var(--text-light);">As outlined in Chapter Two of the Constitution, the Society recognizes four categories of membership:</p>
-            
-            {% if tiers %}
-                <table class="fee-table">
-                    <thead>
-                        <tr>
-                            <th>Category</th>
-                            <th>Entrance Fee</th>
-                            <th>Semester Subscription</th>
-                            <th>Eligibility</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for t in tiers %}
-                        <tr>
-                            <td><strong>{{ t.name }}</strong></td>
-                            <td>{{ t.entrance_fee }} UGX</td>
-                            <td>{{ t.subscription_fee }} UGX</td>
-                            <td>{{ t.eligibility }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <div class="empty-state">
-                    <p>Membership fee details are being updated. Please contact the Treasurer for current information.</p>
-                </div>
-            {% endif %}
-
-            <div style="background: var(--light-gray); padding: 25px; border-radius: 8px; margin-top: 30px; margin-bottom: 60px;">
-                <h4 style="color: var(--navy); margin-bottom: 10px;"><i class="fa-solid fa-circle-info" style="color: var(--teal);"></i> Member Rights & Obligations</h4>
-                <p style="color: var(--text-light);">All members have the right to attend all society functions, vote in elections, access society resources, and participate in mentorship programs. Members are obligated to abide by the constitution, pay subscription fees, uphold the society's reputation, and actively participate in society activities.</p>
-            </div>
-
-            <!-- ORGANIZATIONAL STRUCTURE -->
-            <h2 class="section-title" style="text-align: left; font-size: 2rem;">
-                <i class="fa-solid fa-sitemap" style="color: var(--teal); margin-right: 10px;"></i>
-                Organizational Structure
-            </h2>
-            <p style="margin-bottom: 30px; color: var(--text-light);">As per Chapter Three of the Constitution, the Society is governed by the following structures:</p>
-
-            <!-- The Patron -->
-            {% if patron %}
-            <div style="background: var(--light-gray); padding: 30px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid var(--teal);">
-                <h3 style="color: var(--navy); margin-bottom: 10px;">The Patron</h3>
-                <p style="color: var(--text-light); margin-bottom: 15px;">A senior member of the Department of Surgery who provides guidance and oversight to the Society.</p>
-                <p><strong style="color: var(--teal);">Current Patron:</strong> {{ patron.member.first_name }} {{ patron.member.last_name }}</p>
-            </div>
-            {% endif %}
-
-            <!-- Board of Governors -->
-            <div style="background: var(--light-gray); padding: 30px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid var(--teal);">
-                <h3 style="color: var(--navy); margin-bottom: 10px;">The Board of Governors</h3>
-                <p style="color: var(--text-light); margin-bottom: 15px;">The supreme governing body of the Society, responsible for policy-making and strategic direction. Composed of the Patron, University Administration representative, Student Representative, and the Executive Chairperson.</p>
-                {% if board_members %}
-                    <div class="founders-grid" style="margin-top: 20px;">
-                        {% for leader in board_members %}
-                            <div class="founder-card">
-                                <h4>{{ leader.member.first_name }} {{ leader.member.last_name }}</h4>
-                                <p>{{ leader.get_role_display }}</p>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-
-            <!-- Executive Committee -->
-            <div style="background: var(--light-gray); padding: 30px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid var(--teal);">
-                <h3 style="color: var(--navy); margin-bottom: 10px;">The Executive Committee</h3>
-                <p style="color: var(--text-light); margin-bottom: 15px;">The day-to-day management body of the Society, elected annually at the AGM. Composed of five key officers:</p>
-                <ul style="color: var(--text-light); padding-left: 20px; margin-bottom: 20px; line-height: 2;">
-                    <li><strong>Chairperson:</strong> Presides over all meetings and represents the Society.</li>
-                    <li><strong>Vice Chairperson:</strong> Assists the Chairperson and oversees committees.</li>
-                    <li><strong>General Secretary:</strong> Handles correspondence, records, and communications.</li>
-                    <li><strong>Treasurer:</strong> Manages all finances and prepares financial reports.</li>
-                    <li><strong>Publicity Secretary:</strong> Handles media, communications, and event promotion.</li>
-                </ul>
-                {% if executive_members %}
-                    <div class="founders-grid" style="margin-top: 20px;">
-                        {% for leader in executive_members %}
-                            <div class="founder-card">
-                                <h4>{{ leader.member.first_name }} {{ leader.member.last_name }}</h4>
-                                <p>{{ leader.get_role_display }}</p>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-
-            <!-- Standing Committees -->
-            <div style="background: var(--light-gray); padding: 30px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid var(--teal);">
-                <h3 style="color: var(--navy); margin-bottom: 10px;">Standing Committees</h3>
-                <p style="color: var(--text-light); margin-bottom: 15px;">Three specialized committees that drive the core activities of the Society:</p>
-                <ul style="color: var(--text-light); padding-left: 20px; margin-bottom: 20px; line-height: 2;">
-                    <li><strong>Education Committee:</strong> Organizes seminars, workshops, and skills sessions.</li>
-                    <li><strong>Research Committee:</strong> Coordinates journal club, research projects, and publications.</li>
-                    <li><strong>Mentorship & Advocacy Committee:</strong> Manages mentorship programs and global surgery advocacy.</li>
-                </ul>
-                {% if committee_chairs %}
-                    <div class="founders-grid" style="margin-top: 20px;">
-                        {% for leader in committee_chairs %}
-                            <div class="founder-card">
-                                <h4>{{ leader.member.first_name }} {{ leader.member.last_name }}</h4>
-                                <p>{{ leader.get_role_display }}</p>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% endif %}
-            </div>
-
-            <!-- Class Representatives -->
-            {% if class_reps %}
-            <div style="background: var(--light-gray); padding: 30px; border-radius: 8px; margin-bottom: 60px; border-left: 5px solid var(--teal);">
-                <h3 style="color: var(--navy); margin-bottom: 10px;">Class Representatives</h3>
-                <p style="color: var(--text-light); margin-bottom: 15px;">Representatives elected from each medical school class to ensure all students' voices are heard.</p>
-                <div class="founders-grid" style="margin-top: 20px;">
-                    {% for leader in class_reps %}
-                        <div class="founder-card">
-                            <h4>{{ leader.member.first_name }} {{ leader.member.last_name }}</h4>
-                            <p>{{ leader.get_role_display }}</p>
-                        </div>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-
-            <!-- MEETINGS -->
-            <h2 class="section-title" style="text-align: left; font-size: 2rem;">
-                <i class="fa-solid fa-calendar-days" style="color: var(--teal); margin-right: 10px;"></i>
-                Meetings
-            </h2>
-            <div style="display: grid; gap: 20px; margin-bottom: 60px;">
-                <div style="background: var(--light-gray); padding: 25px; border-radius: 8px;">
-                    <h4 style="color: var(--navy); margin-bottom: 10px;">Annual General Meeting (AGM)</h4>
-                    <p style="color: var(--text-light);">Held once per academic year. All members attend. Elections are conducted, reports are presented, and major decisions are made.</p>
-                </div>
-                <div style="background: var(--light-gray); padding: 25px; border-radius: 8px;">
-                    <h4 style="color: var(--navy); margin-bottom: 10px;">Executive Meetings</h4>
-                    <p style="color: var(--text-light);">Held at least once per month. The Executive Committee discusses operational matters and prepares for larger meetings.</p>
-                </div>
-                <div style="background: var(--light-gray); padding: 25px; border-radius: 8px;">
-                    <h4 style="color: var(--navy); margin-bottom: 10px;">Emergency General Meeting (EGM)</h4>
-                    <p style="color: var(--text-light);">Convened by the Chairperson or upon request by two-thirds of the Executive when urgent matters arise.</p>
-                </div>
-            </div>
-
-            <!-- THE KUSS OATH (Appendix II) -->
-            <h2 class="section-title" style="text-align: left; font-size: 2rem;">
-                <i class="fa-solid fa-hand-fist" style="color: var(--teal); margin-right: 10px;"></i>
-                The KUSS Oath
-            </h2>
-            <p style="margin-bottom: 20px; color: var(--text-light);">As stated in Appendix II of the Constitution, every member takes the following oath upon joining:</p>
-            <div style="background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); padding: 40px; border-radius: 8px; margin-bottom: 60px;">
-                <p style="color: var(--white); font-size: 1.1rem; line-height: 2; font-style: italic; text-align: center;">
-                    "I, _______________________, being admitted into the Kabale University Surgical Society, do solemnly swear that I will uphold the Constitution of this Society, dedicate myself to the pursuit of surgical excellence, respect my colleagues and mentors, and strive always to go <strong style="color: var(--teal-light);">Supra et Ultra</strong> — Above and Beyond — in all my endeavors.<br><br>
-                    So help me God."
-                </p>
-            </div>
-
-            <!-- FOUNDING MEMBERS -->
-            <h2 class="section-title" style="text-align: left; font-size: 2rem;">
-                <i class="fa-solid fa-landmark" style="color: var(--teal); margin-right: 10px;"></i>
-                The Constitutional Commission
-            </h2>
-            <p style="margin-bottom: 20px; color: var(--text-light);">As recorded in Appendix I, we honor the founding members who drafted and adopted this Constitution:</p>
-            
-            {% if founders %}
-                <div class="founders-grid">
-                    {% for f in founders %}
-                        <div class="founder-card">
-                            {% if f.picture %}
-                                <img src="{{ f.picture.url }}" alt="{{ f.name }}" style="width: 80px; height: 80px; border-radius: 50%; object-fit: cover; margin-bottom: 10px; border: 3px solid var(--teal);">
-                            {% endif %}
-                            <h4>{{ f.name }}</h4>
-                            <p>{{ f.role_in_commission }}</p>
-                            {% if f.bio_or_contribution %}
-                                <p style="font-size: 0.85rem; color: var(--text-light); margin-top: 10px;">{{ f.bio_or_contribution }}</p>
-                            {% endif %}
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <div class="empty-state">
-                    <p>Founding members information is being added. Please check back soon.</p>
-                </div>
-            {% endif %}
-
-            <!-- CALL TO ACTION -->
-            <div style="text-align: center; margin-top: 80px; padding: 60px; background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 100%); border-radius: 12px;">
-                <h2 style="font-family: 'Playfair Display', serif; color: var(--white); font-size: 2.2rem; margin-bottom: 15px;">Ready to Join Us?</h2>
-                <p style="color: #ccd6f6; font-size: 1.15rem; margin-bottom: 30px; max-width: 600px; margin-left: auto; margin-right: auto;">
-                    By joining KUSS, you become part of a proud tradition of surgical excellence at Kabale University.
-                </p>
-                <a href="{% url 'join' %}" class="btn btn-primary" style="font-size: 1.1rem; padding: 15px 40px;">
-                    <i class="fa-solid fa-user-plus"></i> Apply for Membership
-                </a>
-            </div>
         </div>
+
     </section>
+
+
+    <!-- ======================================================
+         DOCUMENT
+         ====================================================== -->
+
+    <div class="kuss-constitution-body">
+
+        <div class="kuss-layout">
+
+            <!-- ==================================================
+                 DESKTOP TABLE OF CONTENTS
+                 ================================================== -->
+
+            <aside class="kuss-toc">
+
+                <div class="kuss-toc-card">
+
+                    <div class="kuss-toc-title">
+                        <i class="fa-solid fa-list"></i>
+                        Constitution
+                    </div>
+
+                    <a href="#preamble">Preamble</a>
+                    <a href="#vision">Vision & Mission</a>
+                    <a href="#motto">Motto</a>
+                    <a href="#objectives">Objectives</a>
+                    <a href="#secretariat">Secretariat</a>
+                    <a href="#membership">Membership</a>
+                    <a href="#structure">Governance</a>
+                    <a href="#meetings">Meetings</a>
+                    <a href="#oath">KUSS Oath</a>
+                    <a href="#founders">Constitutional Commission</a>
+
+                </div>
+
+            </aside>
+
+
+            <!-- ==================================================
+                 MAIN DOCUMENT
+                 ================================================== -->
+
+            <main class="kuss-document">
+
+
+                <!-- ==================================================
+                     PREAMBLE
+                     ================================================== -->
+
+                <section class="kuss-section" id="preamble">
+
+                    <div class="kuss-section-header">
+
+                        <div class="kuss-section-icon">
+                            <i class="fa-solid fa-scroll"></i>
+                        </div>
+
+                        <div>
+                            <span class="kuss-section-label">
+                                Foundational Statement
+                            </span>
+
+                            <h2>Preamble</h2>
+                        </div>
+
+                    </div>
+
+
+                    <div class="kuss-preamble">
+
+                        <p>
+                            "We, the members of the Kabale University
+                            Surgical Society, united by a common dedication
+                            to the advancement of surgical knowledge and
+                            practice, establish this society to promote
+                            excellence in the field of surgery through
+                            education, research, and mentorship."
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ==================================================
+                     VISION
+                     ================================================== -->
+
+                <section class="kuss-section" id="vision">
+
+                    <div class="kuss-section-header">
+
+                        <div class="kuss-section-icon">
+                            <i class="fa-solid fa-eye"></i>
+                        </div>
+
+                        <div>
+                            <span class="kuss-section-label">
+                                Strategic Direction
+                            </span>
+
+                            <h2>Vision & Mission</h2>
+                        </div>
+
+                    </div>
+
+
+                    <div class="kuss-vision">
+
+                        <p>
+                            "To achieve a society that nurtures future
+                            holistic surgeons."
+                        </p>
+
+                    </div>
+
+
+                    <div style="height:20px;"></div>
+
+
+                    <div class="kuss-mission">
+
+                        <p>
+                            <strong>Mission:</strong>
+                            To equip society members with the capacity and
+                            opportunity to foster their aspirations for a
+                            future surgical career through surgical
+                            education, research, and mentorship.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ==================================================
+                     MOTTO
+                     ================================================== -->
+
+                <section class="kuss-section" id="motto">
+
+                    <div class="kuss-section-header">
+
+                        <div class="kuss-section-icon">
+                            <i class="fa-solid fa-quote-left"></i>
+                        </div>
+
+                        <div>
+                            <span class="kuss-section-label">
+                                Society Identity
+                            </span>
+
+                            <h2>Our Motto</h2>
+                        </div>
+
+                    </div>
+
+
+                    <div class="kuss-motto">
+
+                        <h3>"Supra et Ultra"</h3>
+
+                        <p>Above and Beyond</p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ==================================================
+                     OBJECTIVES
+                     ================================================== -->
+
+                <section class="kuss-section" id="objectives">
+
+                    <div class="kuss-section-header">
+
+                        <div class="kuss-section-icon">
+                            <i class="fa-solid fa-list-check"></i>
+                        </div>
+
+                        <div>
+                            <span class="kuss-section-label">
+                                Article 3
+                            </span>
+
+                            <h2>Our Objectives</h2>
+                        </div>
+
+                    </div>
+
+
+                    <p style="color:var(--kuss-muted); line-height:1.7; margin-bottom:20px;">
+                        As outlined in Article 3 of the Constitution,
+                        the objectives of the Society are:
+                    </p>
+
+
+                    <div class="kuss-objectives">
+
+                        <div class="kuss-objective">
+                            <div class="kuss-objective-number">01</div>
+                            <p>
+                                To advocate, develop and maintain high
+                                ethical professional standards among members.
+                            </p>
+                        </div>
+
+                        <div class="kuss-objective">
+                            <div class="kuss-objective-number">02</div>
+                            <p>
+                                To provide opportunities for medical
+                                students to be exposed to the surgical field.
+                            </p>
+                        </div>
+
+                        <div class="kuss-objective">
+                            <div class="kuss-objective-number">03</div>
+                            <p>
+                                To promote the development of skills
+                                necessary for advancing surgical techniques.
+                            </p>
+                        </div>
+
+                        <div class="kuss-objective">
+                            <div class="kuss-objective-number">04</div>
+                            <p>
+                                To promote a high standard of surgical care.
+                            </p>
+                        </div>
+
+                        <div class="kuss-objective">
+                            <div class="kuss-objective-number">05</div>
+                            <p>
+                                To liaise with other surgical organizations
+                                countrywide and worldwide to create global
+                                exchange opportunities.
+                            </p>
+                        </div>
+
+                        <div class="kuss-objective">
+                            <div class="kuss-objective-number">06</div>
+                            <p>
+                                To establish a mentorship programme between
+                                medical students and identified mentoring
+                                surgeons.
+                            </p>
+                        </div>
+
+                        <div class="kuss-objective">
+                            <div class="kuss-objective-number">07</div>
+                            <p>
+                                To conduct and partake in research for the
+                                advancement of surgery.
+                            </p>
+                        </div>
+
+                        <div class="kuss-objective">
+                            <div class="kuss-objective-number">08</div>
+                            <p>
+                                To establish a journal club and surgical
+                                skills sessions for members.
+                            </p>
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ==================================================
+                     SECRETARIAT
+                     ================================================== -->
+
+                <section class="kuss-section" id="secretariat">
+
+                    <div class="kuss-section-header">
+
+                        <div class="kuss-section-icon">
+                            <i class="fa-solid fa-building-columns"></i>
+                        </div>
+
+                        <div>
+                            <span class="kuss-section-label">
+                                Institutional Headquarters
+                            </span>
+
+                            <h2>The Secretariat</h2>
+                        </div>
+
+                    </div>
+
+
+                    <div class="kuss-info-card">
+
+                        <p>
+                            The Secretariat of the Society shall be located
+                            at the
+                            <strong>
+                                Department of Surgery, Kabale University
+                                School of Medicine, Kabale, Uganda
+                            </strong>.
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ==================================================
+                     MEMBERSHIP
+                     ================================================== -->
+
+                <section class="kuss-section" id="membership">
+
+                    <div class="kuss-section-header">
+
+                        <div class="kuss-section-icon">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+
+                        <div>
+                            <span class="kuss-section-label">
+                                Chapter Two
+                            </span>
+
+                            <h2>Membership Categories</h2>
+                        </div>
+
+                    </div>
+
+
+                    <p style="color:var(--kuss-muted); line-height:1.7; margin-bottom:20px;">
+                        As outlined in Chapter Two of the Constitution,
+                        the Society recognizes four categories of membership:
+                    </p>
+
+
+                    {% if tiers %}
+
+                        <div class="kuss-table-wrapper">
+
+                            <table class="kuss-table">
+
+                                <thead>
+
+                                    <tr>
+                                        <th>Category</th>
+                                        <th>Entrance Fee</th>
+                                        <th>Semester Subscription</th>
+                                        <th>Eligibility</th>
+                                    </tr>
+
+                                </thead>
+
+                                <tbody>
+
+                                    {% for t in tiers %}
+
+                                        <tr>
+
+                                            <td>
+                                                <strong>{{ t.name }}</strong>
+                                            </td>
+
+                                            <td>
+                                                {{ t.entrance_fee }} UGX
+                                            </td>
+
+                                            <td>
+                                                {{ t.subscription_fee }} UGX
+                                            </td>
+
+                                            <td>
+                                                {{ t.eligibility }}
+                                            </td>
+
+                                        </tr>
+
+                                    {% endfor %}
+
+                                </tbody>
+
+                            </table>
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="kuss-empty">
+                            Membership fee details are being updated.
+                            Please contact the Treasurer for current
+                            information.
+                        </div>
+
+                    {% endif %}
+
+
+                    <div class="kuss-rights">
+
+                        <div class="kuss-rights-icon">
+                            <i class="fa-solid fa-circle-info"></i>
+                        </div>
+
+                        <div>
+
+                            <h4>Member Rights &amp; Obligations</h4>
+
+                            <p>
+                                All members have the right to attend all
+                                society functions, vote in elections,
+                                access society resources, and participate
+                                in mentorship programs. Members are obligated
+                                to abide by the constitution, pay subscription
+                                fees, uphold the society's reputation, and
+                                actively participate in society activities.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ==================================================
+                     ORGANIZATIONAL STRUCTURE
+                     ================================================== -->
+
+                <section class="kuss-section" id="structure">
+
+                    <div class="kuss-section-header">
+
+                        <div class="kuss-section-icon">
+                            <i class="fa-solid fa-sitemap"></i>
+                        </div>
+
+                        <div>
+                            <span class="kuss-section-label">
+                                Chapter Three
+                            </span>
+
+                            <h2>Organizational Structure</h2>
+                        </div>
+
+                    </div>
+
+
+                    <p style="color:var(--kuss-muted); line-height:1.7; margin-bottom:22px;">
+                        As per Chapter Three of the Constitution,
+                        the Society is governed by the following structures:
+                    </p>
+
+
+                    <div class="kuss-structure">
+
+
+                        <!-- PATRON -->
+
+                        {% if patron %}
+
+                            <div class="kuss-structure-card">
+
+                                <h3>The Patron</h3>
+
+                                <p>
+                                    A senior member of the Department of
+                                    Surgery who provides guidance and
+                                    oversight to the Society.
+                                </p>
+
+                                <p class="kuss-current">
+                                    <strong>Current Patron:</strong>
+                                    {{ patron.member.first_name }}
+                                    {{ patron.member.last_name }}
+                                </p>
+
+                            </div>
+
+                        {% endif %}
+
+
+                        <!-- BOARD -->
+
+                        <div class="kuss-structure-card">
+
+                            <h3>The Board of Governors</h3>
+
+                            <p>
+                                The supreme governing body of the Society,
+                                responsible for policy-making and strategic
+                                direction. Composed of the Patron, University
+                                Administration representative, Student
+                                Representative, and the Executive Chairperson.
+                            </p>
+
+
+                            {% if board_members %}
+
+                                <div class="founders-grid">
+
+                                    {% for leader in board_members %}
+
+                                        <div class="founder-card">
+
+                                            <h4>
+                                                {{ leader.member.first_name }}
+                                                {{ leader.member.last_name }}
+                                            </h4>
+
+                                            <p>
+                                                {{ leader.get_role_display }}
+                                            </p>
+
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- EXECUTIVE -->
+
+                        <div class="kuss-structure-card">
+
+                            <h3>The Executive Committee</h3>
+
+                            <p>
+                                The day-to-day management body of the Society,
+                                elected annually at the AGM. Composed of five
+                                key officers:
+                            </p>
+
+
+                            <ul class="kuss-roles">
+
+                                <li>
+                                    <strong>Chairperson:</strong>
+                                    Presides over all meetings and represents
+                                    the Society.
+                                </li>
+
+                                <li>
+                                    <strong>Vice Chairperson:</strong>
+                                    Assists the Chairperson and oversees
+                                    committees.
+                                </li>
+
+                                <li>
+                                    <strong>General Secretary:</strong>
+                                    Handles correspondence, records,
+                                    and communications.
+                                </li>
+
+                                <li>
+                                    <strong>Treasurer:</strong>
+                                    Manages all finances and prepares
+                                    financial reports.
+                                </li>
+
+                                <li>
+                                    <strong>Publicity Secretary:</strong>
+                                    Handles media, communications,
+                                    and event promotion.
+                                </li>
+
+                            </ul>
+
+
+                            {% if executive_members %}
+
+                                <div class="founders-grid">
+
+                                    {% for leader in executive_members %}
+
+                                        <div class="founder-card">
+
+                                            <h4>
+                                                {{ leader.member.first_name }}
+                                                {{ leader.member.last_name }}
+                                            </h4>
+
+                                            <p>
+                                                {{ leader.get_role_display }}
+                                            </p>
+
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- COMMITTEES -->
+
+                        <div class="kuss-structure-card">
+
+                            <h3>Standing Committees</h3>
+
+                            <p>
+                                Three specialized committees that drive
+                                the core activities of the Society:
+                            </p>
+
+
+                            <ul class="kuss-roles">
+
+                                <li>
+                                    <strong>Education Committee:</strong>
+                                    Organizes seminars, workshops,
+                                    and skills sessions.
+                                </li>
+
+                                <li>
+                                    <strong>Research Committee:</strong>
+                                    Coordinates journal club, research
+                                    projects, and publications.
+                                </li>
+
+                                <li>
+                                    <strong>Mentorship &amp; Advocacy Committee:</strong>
+                                    Manages mentorship programs and global
+                                    surgery advocacy.
+                                </li>
+
+                            </ul>
+
+
+                            {% if committee_chairs %}
+
+                                <div class="founders-grid">
+
+                                    {% for leader in committee_chairs %}
+
+                                        <div class="founder-card">
+
+                                            <h4>
+                                                {{ leader.member.first_name }}
+                                                {{ leader.member.last_name }}
+                                            </h4>
+
+                                            <p>
+                                                {{ leader.get_role_display }}
+                                            </p>
+
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- CLASS REPRESENTATIVES -->
+
+                        {% if class_reps %}
+
+                            <div class="kuss-structure-card">
+
+                                <h3>Class Representatives</h3>
+
+                                <p>
+                                    Representatives elected from each medical
+                                    school class to ensure all students'
+                                    voices are heard.
+                                </p>
+
+
+                                <div class="founders-grid">
+
+                                    {% for leader in class_reps %}
+
+                                        <div class="founder-card">
+
+                                            <h4>
+                                                {{ leader.member.first_name }}
+                                                {{ leader.member.last_name }}
+                                            </h4>
+
+                                            <p>
+                                                {{ leader.get_role_display }}
+                                            </p>
+
+                                        </div>
+
+                                    {% endfor %}
+
+                                </div>
+
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+                </section>
+
+
+                <!-- ==================================================
+                     MEETINGS
+                     ================================================== -->
+
+                <section class="kuss-section" id="meetings">
+
+                    <div class="kuss-section-header">
+
+                        <div class="kuss-section-icon">
+                            <i class="fa-solid fa-calendar-days"></i>
+                        </div>
+
+                        <div>
+                            <span class="kuss-section-label">
+                                Governance
+                            </span>
+
+                            <h2>Meetings</h2>
+                        </div>
+
+                    </div>
+
+
+                    <div class="kuss-meetings">
+
+                        <div class="kuss-meeting">
+
+                            <div class="kuss-meeting-icon">
+                                <i class="fa-solid fa-calendar-check"></i>
+                            </div>
+
+                            <h4>Annual General Meeting</h4>
+
+                            <p>
+                                Held once per academic year. All members
+                                attend. Elections are conducted, reports
+                                are presented, and major decisions are made.
+                            </p>
+
+                        </div>
+
+
+                        <div class="kuss-meeting">
+
+                            <div class="kuss-meeting-icon">
+                                <i class="fa-solid fa-users-gear"></i>
+                            </div>
+
+                            <h4>Executive Meetings</h4>
+
+                            <p>
+                                Held at least once per month. The Executive
+                                Committee discusses operational matters
+                                and prepares for larger meetings.
+                            </p>
+
+                        </div>
+
+
+                        <div class="kuss-meeting">
+
+                            <div class="kuss-meeting-icon">
+                                <i class="fa-solid fa-triangle-exclamation"></i>
+                            </div>
+
+                            <h4>Emergency General Meeting</h4>
+
+                            <p>
+                                Convened by the Chairperson or upon request
+                                by two-thirds of the Executive when urgent
+                                matters arise.
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ==================================================
+                     OATH
+                     ================================================== -->
+
+                <section class="kuss-section" id="oath">
+
+                    <div class="kuss-section-header">
+
+                        <div class="kuss-section-icon">
+                            <i class="fa-solid fa-hand-fist"></i>
+                        </div>
+
+                        <div>
+                            <span class="kuss-section-label">
+                                Appendix II
+                            </span>
+
+                            <h2>The KUSS Oath</h2>
+                        </div>
+
+                    </div>
+
+
+                    <p style="color:var(--kuss-muted); line-height:1.7; margin-bottom:20px;">
+                        As stated in Appendix II of the Constitution,
+                        every member takes the following oath upon joining:
+                    </p>
+
+
+                    <div class="kuss-oath">
+
+                        <p>
+                            "I, _______________________, being admitted into
+                            the Kabale University Surgical Society, do
+                            solemnly swear that I will uphold the Constitution
+                            of this Society, dedicate myself to the pursuit
+                            of surgical excellence, respect my colleagues
+                            and mentors, and strive always to go
+                            <strong>Supra et Ultra</strong> — Above and Beyond —
+                            in all my endeavors.
+                            <br><br>
+                            So help me God."
+                        </p>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ==================================================
+                     FOUNDING MEMBERS
+                     ================================================== -->
+
+                <section class="kuss-section" id="founders">
+
+                    <div class="kuss-section-header">
+
+                        <div class="kuss-section-icon">
+                            <i class="fa-solid fa-landmark"></i>
+                        </div>
+
+                        <div>
+                            <span class="kuss-section-label">
+                                Appendix I
+                            </span>
+
+                            <h2>The Constitutional Commission</h2>
+                        </div>
+
+                    </div>
+
+
+                    <p style="color:var(--kuss-muted); line-height:1.7; margin-bottom:22px;">
+                        As recorded in Appendix I, we honor the founding
+                        members who drafted and adopted this Constitution:
+                    </p>
+
+
+                    {% if founders %}
+
+                        <div class="founders-grid">
+
+                            {% for f in founders %}
+
+                                <div class="founder-card">
+
+                                    {% if f.picture %}
+
+                                        <img
+                                            src="{{ f.picture.url }}"
+                                            alt="{{ f.name }}"
+                                            loading="lazy"
+                                        >
+
+                                    {% endif %}
+
+
+                                    <h4>
+                                        {{ f.name }}
+                                    </h4>
+
+
+                                    <p>
+                                        {{ f.role_in_commission }}
+                                    </p>
+
+
+                                    {% if f.bio_or_contribution %}
+
+                                        <p class="founder-bio">
+                                            {{ f.bio_or_contribution }}
+                                        </p>
+
+                                    {% endif %}
+
+                                </div>
+
+                            {% endfor %}
+
+                        </div>
+
+                    {% else %}
+
+                        <div class="kuss-empty">
+                            Founding members information is being added.
+                            Please check back soon.
+                        </div>
+
+                    {% endif %}
+
+                </section>
+
+
+                <!-- ==================================================
+                     CTA
+                     ================================================== -->
+
+                <section class="kuss-cta">
+
+                    <h2>Ready to Join KUSS?</h2>
+
+                    <p>
+                        By joining KUSS, you become part of a proud tradition
+                        of surgical education, mentorship, research and
+                        professional development at Kabale University.
+                    </p>
+
+
+                    <a
+                        href="{% url 'join' %}"
+                        class="btn btn-primary"
+                    >
+                        <i class="fa-solid fa-user-plus"></i>
+                        Apply for Membership
+                    </a>
+
+                </section>
+
+
+            </main>
+
+        </div>
+
+    </div>
+
+</div>
+
 {% endblock %}
