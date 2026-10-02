@@ -83,68 +83,23 @@
 
 .kuss-section-heading h2 {
     margin: 0;
+
     font-family: "Playfair Display", Georgia, serif;
     font-size: clamp(2.3rem, 4vw, 4rem);
     line-height: 1.02;
     letter-spacing: -.035em;
+
     color: var(--kuss-ink);
 }
 
 .kuss-section-heading p {
     margin: 20px 0 0;
+
     max-width: 650px;
+
     color: var(--kuss-muted);
     font-size: 1.05rem;
     line-height: 1.75;
-}
-
-
-/* =========================================================
-   TOP NEWS STRIP
-   ========================================================= */
-
-.kuss-news-strip {
-    background: var(--kuss-ink);
-    color: rgba(255,255,255,.8);
-    border-bottom: 1px solid rgba(255,255,255,.08);
-}
-
-.kuss-news-strip-inner {
-    min-height: 46px;
-    display: flex;
-    align-items: center;
-    gap: 18px;
-    font-size: .86rem;
-}
-
-.kuss-news-label {
-    flex: 0 0 auto;
-
-    color: #fff;
-    font-weight: 800;
-    font-size: .68rem;
-    letter-spacing: .16em;
-    text-transform: uppercase;
-}
-
-.kuss-news-divider {
-    width: 1px;
-    height: 18px;
-    background: rgba(255,255,255,.18);
-}
-
-.kuss-news-link {
-    color: rgba(255,255,255,.78);
-    text-decoration: none;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    transition: color .2s ease;
-}
-
-.kuss-news-link:hover {
-    color: #fff;
 }
 
 
@@ -154,7 +109,9 @@
 
 .kuss-hero {
     position: relative;
+
     min-height: 720px;
+
     display: flex;
     align-items: center;
 
@@ -173,6 +130,7 @@
 
 .kuss-hero::after {
     content: "";
+
     position: absolute;
     inset: 0;
 
@@ -192,8 +150,13 @@
     z-index: 2;
 
     display: grid;
-    grid-template-columns: minmax(0, 1.25fr) minmax(320px, .75fr);
+
+    grid-template-columns:
+        minmax(0, 1.25fr)
+        minmax(320px, .75fr);
+
     align-items: center;
+
     gap: 80px;
 }
 
@@ -213,7 +176,9 @@
     margin: 24px 0 0;
 
     font-family: "Playfair Display", Georgia, serif;
+
     font-size: clamp(4rem, 7.5vw, 7.5rem);
+
     line-height: .91;
     letter-spacing: -.055em;
     font-weight: 700;
@@ -226,9 +191,11 @@
 
 .kuss-hero-description {
     max-width: 650px;
+
     margin: 32px 0 0;
 
     color: rgba(255,255,255,.73);
+
     font-size: 1.08rem;
     line-height: 1.8;
 }
@@ -236,17 +203,21 @@
 .kuss-hero-actions {
     display: flex;
     flex-wrap: wrap;
+
     gap: 14px;
+
     margin-top: 38px;
 }
 
 .kuss-btn {
     min-height: 52px;
+
     padding: 0 23px;
 
     display: inline-flex;
     align-items: center;
     justify-content: center;
+
     gap: 10px;
 
     border-radius: 999px;
@@ -254,6 +225,7 @@
 
     font-size: .88rem;
     font-weight: 800;
+
     text-decoration: none;
 
     transition:
@@ -277,6 +249,7 @@
 
 .kuss-btn-outline {
     border-color: rgba(255,255,255,.28);
+
     color: #fff;
     background: transparent;
 }
@@ -297,7 +270,9 @@
     padding: 34px;
 
     background: rgba(255,255,255,.055);
+
     border: 1px solid rgba(255,255,255,.14);
+
     border-radius: 24px;
 
     backdrop-filter: blur(12px);
@@ -305,8 +280,10 @@
 
 .kuss-event-panel-label {
     color: rgba(255,255,255,.52);
+
     font-size: .68rem;
     font-weight: 800;
+
     letter-spacing: .16em;
     text-transform: uppercase;
 }
@@ -315,7 +292,9 @@
     margin: 12px 0 0;
 
     color: #fff;
+
     font-family: "Playfair Display", Georgia, serif;
+
     font-size: 1.8rem;
     line-height: 1.2;
 }
@@ -324,13 +303,25 @@
     margin-top: 14px;
 
     color: rgba(255,255,255,.58);
+
     font-size: .85rem;
     line-height: 1.7;
 }
 
+.kuss-event-meta div {
+    margin-bottom: 3px;
+}
+
+.kuss-event-meta i {
+    width: 18px;
+    margin-right: 5px;
+}
+
 .kuss-countdown {
     display: grid;
+
     grid-template-columns: repeat(4, 1fr);
+
     gap: 8px;
 
     margin-top: 30px;
@@ -338,12 +329,15 @@
 
 .kuss-count-box {
     min-width: 0;
+
     padding: 15px 8px;
 
     text-align: center;
 
     background: rgba(255,255,255,.06);
+
     border: 1px solid rgba(255,255,255,.09);
+
     border-radius: 12px;
 }
 
@@ -351,18 +345,23 @@
     display: block;
 
     color: #fff;
+
     font-size: 1.65rem;
     font-weight: 800;
+
     line-height: 1;
 }
 
 .kuss-count-label {
     display: block;
+
     margin-top: 8px;
 
     color: rgba(255,255,255,.42);
+
     font-size: .58rem;
     font-weight: 800;
+
     letter-spacing: .12em;
     text-transform: uppercase;
 }
@@ -370,13 +369,16 @@
 .kuss-event-link {
     display: inline-flex;
     align-items: center;
+
     gap: 8px;
 
     margin-top: 25px;
 
     color: #B9D1CC;
+
     font-size: .78rem;
     font-weight: 800;
+
     text-decoration: none;
 }
 
@@ -386,16 +388,185 @@
 
 
 /* =========================================================
+   RECENTLY — IMMEDIATELY AFTER HERO
+   ========================================================= */
+
+.kuss-recent {
+    padding: 55px 0;
+
+    background: var(--kuss-white);
+
+    border-bottom: 1px solid var(--kuss-line);
+}
+
+.kuss-recent-card {
+    display: grid;
+
+    grid-template-columns: minmax(0, 1fr) 150px;
+
+    align-items: center;
+
+    gap: 35px;
+
+    padding: 28px 32px;
+
+    background: var(--kuss-paper);
+
+    border: 1px solid var(--kuss-line);
+
+    border-radius: 18px;
+
+    text-decoration: none;
+
+    color: inherit;
+
+    transition:
+        transform .25s ease,
+        border-color .25s ease,
+        box-shadow .25s ease;
+}
+
+.kuss-recent-card:hover {
+    transform: translateY(-3px);
+
+    border-color: #C7D1CF;
+
+    box-shadow: var(--kuss-shadow);
+}
+
+.kuss-recent-label {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-bottom: 13px;
+
+    color: var(--kuss-sage);
+
+    font-size: .66rem;
+    font-weight: 900;
+
+    letter-spacing: .16em;
+    text-transform: uppercase;
+}
+
+.kuss-recent-label::before {
+    content: "";
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: var(--kuss-brass);
+}
+
+.kuss-recent-content h3 {
+    margin: 0;
+
+    color: var(--kuss-ink);
+
+    font-family: "Playfair Display", Georgia, serif;
+
+    font-size: clamp(1.65rem, 3vw, 2.45rem);
+
+    line-height: 1.08;
+    letter-spacing: -.025em;
+}
+
+.kuss-recent-content p {
+    max-width: 700px;
+
+    margin: 10px 0 0;
+
+    color: var(--kuss-muted);
+
+    font-size: .88rem;
+    line-height: 1.7;
+}
+
+.kuss-recent-read {
+    display: inline-flex;
+    align-items: center;
+
+    gap: 8px;
+
+    margin-top: 18px;
+
+    color: var(--kuss-ink);
+
+    font-size: .74rem;
+    font-weight: 800;
+
+    border-bottom: 1px solid var(--kuss-brass);
+
+    padding-bottom: 5px;
+
+    transition:
+        gap .2s ease,
+        color .2s ease;
+}
+
+.kuss-recent-card:hover .kuss-recent-read {
+    gap: 12px;
+    color: var(--kuss-sage);
+}
+
+.kuss-recent-image {
+    width: 150px;
+    height: 115px;
+
+    overflow: hidden;
+
+    border-radius: 12px;
+
+    background: var(--kuss-ivory);
+
+    border: 1px solid var(--kuss-line);
+}
+
+.kuss-recent-image img {
+    width: 100%;
+    height: 100%;
+
+    display: block;
+
+    object-fit: cover;
+
+    transition: transform .45s ease;
+}
+
+.kuss-recent-card:hover .kuss-recent-image img {
+    transform: scale(1.05);
+}
+
+.kuss-recent-empty {
+    padding: 25px 30px;
+
+    color: var(--kuss-muted);
+
+    background: var(--kuss-paper);
+
+    border: 1px dashed var(--kuss-line);
+
+    border-radius: 14px;
+}
+
+
+/* =========================================================
    IDENTITY STRIP
    ========================================================= */
 
 .kuss-identity {
     background: var(--kuss-white);
+
     border-bottom: 1px solid var(--kuss-line);
 }
 
 .kuss-identity-grid {
     display: grid;
+
     grid-template-columns: repeat(3, 1fr);
 }
 
@@ -421,13 +592,17 @@
 
 .kuss-identity-item strong {
     color: var(--kuss-ink);
+
     font-family: "Playfair Display", Georgia, serif;
+
     font-size: 1.35rem;
 }
 
 .kuss-identity-item span {
     margin-top: 5px;
+
     color: var(--kuss-muted);
+
     font-size: .78rem;
 }
 
@@ -438,26 +613,34 @@
 
 .kuss-introduction {
     padding: 120px 0;
+
     background: var(--kuss-paper);
 }
 
 .kuss-intro-grid {
     display: grid;
+
     grid-template-columns: .8fr 1.2fr;
+
     gap: 100px;
+
     align-items: start;
 }
 
 .kuss-intro-large {
     font-family: "Playfair Display", Georgia, serif;
+
     font-size: clamp(2rem, 3.5vw, 3.5rem);
+
     line-height: 1.13;
     letter-spacing: -.035em;
+
     color: var(--kuss-ink);
 }
 
 .kuss-intro-large em {
     color: var(--kuss-sage);
+
     font-style: normal;
 }
 
@@ -469,21 +652,27 @@
     margin: 0 0 22px;
 
     color: var(--kuss-muted);
+
     font-size: 1rem;
+
     line-height: 1.9;
 }
 
 .kuss-text-link {
     display: inline-flex;
     align-items: center;
+
     gap: 9px;
 
     color: var(--kuss-ink);
+
     font-size: .82rem;
     font-weight: 800;
+
     text-decoration: none;
 
     border-bottom: 1px solid var(--kuss-brass);
+
     padding-bottom: 5px;
 }
 
@@ -498,6 +687,7 @@
 
 .kuss-pillars {
     padding: 115px 0;
+
     background: var(--kuss-ivory);
 }
 
@@ -505,21 +695,27 @@
     display: flex;
     align-items: end;
     justify-content: space-between;
+
     gap: 40px;
+
     margin-bottom: 60px;
 }
 
 .kuss-pillars-grid {
     display: grid;
+
     grid-template-columns: repeat(3, 1fr);
+
     border-top: 1px solid var(--kuss-line);
 }
 
 .kuss-pillar {
     position: relative;
+
     padding: 42px 35px 45px;
 
     border-right: 1px solid var(--kuss-line);
+
     transition: background .25s ease;
 }
 
@@ -537,8 +733,10 @@
 
 .kuss-pillar-number {
     color: var(--kuss-brass);
+
     font-size: .7rem;
     font-weight: 900;
+
     letter-spacing: .16em;
 }
 
@@ -546,7 +744,9 @@
     margin: 26px 0 14px;
 
     color: var(--kuss-ink);
+
     font-family: "Playfair Display", Georgia, serif;
+
     font-size: 1.8rem;
 }
 
@@ -554,27 +754,32 @@
     margin: 0;
 
     color: var(--kuss-muted);
+
     font-size: .93rem;
+
     line-height: 1.8;
 }
 
 .kuss-pillar-arrow {
     display: inline-flex;
+
     margin-top: 28px;
 
     color: var(--kuss-sage);
+
     font-size: 1.1rem;
 }
 
 
 /* =========================================================
-   FEATURED UPCOMING EVENT
+   FEATURED UPCOMING EVENT / CALENDAR
    ========================================================= */
 
 .kuss-events {
     padding: 120px 0;
 
     background: var(--kuss-navy);
+
     color: #fff;
 }
 
@@ -598,18 +803,25 @@
     position: relative;
 
     margin-top: 55px;
+
     padding: 46px;
 
     display: grid;
+
     grid-template-columns: 180px 1fr auto;
+
     align-items: center;
+
     gap: 45px;
 
     background: var(--kuss-ink);
+
     border: 1px solid rgba(255,255,255,.1);
+
     border-radius: 22px;
 
     text-decoration: none;
+
     color: #fff;
 
     transition:
@@ -619,12 +831,15 @@
 
 .kuss-feature-event:hover {
     transform: translateY(-4px);
+
     border-color: rgba(183,209,204,.4);
 }
 
 .kuss-feature-date {
     padding-right: 35px;
+
     border-right: 1px solid rgba(255,255,255,.13);
+
     text-align: center;
 }
 
@@ -632,18 +847,24 @@
     display: block;
 
     font-family: "Playfair Display", Georgia, serif;
+
     font-size: 4rem;
+
     line-height: .9;
 }
 
 .kuss-feature-month {
     display: block;
+
     margin-top: 10px;
 
     color: #B9D1CC;
+
     font-size: .7rem;
     font-weight: 900;
+
     letter-spacing: .14em;
+
     text-transform: uppercase;
 }
 
@@ -651,32 +872,41 @@
     margin: 0;
 
     font-family: "Playfair Display", Georgia, serif;
+
     font-size: clamp(1.6rem, 3vw, 2.5rem);
+
     line-height: 1.1;
 }
 
 .kuss-feature-content p {
     max-width: 650px;
+
     margin: 14px 0 0;
 
     color: rgba(255,255,255,.58);
+
     font-size: .9rem;
+
     line-height: 1.7;
 }
 
 .kuss-feature-meta {
     display: flex;
     flex-wrap: wrap;
+
     gap: 18px;
+
     margin-top: 20px;
 
     color: rgba(255,255,255,.5);
+
     font-size: .73rem;
 }
 
 .kuss-feature-meta span {
     display: inline-flex;
     align-items: center;
+
     gap: 7px;
 }
 
@@ -688,9 +918,11 @@
     place-items: center;
 
     border: 1px solid rgba(255,255,255,.18);
+
     border-radius: 50%;
 
     color: #fff;
+
     font-size: 1rem;
 }
 
@@ -701,13 +933,17 @@
 
 .kuss-vision {
     padding: 125px 0;
+
     background: var(--kuss-paper);
 }
 
 .kuss-vision-grid {
     display: grid;
+
     grid-template-columns: 1fr 1fr;
+
     gap: 90px;
+
     align-items: center;
 }
 
@@ -719,11 +955,15 @@
 
 .kuss-vision-quote::before {
     content: "";
+
     position: absolute;
+
     left: 0;
     top: 4px;
     bottom: 4px;
+
     width: 2px;
+
     background: var(--kuss-brass);
 }
 
@@ -731,9 +971,13 @@
     margin: 0;
 
     font-family: "Playfair Display", Georgia, serif;
+
     font-size: clamp(2.2rem, 4vw, 4.1rem);
+
     line-height: 1.05;
+
     letter-spacing: -.035em;
+
     color: var(--kuss-ink);
 }
 
@@ -741,17 +985,20 @@
     margin: 0 0 22px;
 
     color: var(--kuss-muted);
+
     font-size: 1rem;
+
     line-height: 1.85;
 }
 
 
 /* =========================================================
-   NEWS
+   LATEST NEWS
    ========================================================= */
 
 .kuss-news {
     padding: 120px 0;
+
     background: var(--kuss-white);
 }
 
@@ -759,13 +1006,17 @@
     display: flex;
     justify-content: space-between;
     align-items: end;
+
     gap: 30px;
+
     margin-bottom: 55px;
 }
 
 .kuss-news-grid {
     display: grid;
+
     grid-template-columns: 1.35fr .8fr .8fr;
+
     gap: 22px;
 }
 
@@ -776,11 +1027,15 @@
     min-height: 360px;
 
     background: var(--kuss-paper);
+
     border: 1px solid var(--kuss-line);
+
     border-radius: 16px;
 
     overflow: hidden;
+
     text-decoration: none;
+
     color: inherit;
 
     transition:
@@ -791,19 +1046,24 @@
 
 .kuss-news-card:hover {
     transform: translateY(-5px);
+
     border-color: #C7D1CF;
+
     box-shadow: var(--kuss-shadow);
 }
 
 .kuss-news-card-image {
     height: 180px;
+
     overflow: hidden;
+
     background: var(--kuss-ivory);
 }
 
 .kuss-news-card-image img {
     width: 100%;
     height: 100%;
+
     object-fit: cover;
 
     transition: transform .5s ease;
@@ -815,14 +1075,18 @@
 
 .kuss-news-card-content {
     flex: 1;
+
     padding: 25px;
 }
 
 .kuss-news-card-date {
     color: var(--kuss-sage);
+
     font-size: .67rem;
     font-weight: 900;
+
     letter-spacing: .12em;
+
     text-transform: uppercase;
 }
 
@@ -830,8 +1094,11 @@
     margin: 12px 0 0;
 
     color: var(--kuss-ink);
+
     font-family: "Playfair Display", Georgia, serif;
+
     font-size: 1.5rem;
+
     line-height: 1.15;
 }
 
@@ -839,7 +1106,9 @@
     margin: 12px 0 0;
 
     color: var(--kuss-muted);
+
     font-size: .82rem;
+
     line-height: 1.65;
 }
 
@@ -849,9 +1118,11 @@
     justify-content: space-between;
 
     margin-top: auto;
+
     padding: 0 25px 22px;
 
     color: var(--kuss-ink);
+
     font-size: .72rem;
     font-weight: 800;
 }
@@ -873,11 +1144,15 @@
     padding: 70px 80px;
 
     display: grid;
+
     grid-template-columns: 1fr auto;
+
     align-items: center;
+
     gap: 50px;
 
     background: var(--kuss-ink);
+
     border-radius: 24px;
 
     overflow: hidden;
@@ -887,6 +1162,7 @@
     content: "SUPRA ET ULTRA";
 
     position: absolute;
+
     right: -20px;
     bottom: -45px;
 
@@ -894,8 +1170,11 @@
 
     font-size: 5rem;
     font-weight: 900;
+
     letter-spacing: .04em;
+
     white-space: nowrap;
+
     pointer-events: none;
 }
 
@@ -906,9 +1185,13 @@
     margin: 0;
 
     color: #fff;
+
     font-family: "Playfair Display", Georgia, serif;
+
     font-size: clamp(2.3rem, 4vw, 4rem);
+
     line-height: 1;
+
     letter-spacing: -.035em;
 }
 
@@ -917,9 +1200,11 @@
     z-index: 1;
 
     max-width: 600px;
+
     margin: 18px 0 0;
 
     color: rgba(255,255,255,.57);
+
     line-height: 1.75;
 }
 
@@ -932,7 +1217,9 @@
     padding: 45px;
 
     background: var(--kuss-paper);
+
     border: 1px dashed var(--kuss-line);
+
     border-radius: 16px;
 
     color: var(--kuss-muted);
@@ -940,13 +1227,14 @@
 
 
 /* =========================================================
-   RESPONSIVE
+   RESPONSIVE — TABLET
    ========================================================= */
 
 @media (max-width: 1050px) {
 
     .kuss-hero-grid {
         grid-template-columns: 1fr;
+
         gap: 55px;
     }
 
@@ -973,38 +1261,114 @@
 
     .kuss-feature-event {
         grid-template-columns: 140px 1fr auto;
+
         gap: 30px;
     }
 }
 
 
+/* =========================================================
+   RESPONSIVE — MOBILE
+   ========================================================= */
+
 @media (max-width: 780px) {
 
     .kuss-container {
-        width: min(var(--kuss-max), calc(100% - 32px));
+        width: min(
+            var(--kuss-max),
+            calc(100% - 32px)
+        );
     }
 
-    .kuss-news-strip-inner {
-        min-height: 42px;
-    }
 
-    .kuss-news-divider,
-    .kuss-news-label {
-        display: none;
-    }
+    /* HERO */
 
     .kuss-hero {
         min-height: auto;
-        padding: 75px 0 80px;
+
+        padding: 60px 0 48px;
+    }
+
+    .kuss-hero-grid {
+        gap: 35px;
     }
 
     .kuss-hero h1 {
-        font-size: clamp(3.4rem, 15vw, 5rem);
+        font-size: clamp(
+            3.4rem,
+            15vw,
+            5rem
+        );
     }
 
     .kuss-hero-description {
+        margin-top: 24px;
+
         font-size: .98rem;
     }
+
+    .kuss-hero-actions {
+        margin-top: 28px;
+    }
+
+
+    /* COUNTDOWN — PRIORITY ON MOBILE */
+
+    .kuss-event-panel {
+        width: 100%;
+        max-width: none;
+
+        padding: 25px;
+
+        border-radius: 20px;
+    }
+
+    .kuss-event-panel h3 {
+        font-size: 1.55rem;
+    }
+
+    .kuss-countdown {
+        margin-top: 22px;
+    }
+
+    .kuss-count-box {
+        padding: 14px 5px;
+    }
+
+    .kuss-count-number {
+        font-size: 1.45rem;
+    }
+
+
+    /* RECENTLY */
+
+    .kuss-recent {
+        padding: 38px 0;
+    }
+
+    .kuss-recent-card {
+        grid-template-columns: 1fr 105px;
+
+        gap: 20px;
+
+        padding: 23px;
+    }
+
+    .kuss-recent-content h3 {
+        font-size: 1.55rem;
+    }
+
+    .kuss-recent-content p {
+        font-size: .82rem;
+    }
+
+    .kuss-recent-image {
+        width: 105px;
+        height: 85px;
+    }
+
+
+    /* IDENTITY */
 
     .kuss-identity-grid {
         grid-template-columns: 1fr;
@@ -1013,14 +1377,20 @@
     .kuss-identity-item,
     .kuss-identity-item:first-child {
         min-height: 95px;
+
         padding: 20px 0;
+
         border-right: 0;
+
         border-bottom: 1px solid var(--kuss-line);
     }
 
     .kuss-identity-item:last-child {
         border-bottom: 0;
     }
+
+
+    /* SECTIONS */
 
     .kuss-introduction,
     .kuss-pillars,
@@ -1033,12 +1403,17 @@
     .kuss-intro-grid,
     .kuss-vision-grid {
         grid-template-columns: 1fr;
+
         gap: 45px;
     }
+
+
+    /* PILLARS */
 
     .kuss-pillars-header,
     .kuss-news-header {
         display: block;
+
         margin-bottom: 40px;
     }
 
@@ -1049,7 +1424,9 @@
     .kuss-pillar,
     .kuss-pillar:first-child {
         padding: 32px 0;
+
         border-right: 0;
+
         border-bottom: 1px solid var(--kuss-line);
     }
 
@@ -1057,27 +1434,39 @@
         border-bottom: 0;
     }
 
+
+    /* CALENDAR */
+
     .kuss-feature-event {
         grid-template-columns: 1fr;
+
         gap: 25px;
+
         padding: 32px;
     }
 
     .kuss-feature-date {
         padding: 0 0 24px;
+
         border-right: 0;
+
         border-bottom: 1px solid rgba(255,255,255,.13);
+
         text-align: left;
     }
 
     .kuss-feature-day {
         display: inline;
+
         margin-right: 8px;
     }
 
     .kuss-feature-month {
         display: inline;
     }
+
+
+    /* NEWS */
 
     .kuss-news-grid {
         grid-template-columns: 1fr;
@@ -1087,19 +1476,36 @@
         grid-column: auto;
     }
 
+
+    /* CTA */
+
     .kuss-cta {
         padding: 70px 0;
     }
 
     .kuss-cta-box {
         padding: 45px 30px;
+
         grid-template-columns: 1fr;
+
         gap: 30px;
     }
 }
 
 
+/* =========================================================
+   RESPONSIVE — SMALL PHONES
+   ========================================================= */
+
 @media (max-width: 480px) {
+
+    .kuss-container {
+        width: calc(100% - 28px);
+    }
+
+    .kuss-hero {
+        padding-top: 50px;
+    }
 
     .kuss-hero-actions {
         flex-direction: column;
@@ -1109,20 +1515,54 @@
         width: 100%;
     }
 
+
+    /* Make countdown extremely easy to see */
+
+    .kuss-event-panel {
+        padding: 22px;
+    }
+
     .kuss-countdown {
         gap: 5px;
     }
 
     .kuss-count-box {
-        padding: 13px 5px;
+        padding: 13px 4px;
     }
 
     .kuss-count-number {
-        font-size: 1.35rem;
+        font-size: 1.3rem;
     }
 
+    .kuss-count-label {
+        font-size: .51rem;
+    }
+
+
+    /* Recently becomes clean vertical card */
+
+    .kuss-recent-card {
+        grid-template-columns: 1fr;
+
+        gap: 18px;
+
+        padding: 22px;
+    }
+
+    .kuss-recent-image {
+        width: 100%;
+        height: 125px;
+
+        order: -1;
+    }
+
+    .kuss-recent-content h3 {
+        font-size: 1.55rem;
+    }
+
+
     .kuss-event-panel {
-        padding: 25px;
+        border-radius: 18px;
     }
 
     .kuss-feature-event {
@@ -1134,37 +1574,18 @@
 
 <div class="kuss-home">
 
-    <!-- =====================================================
-         LATEST NEWS STRIP
-         ===================================================== -->
-
-    {% if latest_news %}
-    <div class="kuss-news-strip">
-        <div class="kuss-container kuss-news-strip-inner">
-
-            <span class="kuss-news-label">Latest</span>
-
-            <span class="kuss-news-divider"></span>
-
-            <a
-                href="{% url 'news' %}"
-                class="kuss-news-link"
-            >
-                {{ latest_news.0.title }}
-            </a>
-
-        </div>
-    </div>
-    {% endif %}
-
 
     <!-- =====================================================
-         HERO
+         HERO + NEXT EVENT
+         This is intentionally FIRST.
          ===================================================== -->
 
     <section class="kuss-hero">
 
         <div class="kuss-container kuss-hero-grid">
+
+
+            <!-- HERO COPY -->
 
             <div class="kuss-hero-copy">
 
@@ -1205,9 +1626,12 @@
             </div>
 
 
-            <!-- EVENT COUNTDOWN -->
+            <!-- =================================================
+                 NEXT EVENT COUNTDOWN
+                 ================================================= -->
 
             {% if upcoming_events %}
+
             <div class="kuss-event-panel">
 
                 <div class="kuss-event-panel-label">
@@ -1222,50 +1646,104 @@
 
                     <div>
                         <i class="far fa-calendar"></i>
+
                         {{ upcoming_events.0.date|date:"l, d F Y" }}
                     </div>
 
                     {% if upcoming_events.0.time %}
+
                     <div>
                         <i class="far fa-clock"></i>
+
                         {{ upcoming_events.0.time }}
                     </div>
+
                     {% endif %}
 
                     {% if upcoming_events.0.venue %}
+
                     <div>
                         <i class="fas fa-location-dot"></i>
+
                         {{ upcoming_events.0.venue }}
                     </div>
+
                     {% endif %}
 
                 </div>
 
 
+                <!-- COUNTDOWN -->
+
                 <div
                     class="kuss-countdown"
+
                     data-event-date="{{ upcoming_events.0.date|date:'Y-m-d' }}"
+
                     data-event-time="{{ upcoming_events.0.time|default:'00:00' }}"
                 >
 
                     <div class="kuss-count-box">
-                        <span class="kuss-count-number" data-days>00</span>
-                        <span class="kuss-count-label">Days</span>
+
+                        <span
+                            class="kuss-count-number"
+                            data-days
+                        >
+                            00
+                        </span>
+
+                        <span class="kuss-count-label">
+                            Days
+                        </span>
+
                     </div>
 
-                    <div class="kuss-count-box">
-                        <span class="kuss-count-number" data-hours>00</span>
-                        <span class="kuss-count-label">Hours</span>
-                    </div>
 
                     <div class="kuss-count-box">
-                        <span class="kuss-count-number" data-minutes>00</span>
-                        <span class="kuss-count-label">Minutes</span>
+
+                        <span
+                            class="kuss-count-number"
+                            data-hours
+                        >
+                            00
+                        </span>
+
+                        <span class="kuss-count-label">
+                            Hours
+                        </span>
+
                     </div>
 
+
                     <div class="kuss-count-box">
-                        <span class="kuss-count-number" data-seconds>00</span>
-                        <span class="kuss-count-label">Seconds</span>
+
+                        <span
+                            class="kuss-count-number"
+                            data-minutes
+                        >
+                            00
+                        </span>
+
+                        <span class="kuss-count-label">
+                            Minutes
+                        </span>
+
+                    </div>
+
+
+                    <div class="kuss-count-box">
+
+                        <span
+                            class="kuss-count-number"
+                            data-seconds
+                        >
+                            00
+                        </span>
+
+                        <span class="kuss-count-label">
+                            Seconds
+                        </span>
+
                     </div>
 
                 </div>
@@ -1276,10 +1754,92 @@
                     class="kuss-event-link"
                 >
                     View event details
+
                     <i class="fas fa-arrow-right"></i>
                 </a>
 
             </div>
+
+            {% endif %}
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         RECENTLY
+         Immediately after the hero/countdown.
+         ===================================================== -->
+
+    <section class="kuss-recent">
+
+        <div class="kuss-container">
+
+            {% if latest_news %}
+
+            {% with post=latest_news.0 %}
+
+            <a
+                href="{% url 'news' %}"
+                class="kuss-recent-card"
+            >
+
+                <div class="kuss-recent-content">
+
+                    <div class="kuss-recent-label">
+                        Recently
+                    </div>
+
+                    <h3>
+                        {{ post.title }}
+                    </h3>
+
+                    {% if post.content %}
+
+                    <p>
+                        {{ post.content|striptags|truncatewords:25 }}
+                    </p>
+
+                    {% endif %}
+
+                    <span class="kuss-recent-read">
+
+                        Read more
+
+                        <i class="fas fa-arrow-right"></i>
+
+                    </span>
+
+                </div>
+
+
+                {% if post.image %}
+
+                <div class="kuss-recent-image">
+
+                    <img
+                        src="{{ post.image.url }}"
+                        alt="{{ post.title }}"
+                        loading="lazy"
+                    >
+
+                </div>
+
+                {% endif %}
+
+            </a>
+
+            {% endwith %}
+
+            {% else %}
+
+            <div class="kuss-recent-empty">
+
+                No recent KUSS updates have been published yet.
+
+            </div>
+
             {% endif %}
 
         </div>
@@ -1295,9 +1855,12 @@
 
         <div class="kuss-container kuss-identity-grid">
 
+
             <div class="kuss-identity-item">
 
-                <strong>Education</strong>
+                <strong>
+                    Education
+                </strong>
 
                 <span>
                     Building strong clinical foundations
@@ -1305,9 +1868,12 @@
 
             </div>
 
+
             <div class="kuss-identity-item">
 
-                <strong>Research</strong>
+                <strong>
+                    Research
+                </strong>
 
                 <span>
                     Advancing surgical knowledge
@@ -1315,15 +1881,19 @@
 
             </div>
 
+
             <div class="kuss-identity-item">
 
-                <strong>Mentorship</strong>
+                <strong>
+                    Mentorship
+                </strong>
 
                 <span>
                     Connecting students with surgical leaders
                 </span>
 
             </div>
+
 
         </div>
 
@@ -1338,6 +1908,7 @@
 
         <div class="kuss-container kuss-intro-grid">
 
+
             <div>
 
                 <div class="kuss-eyebrow">
@@ -1345,9 +1916,13 @@
                 </div>
 
                 <div class="kuss-intro-large">
+
                     More than a society.
+
                     <br>
+
                     A <em>community</em> preparing for the future of surgery.
+
                 </div>
 
             </div>
@@ -1374,6 +1949,7 @@
                     class="kuss-text-link"
                 >
                     Learn more about KUSS
+
                     <i class="fas fa-arrow-right"></i>
                 </a>
 
@@ -1391,6 +1967,7 @@
     <section class="kuss-pillars">
 
         <div class="kuss-container">
+
 
             <div class="kuss-pillars-header">
 
@@ -1417,6 +1994,7 @@
 
 
             <div class="kuss-pillars-grid">
+
 
                 <article class="kuss-pillar">
 
@@ -1486,6 +2064,7 @@
 
                 </article>
 
+
             </div>
 
         </div>
@@ -1494,12 +2073,13 @@
 
 
     <!-- =====================================================
-         UPCOMING EVENT
+         UPCOMING EVENT / CALENDAR
          ===================================================== -->
 
     <section class="kuss-events">
 
         <div class="kuss-container">
+
 
             <div class="kuss-section-heading">
 
@@ -1521,74 +2101,95 @@
 
             {% if upcoming_events %}
 
-                {% with event=upcoming_events.0 %}
+            {% with event=upcoming_events.0 %}
 
-                <a
-                    href="{% url 'event_detail' event.id %}"
-                    class="kuss-feature-event"
-                >
+            <a
+                href="{% url 'event_detail' event.id %}"
+                class="kuss-feature-event"
+            >
 
-                    <div class="kuss-feature-date">
 
-                        <span class="kuss-feature-day">
-                            {{ event.date|date:"d" }}
+                <div class="kuss-feature-date">
+
+                    <span class="kuss-feature-day">
+                        {{ event.date|date:"d" }}
+                    </span>
+
+                    <span class="kuss-feature-month">
+                        {{ event.date|date:"M Y" }}
+                    </span>
+
+                </div>
+
+
+                <div class="kuss-feature-content">
+
+                    <h3>
+                        {{ event.title }}
+                    </h3>
+
+                    {% if event.description %}
+
+                    <p>
+                        {{ event.description|striptags|truncatewords:32 }}
+                    </p>
+
+                    {% endif %}
+
+
+                    <div class="kuss-feature-meta">
+
+                        {% if event.time %}
+
+                        <span>
+
+                            <i class="far fa-clock"></i>
+
+                            {{ event.time }}
+
                         </span>
 
-                        <span class="kuss-feature-month">
-                            {{ event.date|date:"M Y" }}
-                        </span>
-
-                    </div>
-
-
-                    <div class="kuss-feature-content">
-
-                        <h3>
-                            {{ event.title }}
-                        </h3>
-
-                        {% if event.description %}
-                        <p>
-                            {{ event.description|truncatewords:32 }}
-                        </p>
                         {% endif %}
 
-                        <div class="kuss-feature-meta">
 
-                            {% if event.time %}
-                            <span>
-                                <i class="far fa-clock"></i>
-                                {{ event.time }}
-                            </span>
-                            {% endif %}
+                        {% if event.venue %}
 
-                            {% if event.venue %}
-                            <span>
-                                <i class="fas fa-location-dot"></i>
-                                {{ event.venue }}
-                            </span>
-                            {% endif %}
+                        <span>
 
-                        </div>
+                            <i class="fas fa-location-dot"></i>
+
+                            {{ event.venue }}
+
+                        </span>
+
+                        {% endif %}
 
                     </div>
 
+                </div>
 
-                    <div class="kuss-feature-cta">
-                        <i class="fas fa-arrow-right"></i>
-                    </div>
 
-                </a>
+                <div class="kuss-feature-cta">
 
-                {% endwith %}
+                    <i class="fas fa-arrow-right"></i>
+
+                </div>
+
+
+            </a>
+
+            {% endwith %}
 
             {% else %}
 
-                <div class="kuss-empty">
-                    No upcoming events have been published yet.
-                </div>
+            <div class="kuss-empty">
+
+                No upcoming events have been published yet.
+
+            </div>
 
             {% endif %}
+
 
         </div>
 
@@ -1603,17 +2204,21 @@
 
         <div class="kuss-container kuss-vision-grid">
 
+
             <div>
 
                 <div class="kuss-eyebrow">
                     Our vision
                 </div>
 
+
                 <div class="kuss-vision-quote">
 
                     <blockquote>
+
                         “To achieve a society that nurtures future
                         holistic surgeons.”
+
                     </blockquote>
 
                 </div>
@@ -1641,6 +2246,7 @@
                     class="kuss-text-link"
                 >
                     Explore our mission
+
                     <i class="fas fa-arrow-right"></i>
                 </a>
 
@@ -1659,6 +2265,7 @@
 
         <div class="kuss-container">
 
+
             <div class="kuss-news-header">
 
                 <div class="kuss-section-heading">
@@ -1673,11 +2280,13 @@
 
                 </div>
 
+
                 <a
                     href="{% url 'news' %}"
                     class="kuss-text-link"
                 >
                     View all news
+
                     <i class="fas fa-arrow-right"></i>
                 </a>
 
@@ -1688,12 +2297,14 @@
 
             <div class="kuss-news-grid">
 
+
                 {% for post in latest_news|slice:":3" %}
 
                 <a
                     href="{% url 'news' %}"
                     class="kuss-news-card"
                 >
+
 
                     {% if post.image %}
 
@@ -1722,10 +2333,13 @@
                             {{ post.title }}
                         </h3>
 
+
                         {% if post.content %}
+
                         <p>
                             {{ post.content|striptags|truncatewords:22 }}
                         </p>
+
                         {% endif %}
 
                     </div>
@@ -1741,19 +2355,24 @@
 
                     </div>
 
+
                 </a>
 
                 {% endfor %}
+
 
             </div>
 
             {% else %}
 
             <div class="kuss-empty">
+
                 No news has been published yet.
+
             </div>
 
             {% endif %}
+
 
         </div>
 
@@ -1768,7 +2387,9 @@
 
         <div class="kuss-container">
 
+
             <div class="kuss-cta-box">
+
 
                 <div>
 
@@ -1793,16 +2414,19 @@
                         class="kuss-btn kuss-btn-primary"
                     >
                         Become a member
+
                         <i class="fas fa-arrow-right"></i>
                     </a>
 
                 </div>
+
 
             </div>
 
         </div>
 
     </section>
+
 
 </div>
 
@@ -1812,73 +2436,122 @@
      ========================================================= -->
 
 <script>
+
 document.addEventListener("DOMContentLoaded", function () {
 
-    const countdown = document.querySelector(".kuss-countdown");
+    const countdown =
+        document.querySelector(".kuss-countdown");
 
     if (!countdown) return;
 
-    const date = countdown.dataset.eventDate;
-    const time = countdown.dataset.eventTime || "00:00";
 
-    const target = new Date(`${date}T${time}:00`);
+    const date =
+        countdown.dataset.eventDate;
 
-    const daysEl = countdown.querySelector("[data-days]");
-    const hoursEl = countdown.querySelector("[data-hours]");
-    const minutesEl = countdown.querySelector("[data-minutes]");
-    const secondsEl = countdown.querySelector("[data-seconds]");
+    const time =
+        countdown.dataset.eventTime || "00:00";
+
+
+    const target =
+        new Date(`${date}T${time}:00`);
+
+
+    const daysEl =
+        countdown.querySelector("[data-days]");
+
+    const hoursEl =
+        countdown.querySelector("[data-hours]");
+
+    const minutesEl =
+        countdown.querySelector("[data-minutes]");
+
+    const secondsEl =
+        countdown.querySelector("[data-seconds]");
 
 
     function pad(number) {
+
         return String(number).padStart(2, "0");
+
     }
 
 
     function updateCountdown() {
 
         const now = new Date();
-        const difference = target - now;
+
+        const difference =
+            target - now;
 
 
         if (difference <= 0) {
 
             daysEl.textContent = "00";
+
             hoursEl.textContent = "00";
+
             minutesEl.textContent = "00";
+
             secondsEl.textContent = "00";
 
             return;
+
         }
 
 
-        const totalSeconds = Math.floor(difference / 1000);
+        const totalSeconds =
+            Math.floor(
+                difference / 1000
+            );
 
-        const days = Math.floor(totalSeconds / 86400);
 
-        const hours = Math.floor(
-            (totalSeconds % 86400) / 3600
-        );
+        const days =
+            Math.floor(
+                totalSeconds / 86400
+            );
 
-        const minutes = Math.floor(
-            (totalSeconds % 3600) / 60
-        );
+
+        const hours =
+            Math.floor(
+                (totalSeconds % 86400) / 3600
+            );
+
+
+        const minutes =
+            Math.floor(
+                (totalSeconds % 3600) / 60
+            );
+
 
         const seconds =
             totalSeconds % 60;
 
 
-        daysEl.textContent = pad(days);
-        hoursEl.textContent = pad(hours);
-        minutesEl.textContent = pad(minutes);
-        secondsEl.textContent = pad(seconds);
+        daysEl.textContent =
+            pad(days);
+
+        hoursEl.textContent =
+            pad(hours);
+
+        minutesEl.textContent =
+            pad(minutes);
+
+        secondsEl.textContent =
+            pad(seconds);
+
     }
 
 
     updateCountdown();
 
-    setInterval(updateCountdown, 1000);
+
+    setInterval(
+        updateCountdown,
+        1000
+    );
 
 });
+
 </script>
 
 {% endblock %}
