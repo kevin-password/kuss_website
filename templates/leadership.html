@@ -1,57 +1,723 @@
 {% extends 'base.html' %}
-{% block title %}Leadership - KUSS{% endblock %}
+
+{% block title %}Leadership | KUSS{% endblock %}
+
 {% block content %}
-    <section class="page-header"><h1>Our Leadership</h1><p>The Executive & Board of Governors.</p></section>
-    <section class="section container">
+
+<style>
+    /* =========================================================
+       KUSS LEADERSHIP PAGE
+       ========================================================= */
+
+    .leadership-page {
+        --kuss-teal: var(--teal, #0f766e);
+        --kuss-teal-dark: #0b5f59;
+        --kuss-navy: #102a43;
+        --kuss-gold: #c89b3c;
+        --kuss-bg: #f6f9fb;
+        --kuss-card: #ffffff;
+        --kuss-text: #172b4d;
+        --kuss-muted: #6b7c93;
+        --kuss-border: #e5e9ef;
+        --kuss-shadow: 0 12px 35px rgba(16, 42, 67, 0.08);
+        --kuss-shadow-hover: 0 20px 45px rgba(16, 42, 67, 0.14);
+
+        background: var(--kuss-bg);
+        color: var(--kuss-text);
+        min-height: 100vh;
+    }
+
+    /* =========================================================
+       HERO
+       ========================================================= */
+
+    .leadership-hero {
+        position: relative;
+        overflow: hidden;
+        background:
+            radial-gradient(circle at 85% 20%, rgba(200, 155, 60, 0.16), transparent 28%),
+            radial-gradient(circle at 10% 80%, rgba(15, 118, 110, 0.18), transparent 32%),
+            linear-gradient(135deg, #0b2638 0%, #103d4a 52%, #0f766e 100%);
+        color: white;
+        padding: clamp(55px, 8vw, 95px) 20px;
+    }
+
+    .leadership-hero::before {
+        content: "";
+        position: absolute;
+        width: 320px;
+        height: 320px;
+        border: 1px solid rgba(255,255,255,.09);
+        border-radius: 50%;
+        right: -110px;
+        top: -120px;
+    }
+
+    .leadership-hero::after {
+        content: "";
+        position: absolute;
+        width: 220px;
+        height: 220px;
+        border: 1px solid rgba(255,255,255,.07);
+        border-radius: 50%;
+        right: -30px;
+        bottom: -140px;
+    }
+
+    .leadership-hero-inner {
+        position: relative;
+        z-index: 2;
+        max-width: 1150px;
+        margin: auto;
+        text-align: center;
+    }
+
+    .hero-kicker {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 7px 14px;
+        border: 1px solid rgba(255,255,255,.2);
+        border-radius: 999px;
+        background: rgba(255,255,255,.08);
+        backdrop-filter: blur(8px);
+        font-size: .78rem;
+        font-weight: 700;
+        letter-spacing: .12em;
+        text-transform: uppercase;
+        margin-bottom: 20px;
+    }
+
+    .hero-kicker i {
+        color: #f2ca6b;
+    }
+
+    .leadership-hero h1 {
+        margin: 0;
+        font-size: clamp(2.3rem, 6vw, 4.5rem);
+        line-height: 1.05;
+        font-weight: 800;
+        letter-spacing: -0.04em;
+    }
+
+    .leadership-hero p {
+        max-width: 680px;
+        margin: 20px auto 0;
+        color: rgba(255,255,255,.82);
+        font-size: clamp(.98rem, 2vw, 1.12rem);
+        line-height: 1.75;
+    }
+
+    /* =========================================================
+       CONTENT
+       ========================================================= */
+
+    .leadership-content {
+        max-width: 1200px;
+        margin: auto;
+        padding: clamp(35px, 6vw, 75px) 20px;
+    }
+
+    .section-heading {
+        text-align: center;
+        margin-bottom: 40px;
+    }
+
+    .section-heading h2 {
+        margin: 0 0 10px;
+        color: var(--kuss-navy);
+        font-size: clamp(1.6rem, 3vw, 2.2rem);
+        font-weight: 800;
+    }
+
+    .section-heading p {
+        margin: 0 auto;
+        max-width: 650px;
+        color: var(--kuss-muted);
+        line-height: 1.7;
+    }
+
+    .heading-line {
+        width: 55px;
+        height: 4px;
+        border-radius: 10px;
+        background: linear-gradient(
+            90deg,
+            var(--kuss-teal),
+            var(--kuss-gold)
+        );
+        margin: 16px auto 0;
+    }
+
+    /* =========================================================
+       LEADERS GRID
+       ========================================================= */
+
+    .leaders-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 26px;
+        align-items: stretch;
+    }
+
+    /* =========================================================
+       LEADER CARD
+       ========================================================= */
+
+    .leader-card {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        background: var(--kuss-card);
+        border: 1px solid var(--kuss-border);
+        border-radius: 22px;
+        overflow: hidden;
+        box-shadow: var(--kuss-shadow);
+        transition:
+            transform .28s ease,
+            box-shadow .28s ease,
+            border-color .28s ease;
+    }
+
+    .leader-card:hover {
+        transform: translateY(-7px);
+        box-shadow: var(--kuss-shadow-hover);
+        border-color: rgba(15,118,110,.2);
+    }
+
+    /* top accent */
+    .leader-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(
+            90deg,
+            var(--kuss-teal),
+            var(--kuss-gold)
+        );
+        z-index: 2;
+    }
+
+    /* =========================================================
+       PHOTO
+       ========================================================= */
+
+    .leader-photo-area {
+        position: relative;
+        display: flex;
+        justify-content: center;
+        padding: 32px 25px 20px;
+        background:
+            radial-gradient(
+                circle at 50% 0%,
+                rgba(15,118,110,.09),
+                transparent 60%
+            );
+    }
+
+    .leader-img {
+        width: 145px;
+        height: 145px;
+        border-radius: 50%;
+        object-fit: cover;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 5px solid white;
+        box-shadow:
+            0 0 0 2px rgba(15,118,110,.18),
+            0 12px 25px rgba(16,42,67,.15);
+        background: linear-gradient(
+            135deg,
+            var(--kuss-teal),
+            var(--kuss-navy)
+        );
+        color: white;
+        font-size: 2rem;
+        font-weight: 800;
+        letter-spacing: .03em;
+    }
+
+    /* =========================================================
+       INFO
+       ========================================================= */
+
+    .leader-info {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        padding: 8px 27px 27px;
+        text-align: center;
+    }
+
+    .leader-name {
+        margin: 5px 0 8px;
+        color: var(--kuss-navy);
+        font-size: 1.18rem;
+        line-height: 1.3;
+        font-weight: 800;
+    }
+
+    .leader-role {
+        display: inline-flex;
+        align-self: center;
+        align-items: center;
+        justify-content: center;
+        margin: 0 0 16px;
+        padding: 6px 13px;
+        border-radius: 999px;
+        background: rgba(15,118,110,.09);
+        color: var(--kuss-teal-dark);
+        font-size: .76rem;
+        font-weight: 800;
+        letter-spacing: .04em;
+        text-transform: uppercase;
+    }
+
+    .leader-bio {
+        margin: 0 auto;
+        max-width: 400px;
+        color: var(--kuss-muted);
+        font-size: .9rem;
+        line-height: 1.7;
+    }
+
+    /* =========================================================
+       CONTACT
+       ========================================================= */
+
+    .leader-contact {
+        margin-top: auto;
+        padding-top: 20px;
+    }
+
+    .contact-divider {
+        height: 1px;
+        background: var(--kuss-border);
+        margin-bottom: 15px;
+    }
+
+    .contact-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        text-align: left;
+        margin-bottom: 10px;
+        min-width: 0;
+    }
+
+    .contact-icon {
+        flex: 0 0 31px;
+        width: 31px;
+        height: 31px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 9px;
+        background: rgba(15,118,110,.08);
+        color: var(--kuss-teal);
+        font-size: .8rem;
+    }
+
+    .contact-item a,
+    .contact-item span {
+        min-width: 0;
+        overflow-wrap: anywhere;
+        color: var(--kuss-muted);
+        font-size: .82rem;
+        line-height: 1.4;
+    }
+
+    .contact-item a {
+        color: var(--kuss-teal);
+        text-decoration: none;
+        transition: color .2s ease;
+    }
+
+    .contact-item a:hover {
+        color: var(--kuss-teal-dark);
+        text-decoration: underline;
+    }
+
+    .login-message {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 10px 12px;
+        border-radius: 10px;
+        background: #f7f8fa;
+        color: var(--kuss-muted);
+        font-size: .78rem;
+        text-align: left;
+    }
+
+    .login-message i {
+        color: #8b98a9;
+    }
+
+    .login-message a {
+        color: var(--kuss-teal);
+        font-weight: 800;
+        text-decoration: none;
+    }
+
+    /* =========================================================
+       EMPTY STATE
+       ========================================================= */
+
+    .empty-state {
+        max-width: 600px;
+        margin: 20px auto;
+        padding: 55px 25px;
+        background: white;
+        border: 1px solid var(--kuss-border);
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: var(--kuss-shadow);
+    }
+
+    .empty-state-icon {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 18px;
+        border-radius: 50%;
+        background: rgba(15,118,110,.08);
+        color: var(--kuss-teal);
+        font-size: 1.4rem;
+    }
+
+    .empty-state h3 {
+        margin: 0 0 8px;
+        color: var(--kuss-navy);
+    }
+
+    .empty-state p {
+        margin: 0;
+        color: var(--kuss-muted);
+    }
+
+    /* =========================================================
+       TABLET
+       ========================================================= */
+
+    @media (max-width: 1000px) {
+        .leaders-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+    }
+
+    /* =========================================================
+       MOBILE
+       ========================================================= */
+
+    @media (max-width: 650px) {
+
+        .leadership-hero {
+            padding: 48px 18px 55px;
+        }
+
+        .leadership-hero h1 {
+            font-size: 2.35rem;
+        }
+
+        .leadership-hero p {
+            font-size: .92rem;
+            line-height: 1.65;
+        }
+
+        .leadership-content {
+            padding: 38px 14px 55px;
+        }
+
+        .section-heading {
+            margin-bottom: 28px;
+        }
+
+        .section-heading h2 {
+            font-size: 1.55rem;
+        }
+
+        .leaders-grid {
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+        .leader-card {
+            border-radius: 18px;
+        }
+
+        .leader-photo-area {
+            padding-top: 28px;
+        }
+
+        .leader-img {
+            width: 125px;
+            height: 125px;
+        }
+
+        .leader-info {
+            padding: 5px 20px 22px;
+        }
+
+        .leader-name {
+            font-size: 1.08rem;
+        }
+
+        .leader-role {
+            font-size: .7rem;
+        }
+
+        .leader-bio {
+            font-size: .84rem;
+        }
+    }
+
+    /* =========================================================
+       VERY SMALL PHONES
+       ========================================================= */
+
+    @media (max-width: 380px) {
+
+        .leadership-hero h1 {
+            font-size: 2rem;
+        }
+
+        .hero-kicker {
+            font-size: .68rem;
+        }
+
+        .leader-img {
+            width: 110px;
+            height: 110px;
+        }
+
+        .leader-info {
+            padding-left: 16px;
+            padding-right: 16px;
+        }
+    }
+
+    /* =========================================================
+       REDUCED MOTION ACCESSIBILITY
+       ========================================================= */
+
+    @media (prefers-reduced-motion: reduce) {
+        .leader-card {
+            transition: none;
+        }
+    }
+</style>
+
+
+<div class="leadership-page">
+
+    <!-- =====================================================
+         HERO
+         ===================================================== -->
+    <section class="leadership-hero">
+
+        <div class="leadership-hero-inner">
+
+            <div class="hero-kicker">
+                <i class="fa-solid fa-users"></i>
+                KUSS Executive Leadership
+            </div>
+
+            <h1>Our Leadership</h1>
+
+            <p>
+                Meet the students and leaders entrusted with guiding the
+                Kabale University Surgical Society, advancing mentorship,
+                education, research, advocacy, and professional development.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         MAIN CONTENT
+         ===================================================== -->
+    <main class="leadership-content">
+
+        <div class="section-heading">
+
+            <h2>Executive &amp; Board of Governors</h2>
+
+            <p>
+                Our leadership team works together to strengthen the KUSS
+                community and create meaningful opportunities for medical
+                students to learn, lead, collaborate, and grow.
+            </p>
+
+            <div class="heading-line"></div>
+
+        </div>
+
+
         {% if leaders %}
+
             <div class="leaders-grid">
+
                 {% for leadership in leaders %}
-                    <div class="leader-card">
-                        {% if leadership.member.profile_picture %}
-                            <img src="{{ leadership.member.profile_picture.url }}" alt="{{ leadership.member.first_name }}" class="leader-img">
-                        {% else %}
-                            <div class="leader-img">{{ leadership.member.first_name.0 }}{{ leadership.member.last_name.0 }}</div>
-                        {% endif %}
+
+                    <article class="leader-card">
+
+                        <!-- PROFILE IMAGE -->
+                        <div class="leader-photo-area">
+
+                            {% if leadership.member.profile_picture %}
+
+                                <img
+                                    src="{{ leadership.member.profile_picture.url }}"
+                                    alt="Profile picture of {{ leadership.member.first_name }} {{ leadership.member.last_name }}"
+                                    class="leader-img"
+                                    loading="lazy"
+                                >
+
+                            {% else %}
+
+                                <div
+                                    class="leader-img"
+                                    role="img"
+                                    aria-label="Initials of {{ leadership.member.first_name }} {{ leadership.member.last_name }}"
+                                >
+                                    {{ leadership.member.first_name.0 }}{{ leadership.member.last_name.0 }}
+                                </div>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- INFORMATION -->
                         <div class="leader-info">
-                            <h3 class="leader-name">{{ leadership.member.first_name }} {{ leadership.member.last_name }}</h3>
-                            <p class="leader-role">{{ leadership.get_role_display }}</p>
-                            <p style="color: var(--text-light); margin-bottom: 15px;">{{ leadership.member.bio|default:"Dedicated member of the KUSS Executive." }}</p>
-                            
-                            <!-- Contact Information -->
-                            <div style="margin-top: 15px; padding-top: 15px; border-top: 1px solid #eee;">
-                                <!-- Email ALWAYS public -->
+
+                            <h3 class="leader-name">
+                                {{ leadership.member.first_name }}
+                                {{ leadership.member.last_name }}
+                            </h3>
+
+
+                            <div class="leader-role">
+                                {{ leadership.get_role_display }}
+                            </div>
+
+
+                            <p class="leader-bio">
+                                {{ leadership.member.bio|default:"Dedicated member of the KUSS Executive, committed to serving students and advancing the mission of the society." }}
+                            </p>
+
+
+                            <!-- CONTACT -->
+                            <div class="leader-contact">
+
+                                <div class="contact-divider"></div>
+
+
+                                <!-- EMAIL -->
                                 {% if leadership.member.email %}
-                                    <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 8px; word-break: break-word;">
-                                        <i class="fa-solid fa-envelope" style="color: var(--teal); margin-right: 5px;"></i>
-                                        <a href="mailto:{{ leadership.member.email }}" style="color: var(--teal); text-decoration: none;">
+
+                                    <div class="contact-item">
+
+                                        <div class="contact-icon">
+                                            <i class="fa-solid fa-envelope"></i>
+                                        </div>
+
+                                        <a
+                                            href="mailto:{{ leadership.member.email }}"
+                                            aria-label="Email {{ leadership.member.first_name }} {{ leadership.member.last_name }}"
+                                        >
                                             {{ leadership.member.email }}
                                         </a>
-                                    </p>
+
+                                    </div>
+
                                 {% endif %}
-                                
-                                <!-- Phone ONLY for logged-in members -->
+
+
+                                <!-- PHONE -->
                                 {% if request.session.member_id %}
+
                                     {% if leadership.member.phone_number %}
-                                        <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 8px;">
-                                            <i class="fa-solid fa-phone" style="color: var(--teal); margin-right: 5px;"></i>
-                                            <a href="tel:{{ leadership.member.phone_number }}" style="color: var(--teal); text-decoration: none;">
+
+                                        <div class="contact-item">
+
+                                            <div class="contact-icon">
+                                                <i class="fa-solid fa-phone"></i>
+                                            </div>
+
+                                            <a
+                                                href="tel:{{ leadership.member.phone_number }}"
+                                                aria-label="Call {{ leadership.member.first_name }} {{ leadership.member.last_name }}"
+                                            >
                                                 {{ leadership.member.phone_number }}
                                             </a>
-                                        </p>
+
+                                        </div>
+
                                     {% endif %}
+
                                 {% else %}
-                                    <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 8px; font-style: italic;">
-                                        <i class="fa-solid fa-lock" style="color: var(--text-light); margin-right: 5px;"></i>
-                                        <a href="{% url 'login' %}" style="color: var(--teal); text-decoration: none; font-weight: 600;">Login</a> to view phone
-                                    </p>
+
+                                    <div class="login-message">
+
+                                        <i class="fa-solid fa-lock"></i>
+
+                                        <span>
+                                            <a href="{% url 'login' %}">
+                                                Login
+                                            </a>
+                                            to view phone number
+                                        </span>
+
+                                    </div>
+
                                 {% endif %}
+
                             </div>
+
                         </div>
-                    </div>
+
+                    </article>
+
                 {% endfor %}
+
             </div>
+
+
         {% else %}
-            <div class="empty-state"><h3>Leadership information coming soon.</h3></div>
+
+            <!-- EMPTY STATE -->
+
+            <div class="empty-state">
+
+                <div class="empty-state-icon">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+
+                <h3>
+                    Leadership information coming soon
+                </h3>
+
+                <p>
+                    KUSS leadership profiles will appear here once they
+                    have been published.
+                </p>
+
+            </div>
+
         {% endif %}
-    </section>
+
+    </main>
+
+</div>
+
 {% endblock %}
