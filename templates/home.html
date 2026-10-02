@@ -7,32 +7,47 @@
 <style>
 
 /* =========================================================
-   KUSS HOMEPAGE
-   Premium Executive Design
+   KUSS HOMEPAGE — PREMIUM DESIGN SYSTEM
 ========================================================= */
 
 .kuss-home {
-    --navy: #07182d;
-    --navy-light: #0d2944;
-    --teal: #00796b;
-    --teal-light: #63d5cb;
-    --light-gray: #f4f7f8;
-    --white: #ffffff;
-    --text-dark: #17232d;
-    --text-light: #687781;
 
-    background: var(--white);
-    color: var(--text-dark);
+    --kh-navy: #07182d;
+    --kh-navy-2: #0b243b;
+
+    --kh-teal: #078f83;
+    --kh-teal-light: #6ad8cf;
+    --kh-teal-soft: #edf8f7;
+
+    --kh-ink: #132331;
+    --kh-muted: #697983;
+    --kh-line: #e4eaed;
+    --kh-soft: #f5f8f9;
+    --kh-white: #ffffff;
 
     font-family: "Inter", sans-serif;
+
+    color: var(--kh-ink);
+
+    background: var(--kh-white);
 
     overflow: hidden;
 }
 
 
 /* =========================================================
-   CONTAINER
+   GLOBAL
 ========================================================= */
+
+.kuss-home *,
+.kuss-home *::before,
+.kuss-home *::after {
+    box-sizing: border-box;
+}
+
+.kuss-home a {
+    text-decoration: none;
+}
 
 .kh-container {
     width: min(1180px, calc(100% - 40px));
@@ -45,59 +60,116 @@
 ========================================================= */
 
 .kh-breaking {
-    position: relative;
-    z-index: 20;
 
-    background: var(--navy);
+    position: relative;
+    z-index: 100;
+
+    min-height: 52px;
+
+    display: flex;
+    align-items: center;
+
+    color: #fff;
+
+    background: var(--kh-navy);
 
     border-bottom: 1px solid rgba(255,255,255,.08);
 
-    color: #fff;
+    box-shadow:
+        0 8px 30px rgba(0,0,0,.08);
+}
+
+.kh-breaking::after {
+
+    content: "";
+
+    position: absolute;
+
+    top: 0;
+    left: -100%;
+
+    width: 50%;
+    height: 100%;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            rgba(255,255,255,.035),
+            transparent
+        );
+
+    animation: khNewsShine 8s linear infinite;
+
+    pointer-events: none;
+}
+
+@keyframes khNewsShine {
+
+    0% {
+        left: -60%;
+    }
+
+    100% {
+        left: 120%;
+    }
+
 }
 
 .kh-breaking-inner {
+
     width: min(1180px, calc(100% - 40px));
-    min-height: 48px;
+
+    min-height: 52px;
 
     margin: 0 auto;
 
     display: flex;
+
     align-items: center;
 
     gap: 20px;
 }
 
 .kh-breaking-label {
+
     flex-shrink: 0;
 
-    display: inline-flex;
+    display: flex;
+
     align-items: center;
 
     gap: 9px;
 
-    padding-right: 18px;
+    padding-right: 19px;
 
-    border-right: 1px solid rgba(255,255,255,.16);
+    border-right: 1px solid rgba(255,255,255,.13);
 
-    font-size: .65rem;
+    color: var(--kh-teal-light);
+
+    font-size: .62rem;
+
     font-weight: 900;
 
-    letter-spacing: .14em;
+    letter-spacing: .17em;
+
     text-transform: uppercase;
 }
 
 .kh-breaking-dot {
+
     width: 7px;
     height: 7px;
 
     border-radius: 50%;
 
-    background: #55d98d;
+    background: var(--kh-teal-light);
 
     box-shadow:
-        0 0 0 5px rgba(85,217,141,.10);
+        0 0 0 5px rgba(106,216,207,.08);
 
-    animation: khPulse 2s infinite;
+    animation:
+        khPulse 2s ease-in-out infinite;
 }
 
 @keyframes khPulse {
@@ -108,62 +180,81 @@
     }
 
     50% {
-        opacity: .55;
-        transform: scale(.75);
+        opacity: .5;
+        transform: scale(.78);
     }
+
 }
 
 .kh-breaking-content {
+
     min-width: 0;
 
+    flex: 1;
+
     display: flex;
+
     align-items: center;
 
-    gap: 14px;
+    gap: 15px;
 
     overflow: hidden;
 }
 
 .kh-breaking-date {
+
     flex-shrink: 0;
 
-    color: var(--teal-light);
+    color: rgba(255,255,255,.40);
 
-    font-size: .63rem;
-    font-weight: 800;
+    font-size: .60rem;
 
-    letter-spacing: .04em;
+    font-weight: 700;
 }
 
 .kh-breaking-title {
+
     min-width: 0;
 
     overflow: hidden;
 
-    text-overflow: ellipsis;
     white-space: nowrap;
 
-    color: rgba(255,255,255,.88);
+    text-overflow: ellipsis;
 
-    font-size: .76rem;
+    color: rgba(255,255,255,.84);
+
+    font-size: .71rem;
+
     font-weight: 600;
 }
 
 .kh-breaking-link {
+
     flex-shrink: 0;
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 7px;
 
     color: #fff;
 
-    font-size: .68rem;
+    font-size: .62rem;
+
     font-weight: 800;
 
-    text-decoration: none;
-
-    transition: color .2s ease;
+    transition:
+        color .2s ease,
+        transform .2s ease;
 }
 
 .kh-breaking-link:hover {
-    color: var(--teal-light);
+
+    color: var(--kh-teal-light);
+
+    transform: translateX(2px);
 }
 
 
@@ -172,93 +263,137 @@
 ========================================================= */
 
 .kh-hero {
+
+    --hero-navy: #061426;
+    --hero-navy-2: #0a2138;
+    --hero-teal: #0b8f83;
+    --hero-teal-light: #69d8cf;
+
     position: relative;
 
-    min-height: 680px;
+    min-height: 700px;
 
     display: flex;
+
     align-items: center;
 
-    background:
-        radial-gradient(
-            circle at 85% 20%,
-            rgba(0,121,107,.22),
-            transparent 30%
-        ),
-        linear-gradient(
-            135deg,
-            #041225 0%,
-            #07182d 55%,
-            #0b2b3c 100%
-        );
+    overflow: hidden;
 
     color: #fff;
 
-    overflow: hidden;
+    background:
+        radial-gradient(
+            circle at 78% 45%,
+            rgba(11,143,131,.17),
+            transparent 31%
+        ),
+        radial-gradient(
+            circle at 100% 0%,
+            rgba(105,216,207,.08),
+            transparent 30%
+        ),
+        linear-gradient(
+            125deg,
+            var(--hero-navy) 0%,
+            var(--hero-navy-2) 100%
+        );
 }
 
 
-/* decorative background */
+/* background grid */
 
 .kh-hero::before {
+
     content: "";
 
     position: absolute;
 
-    width: 700px;
-    height: 700px;
+    inset: 0;
 
-    right: -260px;
-    top: -300px;
+    opacity: .17;
 
-    border: 1px solid rgba(99,213,203,.12);
+    background-image:
+        linear-gradient(
+            rgba(255,255,255,.035) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,.035) 1px,
+            transparent 1px
+        );
+
+    background-size: 72px 72px;
+
+    mask-image:
+        linear-gradient(
+            to right,
+            transparent,
+            black 32%,
+            black 100%
+        );
+
+    pointer-events: none;
+}
+
+
+/* giant orbital decoration */
+
+.kh-hero::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 780px;
+    height: 780px;
+
+    right: -300px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    border:
+        1px solid
+        rgba(105,216,207,.09);
 
     border-radius: 50%;
 
     box-shadow:
-        0 0 0 90px rgba(99,213,203,.025),
-        0 0 0 180px rgba(99,213,203,.018);
+        0 0 0 75px
+        rgba(105,216,207,.018),
+
+        0 0 0 150px
+        rgba(105,216,207,.012);
 
     pointer-events: none;
 }
 
-.kh-hero::after {
-    content: "";
-
-    position: absolute;
-
-    width: 320px;
-    height: 320px;
-
-    left: -190px;
-    bottom: -180px;
-
-    border: 1px solid rgba(255,255,255,.06);
-
-    border-radius: 50%;
-
-    pointer-events: none;
-}
 
 .kh-hero-inner {
+
     position: relative;
-    z-index: 3;
 
-    width: min(1180px, calc(100% - 40px));
+    z-index: 5;
 
-    margin: 0 auto;
+    width: min(
+        1180px,
+        calc(100% - 40px)
+    );
+
+    margin: auto;
 
     display: grid;
 
     grid-template-columns:
         minmax(0, 1fr)
-        minmax(390px, 450px);
+        minmax(470px, .82fr);
 
     align-items: center;
 
-    gap: 65px;
+    gap: 55px;
 
-    padding: 75px 0;
+    padding: 90px 0;
 }
 
 
@@ -267,82 +402,99 @@
 ========================================================= */
 
 .kh-hero-copy {
-    max-width: 670px;
+
+    position: relative;
+
+    z-index: 5;
+
+    max-width: 650px;
 }
 
 .kh-eyebrow {
+
     display: inline-flex;
 
     align-items: center;
 
-    gap: 10px;
+    gap: 12px;
 
-    margin-bottom: 25px;
+    margin-bottom: 28px;
 
-    color: var(--teal-light);
+    color: var(--hero-teal-light);
 
-    font-size: .69rem;
-    font-weight: 900;
+    font-size: .67rem;
 
-    letter-spacing: .18em;
+    font-weight: 800;
+
+    letter-spacing: .2em;
+
     text-transform: uppercase;
 }
 
 .kh-eyebrow::before {
+
     content: "";
 
-    width: 30px;
-    height: 2px;
+    width: 34px;
+    height: 1px;
 
-    background: var(--teal-light);
+    background:
+        var(--hero-teal-light);
 }
 
 .kh-hero h1 {
+
     margin: 0;
 
-    max-width: 680px;
+    font-family:
+        "Playfair Display",
+        serif;
 
-    font-family: "Playfair Display", serif;
-
-    font-size: clamp(
-        3.2rem,
-        6vw,
-        5.7rem
-    );
-
-    line-height: .98;
-
-    letter-spacing: -.045em;
+    font-size:
+        clamp(
+            3.5rem,
+            6vw,
+            6rem
+        );
 
     font-weight: 700;
+
+    line-height: .95;
+
+    letter-spacing: -.055em;
 }
 
 .kh-hero h1 span {
+
     display: block;
 
-    color: var(--teal-light);
+    color:
+        var(--hero-teal-light);
 }
 
 .kh-hero-description {
-    max-width: 590px;
+
+    max-width: 570px;
 
     margin: 30px 0 0;
 
-    color: rgba(255,255,255,.66);
+    color:
+        rgba(255,255,255,.58);
 
-    font-size: 1rem;
+    font-size: .94rem;
 
-    line-height: 1.85;
+    line-height: 1.9;
 }
 
 .kh-hero-actions {
+
     display: flex;
 
-    flex-wrap: wrap;
+    align-items: center;
 
-    gap: 13px;
+    gap: 12px;
 
-    margin-top: 35px;
+    margin-top: 34px;
 }
 
 
@@ -351,7 +503,8 @@
 ========================================================= */
 
 .kh-btn {
-    min-height: 50px;
+
+    min-height: 48px;
 
     display: inline-flex;
 
@@ -361,329 +514,344 @@
 
     gap: 9px;
 
-    padding: 0 22px;
+    padding: 0 21px;
 
-    border: 1px solid transparent;
+    font-size: .68rem;
 
-    font-size: .72rem;
     font-weight: 900;
 
-    letter-spacing: .04em;
+    letter-spacing: .035em;
 
-    text-decoration: none;
+    border: 1px solid transparent;
 
     transition:
         transform .25s ease,
         background .25s ease,
-        border-color .25s ease;
+        border-color .25s ease,
+        box-shadow .25s ease;
 }
 
 .kh-btn-primary {
+
     color: #fff;
 
-    background: var(--teal);
+    background:
+        var(--kh-teal);
+
+    box-shadow:
+        0 10px 25px
+        rgba(7,143,131,.16);
 }
 
 .kh-btn-primary:hover {
+
     color: #fff;
 
-    background: #009688;
+    background:
+        #0aa497;
 
-    transform: translateY(-2px);
+    transform:
+        translateY(-2px);
+
+    box-shadow:
+        0 14px 30px
+        rgba(7,143,131,.24);
 }
 
 .kh-btn-outline {
+
     color: #fff;
 
-    border-color: rgba(255,255,255,.22);
+    background:
+        rgba(255,255,255,.025);
 
-    background: rgba(255,255,255,.035);
+    border-color:
+        rgba(255,255,255,.19);
 }
 
 .kh-btn-outline:hover {
+
     color: #fff;
 
-    border-color: var(--teal-light);
+    background:
+        rgba(255,255,255,.06);
 
-    background: rgba(99,213,203,.08);
+    border-color:
+        var(--hero-teal-light);
 
-    transform: translateY(-2px);
+    transform:
+        translateY(-2px);
 }
 
 
 /* =========================================================
-   HERO VISUAL / COUNTDOWN
+   HERO VISUAL
 ========================================================= */
 
 .kh-hero-visual {
+
     position: relative;
+
+    min-height: 500px;
 
     display: flex;
 
     align-items: center;
-    justify-content: center;
 
-    min-height: 430px;
+    justify-content: center;
 }
 
 
 /* =========================================================
-   COUNTDOWN CARD
+   EVENT ORBIT
 ========================================================= */
 
-.kh-countdown-card {
+.kh-event-orbit {
+
     position: relative;
-    z-index: 5;
 
-    width: min(440px, 100%);
-
-    padding: 31px;
-
-    color: #fff;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255,255,255,.095),
-            rgba(255,255,255,.035)
-        );
-
-    border: 1px solid rgba(255,255,255,.15);
-
-    box-shadow:
-        0 30px 80px rgba(0,0,0,.25);
-
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-
-    overflow: hidden;
-}
-
-.kh-countdown-card::before {
-    content: "";
-
-    position: absolute;
-
-    width: 220px;
-    height: 220px;
-
-    right: -110px;
-    top: -110px;
-
-    border: 1px solid rgba(99,213,203,.18);
-
-    border-radius: 50%;
-
-    box-shadow:
-        0 0 0 35px rgba(99,213,203,.025),
-        0 0 0 70px rgba(99,213,203,.015);
-
-    pointer-events: none;
-}
-
-.kh-countdown-card::after {
-    content: "";
-
-    position: absolute;
-
-    left: 0;
-    top: 0;
-
-    width: 3px;
-    height: 100%;
-
-    background:
-        linear-gradient(
-            to bottom,
-            #63d5cb,
-            #00796b
-        );
-}
-
-
-/* top */
-
-.kh-countdown-top {
-    position: relative;
-    z-index: 2;
+    width: 445px;
+    height: 445px;
 
     display: flex;
 
     align-items: center;
 
-    justify-content: space-between;
-
-    margin-bottom: 27px;
-
-    color: rgba(255,255,255,.55);
+    justify-content: center;
 }
 
-.kh-countdown-top > i {
-    color: var(--teal-light);
 
-    font-size: 1.15rem;
+/* outer ring */
+
+.kh-event-orbit::before {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 0;
+
+    border:
+        1px solid
+        rgba(105,216,207,.18);
+
+    border-radius: 50%;
 }
 
-.kh-countdown-status {
-    display: inline-flex;
+
+/* rotating inner ring */
+
+.kh-event-orbit::after {
+
+    content: "";
+
+    position: absolute;
+
+    inset: 32px;
+
+    border:
+        1px dashed
+        rgba(255,255,255,.10);
+
+    border-radius: 50%;
+
+    animation:
+        khOrbitSpin 45s linear infinite;
+}
+
+@keyframes khOrbitSpin {
+
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
+
+}
+
+
+/* orbit marker */
+
+.kh-orbit-point {
+
+    position: absolute;
+
+    width: 10px;
+    height: 10px;
+
+    top: 15px;
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    z-index: 10;
+
+    background:
+        var(--hero-teal-light);
+
+    border-radius: 50%;
+
+    box-shadow:
+        0 0 0 7px
+        rgba(105,216,207,.08),
+
+        0 0 25px
+        rgba(105,216,207,.35);
+}
+
+
+/* =========================================================
+   EVENT CENTER
+========================================================= */
+
+.kh-event-center {
+
+    position: relative;
+
+    z-index: 5;
+
+    width: 330px;
+    height: 330px;
+
+    display: flex;
+
+    flex-direction: column;
 
     align-items: center;
 
-    gap: 9px;
+    justify-content: center;
 
-    color: var(--teal-light);
+    text-align: center;
 
-    font-size: .66rem;
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle at 50% 38%,
+            rgba(11,143,131,.18),
+            rgba(4,18,36,.97) 65%
+        );
+
+    border:
+        1px solid
+        rgba(255,255,255,.10);
+
+    box-shadow:
+        0 30px 90px
+        rgba(0,0,0,.32),
+
+        inset 0 0 50px
+        rgba(11,143,131,.06);
+}
+
+
+/* label */
+
+.kh-event-label {
+
+    margin-bottom: 10px;
+
+    color:
+        var(--hero-teal-light);
+
+    font-size: .57rem;
 
     font-weight: 900;
 
-    letter-spacing: .16em;
+    letter-spacing: .2em;
 
     text-transform: uppercase;
 }
 
-.kh-countdown-live-dot {
-    width: 7px;
-    height: 7px;
 
-    border-radius: 50%;
+/* event title */
 
-    background: var(--teal-light);
+.kh-event-center h2 {
 
-    box-shadow:
-        0 0 0 5px rgba(99,213,203,.09);
-}
+    max-width: 250px;
 
-
-/* content */
-
-.kh-countdown-content {
-    position: relative;
-
-    z-index: 2;
-}
-
-.kh-countdown-label {
-    display: block;
-
-    margin-bottom: 9px;
-
-    color: rgba(255,255,255,.43);
-
-    font-size: .61rem;
-
-    font-weight: 800;
-
-    letter-spacing: .18em;
-
-    text-transform: uppercase;
-}
-
-.kh-countdown-content h2 {
-    margin: 0 0 19px;
-
-    max-width: 370px;
+    margin: 0 0 18px;
 
     color: #fff;
 
-    font-family: "Playfair Display", serif;
+    font-family:
+        "Playfair Display",
+        serif;
 
-    font-size: clamp(
-        1.65rem,
-        3vw,
-        2.2rem
-    );
+    font-size: 1.45rem;
 
-    line-height: 1.18;
-
-    letter-spacing: -.025em;
+    line-height: 1.15;
 }
 
 
-/* event information */
+/* event date */
 
-.kh-countdown-meta {
-    display: flex;
+.kh-event-date {
 
-    flex-wrap: wrap;
+    margin-bottom: 20px;
 
-    gap: 9px 16px;
+    color:
+        rgba(255,255,255,.45);
 
-    margin-bottom: 27px;
+    font-size: .64rem;
 
-    color: rgba(255,255,255,.58);
-
-    font-size: .69rem;
-}
-
-.kh-countdown-meta span {
-    display: inline-flex;
-
-    align-items: center;
-
-    gap: 6px;
-}
-
-.kh-countdown-meta i {
-    color: var(--teal-light);
+    font-weight: 700;
 }
 
 
 /* =========================================================
-   TIMER
+   COUNTDOWN
 ========================================================= */
 
 .kh-countdown {
-    display: grid;
 
-    grid-template-columns:
-        1fr auto 1fr auto 1fr auto 1fr;
+    display: flex;
 
-    align-items: center;
+    align-items: flex-start;
+
+    justify-content: center;
 
     gap: 8px;
-
-    margin: 4px 0 27px;
-
-    padding: 18px 13px;
-
-    background: rgba(0,0,0,.18);
-
-    border: 1px solid rgba(255,255,255,.07);
 }
 
 .kh-countdown-unit {
-    min-width: 0;
+
+    min-width: 48px;
 
     text-align: center;
 }
 
 .kh-countdown-unit strong {
+
     display: block;
 
     color: #fff;
 
-    font-size: clamp(
-        1.55rem,
-        3vw,
-        2.15rem
-    );
+    font-size: 1.75rem;
 
-    font-weight: 800;
+    font-weight: 700;
 
     line-height: 1;
 
-    font-variant-numeric: tabular-nums;
+    letter-spacing: -.04em;
+
+    font-variant-numeric:
+        tabular-nums;
 }
 
 .kh-countdown-unit span {
+
     display: block;
 
-    margin-top: 7px;
+    margin-top: 6px;
 
-    color: rgba(255,255,255,.40);
+    color:
+        rgba(255,255,255,.32);
 
-    font-size: .52rem;
+    font-size: .45rem;
 
     font-weight: 800;
 
@@ -693,90 +861,214 @@
 }
 
 .kh-countdown-separator {
-    color: rgba(99,213,203,.55);
 
-    font-size: 1.35rem;
+    padding-top: 1px;
 
-    font-weight: 300;
+    color:
+        rgba(105,216,207,.55);
 
-    padding-bottom: 14px;
+    font-size: 1.4rem;
+
+    line-height: 1;
 }
 
 
-/* countdown button */
+/* =========================================================
+   VENUE FLOATING LABEL
+========================================================= */
 
-.kh-countdown-button {
-    position: relative;
-    z-index: 2;
+.kh-event-info {
+
+    position: absolute;
+
+    z-index: 8;
+
+    right: -8px;
+    bottom: 43px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    padding: 12px 15px;
+
+    background:
+        rgba(5,20,38,.93);
+
+    border:
+        1px solid
+        rgba(255,255,255,.09);
+
+    box-shadow:
+        0 15px 40px
+        rgba(0,0,0,.22);
+
+    backdrop-filter:
+        blur(10px);
+}
+
+.kh-event-info-icon {
+
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    color:
+        var(--hero-teal-light);
+
+    background:
+        rgba(11,143,131,.13);
+
+    border-radius: 50%;
+
+    font-size: .72rem;
+}
+
+.kh-event-info-text {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 3px;
+}
+
+.kh-event-info-text strong {
+
+    color: #fff;
+
+    font-size: .62rem;
+}
+
+.kh-event-info-text span {
+
+    color:
+        rgba(255,255,255,.40);
+
+    font-size: .55rem;
+}
+
+
+/* =========================================================
+   EVENT LINK
+========================================================= */
+
+.kh-event-link {
+
+    position: absolute;
+
+    z-index: 8;
+
+    top: 35px;
+    left: -4px;
 
     display: inline-flex;
 
     align-items: center;
 
-    justify-content: center;
+    gap: 8px;
 
-    gap: 9px;
+    color:
+        rgba(255,255,255,.60);
 
-    width: 100%;
+    font-size: .62rem;
 
-    min-height: 45px;
-
-    padding: 0 18px;
-
-    color: #fff;
-
-    background: rgba(0,121,107,.82);
-
-    border: 1px solid rgba(99,213,203,.25);
-
-    font-size: .72rem;
-
-    font-weight: 900;
-
-    text-decoration: none;
+    font-weight: 800;
 
     transition:
-        background .25s ease,
-        transform .25s ease,
-        box-shadow .25s ease;
+        color .2s ease,
+        transform .2s ease;
 }
 
-.kh-countdown-button:hover {
-    color: #fff;
+.kh-event-link:hover {
 
-    background: #16a394;
+    color:
+        var(--hero-teal-light);
 
-    transform: translateY(-2px);
-
-    box-shadow:
-        0 12px 30px rgba(0,121,107,.25);
+    transform:
+        translateX(3px);
 }
 
 
 /* =========================================================
-   EVENT LIVE STATE
+   NO UPCOMING EVENT
 ========================================================= */
 
-.kh-countdown.finished {
-    display: block;
+.kh-no-event {
+
+    position: relative;
+
+    z-index: 5;
+
+    width: 380px;
+    height: 380px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
 
     text-align: center;
 
-    padding: 16px;
+    border:
+        1px solid
+        rgba(255,255,255,.09);
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            circle,
+            rgba(11,143,131,.12),
+            rgba(5,20,38,.92) 68%
+        );
 }
 
-.kh-countdown.finished::after {
-    content: "Event time reached";
+.kh-no-event i {
 
-    color: var(--teal-light);
+    margin-bottom: 18px;
 
-    font-size: .72rem;
+    color:
+        var(--hero-teal-light);
+
+    font-size: 2rem;
+}
+
+.kh-no-event span {
+
+    color:
+        rgba(255,255,255,.42);
+
+    font-size: .61rem;
 
     font-weight: 800;
 
-    letter-spacing: .08em;
+    letter-spacing: .16em;
 
     text-transform: uppercase;
+}
+
+.kh-no-event h2 {
+
+    margin:
+        10px 20px 0;
+
+    color: #fff;
+
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size: 1.65rem;
 }
 
 
@@ -785,18 +1077,20 @@
 ========================================================= */
 
 .kh-core {
+
     position: relative;
 
-    z-index: 5;
-
-    margin-top: -1px;
+    z-index: 10;
 
     background: #fff;
 
-    border-bottom: 1px solid #e7ecef;
+    border-bottom:
+        1px solid
+        var(--kh-line);
 }
 
 .kh-core-inner {
+
     display: grid;
 
     grid-template-columns:
@@ -804,7 +1098,8 @@
 }
 
 .kh-core-item {
-    min-height: 105px;
+
+    min-height: 106px;
 
     display: flex;
 
@@ -814,7 +1109,9 @@
 
     padding: 22px 24px;
 
-    border-right: 1px solid #e7ecef;
+    border-right:
+        1px solid
+        var(--kh-line);
 }
 
 .kh-core-item:last-child {
@@ -822,6 +1119,7 @@
 }
 
 .kh-core-icon {
+
     width: 42px;
     height: 42px;
 
@@ -832,59 +1130,72 @@
     align-items: center;
     justify-content: center;
 
-    color: var(--teal);
+    color:
+        var(--kh-teal);
 
-    background: #edf8f7;
+    background:
+        var(--kh-teal-soft);
 
     border-radius: 50%;
 }
 
 .kh-core-item strong {
+
     display: block;
 
     margin-bottom: 4px;
 
-    color: var(--navy);
+    color:
+        var(--kh-navy);
 
-    font-size: .78rem;
+    font-size: .75rem;
+
     font-weight: 900;
 }
 
 .kh-core-item span {
-    color: var(--text-light);
 
-    font-size: .66rem;
+    color:
+        var(--kh-muted);
+
+    font-size: .64rem;
 
     line-height: 1.5;
 }
 
 
 /* =========================================================
-   SECTION COMMON
+   SECTIONS
 ========================================================= */
 
 .kh-section {
+
     padding: 105px 0;
 }
 
 .kh-section-light {
-    background: var(--light-gray);
+
+    background:
+        var(--kh-soft);
 }
 
 .kh-section-heading {
-    max-width: 700px;
+
+    max-width: 720px;
 
     margin-bottom: 55px;
 }
 
 .kh-overline {
+
     display: block;
 
     margin-bottom: 12px;
 
-    color: var(--teal);
+    color:
+        var(--kh-teal);
 
-    font-size: .67rem;
+    font-size: .64rem;
 
     font-weight: 900;
 
@@ -894,17 +1205,22 @@
 }
 
 .kh-section-heading h2 {
+
     margin: 0;
 
-    color: var(--navy);
+    color:
+        var(--kh-navy);
 
-    font-family: "Playfair Display", serif;
+    font-family:
+        "Playfair Display",
+        serif;
 
-    font-size: clamp(
-        2.3rem,
-        4vw,
-        3.6rem
-    );
+    font-size:
+        clamp(
+            2.3rem,
+            4vw,
+            3.6rem
+        );
 
     line-height: 1.08;
 
@@ -912,11 +1228,14 @@
 }
 
 .kh-section-heading p {
-    margin-top: 18px;
 
-    color: var(--text-light);
+    margin:
+        18px 0 0;
 
-    font-size: .94rem;
+    color:
+        var(--kh-muted);
+
+    font-size: .9rem;
 
     line-height: 1.85;
 }
@@ -927,6 +1246,7 @@
 ========================================================= */
 
 .kh-intro-grid {
+
     display: grid;
 
     grid-template-columns:
@@ -939,31 +1259,42 @@
 }
 
 .kh-intro-copy p {
-    color: var(--text-light);
 
-    font-size: .94rem;
+    color:
+        var(--kh-muted);
+
+    font-size: .9rem;
 
     line-height: 1.9;
 }
 
 .kh-intro-copy p + p {
+
     margin-top: 18px;
 }
 
 .kh-intro-highlight {
+
     position: relative;
 
-    padding: 42px;
-
-    background: var(--navy);
+    padding: 43px;
 
     color: #fff;
 
+    background:
+        linear-gradient(
+            135deg,
+            var(--kh-navy),
+            var(--kh-navy-2)
+        );
+
     box-shadow:
-        0 25px 60px rgba(7,24,45,.14);
+        0 25px 60px
+        rgba(7,24,45,.14);
 }
 
 .kh-intro-highlight::before {
+
     content: "";
 
     position: absolute;
@@ -974,23 +1305,30 @@
     width: 4px;
     height: 100%;
 
-    background: var(--teal-light);
+    background:
+        var(--kh-teal-light);
 }
 
 .kh-intro-highlight h3 {
-    margin: 0 0 16px;
 
-    font-family: "Playfair Display", serif;
+    margin:
+        0 0 16px;
+
+    font-family:
+        "Playfair Display",
+        serif;
 
     font-size: 1.7rem;
 }
 
 .kh-intro-highlight p {
+
     margin: 0;
 
-    color: rgba(255,255,255,.63);
+    color:
+        rgba(255,255,255,.63);
 
-    font-size: .86rem;
+    font-size: .83rem;
 
     line-height: 1.85;
 }
@@ -1001,6 +1339,7 @@
 ========================================================= */
 
 .kh-pillars {
+
     display: grid;
 
     grid-template-columns:
@@ -1010,13 +1349,16 @@
 }
 
 .kh-pillar {
+
     position: relative;
 
     padding: 35px;
 
     background: #fff;
 
-    border: 1px solid #e5eaed;
+    border:
+        1px solid
+        var(--kh-line);
 
     transition:
         transform .3s ease,
@@ -1025,50 +1367,64 @@
 }
 
 .kh-pillar:hover {
-    transform: translateY(-7px);
 
-    border-color: rgba(0,121,107,.22);
+    transform:
+        translateY(-7px);
+
+    border-color:
+        rgba(7,143,131,.22);
 
     box-shadow:
-        0 25px 50px rgba(7,24,45,.09);
+        0 25px 50px
+        rgba(7,24,45,.09);
 }
 
 .kh-pillar-number {
+
+    width: 38px;
+    height: 38px;
+
     display: inline-flex;
 
     align-items: center;
     justify-content: center;
 
-    width: 38px;
-    height: 38px;
-
     margin-bottom: 26px;
 
-    color: var(--teal);
+    color:
+        var(--kh-teal);
 
-    background: #edf8f7;
+    background:
+        var(--kh-teal-soft);
 
-    font-size: .67rem;
+    font-size: .65rem;
 
     font-weight: 900;
 }
 
 .kh-pillar h3 {
-    margin: 0 0 13px;
 
-    color: var(--navy);
+    margin:
+        0 0 13px;
 
-    font-family: "Playfair Display", serif;
+    color:
+        var(--kh-navy);
+
+    font-family:
+        "Playfair Display",
+        serif;
 
     font-size: 1.4rem;
 }
 
 .kh-pillar p {
+
     margin: 0;
 
-    color: var(--text-light);
+    color:
+        var(--kh-muted);
 
-    font-size: .78rem;
+    font-size: .76rem;
 
     line-height: 1.8;
 }
@@ -1079,6 +1435,7 @@
 ========================================================= */
 
 .kh-events-grid {
+
     display: grid;
 
     grid-template-columns:
@@ -1088,9 +1445,12 @@
 }
 
 .kh-event-card {
+
     background: #fff;
 
-    border: 1px solid #e5eaed;
+    border:
+        1px solid
+        var(--kh-line);
 
     transition:
         transform .3s ease,
@@ -1098,38 +1458,48 @@
 }
 
 .kh-event-card:hover {
-    transform: translateY(-6px);
+
+    transform:
+        translateY(-6px);
 
     box-shadow:
-        0 25px 50px rgba(7,24,45,.09);
+        0 25px 50px
+        rgba(7,24,45,.09);
 }
 
-.kh-event-date {
-    padding: 18px 22px;
+.kh-event-date-block {
+
+    padding: 19px 22px;
 
     color: #fff;
 
-    background: var(--navy);
+    background:
+        var(--kh-navy);
 }
 
-.kh-event-date strong {
+.kh-event-date-block strong {
+
     display: block;
 
-    font-family: "Playfair Display", serif;
+    font-family:
+        "Playfair Display",
+        serif;
 
     font-size: 1.7rem;
 
     line-height: 1;
 }
 
-.kh-event-date span {
+.kh-event-date-block span {
+
     display: block;
 
     margin-top: 5px;
 
-    color: var(--teal-light);
+    color:
+        var(--kh-teal-light);
 
-    font-size: .62rem;
+    font-size: .61rem;
 
     font-weight: 800;
 
@@ -1139,20 +1509,29 @@
 }
 
 .kh-event-body {
+
     padding: 27px;
 }
 
 .kh-event-body h3 {
-    margin: 0 0 11px;
 
-    color: var(--navy);
+    margin:
+        0 0 11px;
 
-    font-family: "Playfair Display", serif;
+    color:
+        var(--kh-navy);
+
+    font-family:
+        "Playfair Display",
+        serif;
 
     font-size: 1.25rem;
+
+    line-height: 1.25;
 }
 
 .kh-event-meta {
+
     display: flex;
 
     flex-direction: column;
@@ -1161,12 +1540,14 @@
 
     margin-bottom: 15px;
 
-    color: var(--text-light);
+    color:
+        var(--kh-muted);
 
-    font-size: .68rem;
+    font-size: .66rem;
 }
 
 .kh-event-meta span {
+
     display: flex;
 
     align-items: center;
@@ -1175,20 +1556,25 @@
 }
 
 .kh-event-meta i {
+
     width: 15px;
 
-    color: var(--teal);
+    color:
+        var(--kh-teal);
 }
 
 .kh-event-description {
-    color: var(--text-light);
 
-    font-size: .76rem;
+    color:
+        var(--kh-muted);
+
+    font-size: .74rem;
 
     line-height: 1.7;
 }
 
-.kh-event-link {
+.kh-event-link-card {
+
     display: inline-flex;
 
     align-items: center;
@@ -1197,40 +1583,42 @@
 
     margin-top: 19px;
 
-    color: var(--teal);
+    color:
+        var(--kh-teal);
 
-    font-size: .68rem;
+    font-size: .66rem;
 
     font-weight: 900;
-
-    text-decoration: none;
 }
 
 
 /* =========================================================
-   VISION STATEMENT
+   VISION
 ========================================================= */
 
 .kh-statement {
+
     position: relative;
 
-    padding: 115px 20px;
+    padding:
+        115px 20px;
+
+    overflow: hidden;
+
+    color: #fff;
 
     background:
         linear-gradient(
             135deg,
-            var(--navy),
+            var(--kh-navy),
             #0b3140
         );
 
-    color: #fff;
-
     text-align: center;
-
-    overflow: hidden;
 }
 
 .kh-statement::before {
+
     content: "“";
 
     position: absolute;
@@ -1238,11 +1626,15 @@
     top: -90px;
     left: 50%;
 
-    transform: translateX(-50%);
+    transform:
+        translateX(-50%);
 
-    color: rgba(255,255,255,.035);
+    color:
+        rgba(255,255,255,.035);
 
-    font-family: Georgia, serif;
+    font-family:
+        Georgia,
+        serif;
 
     font-size: 420px;
 
@@ -1250,6 +1642,7 @@
 }
 
 .kh-statement-inner {
+
     position: relative;
 
     z-index: 2;
@@ -1259,14 +1652,16 @@
     margin: 0 auto;
 }
 
-.kh-statement-inner span {
+.kh-statement-inner > span {
+
     display: block;
 
     margin-bottom: 20px;
 
-    color: var(--teal-light);
+    color:
+        var(--kh-teal-light);
 
-    font-size: .66rem;
+    font-size: .64rem;
 
     font-weight: 900;
 
@@ -1276,15 +1671,19 @@
 }
 
 .kh-statement blockquote {
+
     margin: 0;
 
-    font-family: "Playfair Display", serif;
+    font-family:
+        "Playfair Display",
+        serif;
 
-    font-size: clamp(
-        2rem,
-        4vw,
-        3.5rem
-    );
+    font-size:
+        clamp(
+            2rem,
+            4vw,
+            3.5rem
+        );
 
     line-height: 1.2;
 
@@ -1292,13 +1691,15 @@
 }
 
 .kh-statement cite {
+
     display: block;
 
     margin-top: 28px;
 
-    color: rgba(255,255,255,.45);
+    color:
+        rgba(255,255,255,.42);
 
-    font-size: .65rem;
+    font-size: .62rem;
 
     font-style: normal;
 
@@ -1313,6 +1714,7 @@
 ========================================================= */
 
 .kh-news-grid {
+
     display: grid;
 
     grid-template-columns:
@@ -1322,11 +1724,14 @@
 }
 
 .kh-news-card {
+
     overflow: hidden;
 
     background: #fff;
 
-    border: 1px solid #e5eaed;
+    border:
+        1px solid
+        var(--kh-line);
 
     transition:
         transform .3s ease,
@@ -1334,41 +1739,56 @@
 }
 
 .kh-news-card:hover {
-    transform: translateY(-6px);
+
+    transform:
+        translateY(-6px);
 
     box-shadow:
-        0 25px 50px rgba(7,24,45,.09);
+        0 25px 50px
+        rgba(7,24,45,.09);
 }
 
 .kh-news-image {
+
     aspect-ratio: 16 / 9;
 
     overflow: hidden;
 
-    background: var(--light-gray);
+    background:
+        var(--kh-soft);
 }
 
 .kh-news-image img {
+
     width: 100%;
     height: 100%;
 
+    display: block;
+
     object-fit: cover;
 
-    transition: transform .5s ease;
+    transition:
+        transform .5s ease;
 }
 
-.kh-news-card:hover .kh-news-image img {
-    transform: scale(1.04);
+.kh-news-card:hover
+.kh-news-image img {
+
+    transform:
+        scale(1.04);
 }
 
 .kh-news-content {
+
     padding: 27px;
 }
 
 .kh-news-date {
-    color: var(--teal);
 
-    font-size: .61rem;
+    color:
+        var(--kh-teal);
+
+    font-size: .60rem;
 
     font-weight: 900;
 
@@ -1378,35 +1798,58 @@
 }
 
 .kh-news-content h3 {
-    margin: 10px 0 12px;
 
-    color: var(--navy);
+    margin:
+        10px 0 12px;
 
-    font-family: "Playfair Display", serif;
+    color:
+        var(--kh-navy);
 
-    font-size: 1.25rem;
+    font-family:
+        "Playfair Display",
+        serif;
+
+    font-size: 1.23rem;
 
     line-height: 1.25;
 }
 
 .kh-news-content p {
-    color: var(--text-light);
 
-    font-size: .75rem;
+    margin: 0;
+
+    color:
+        var(--kh-muted);
+
+    font-size: .74rem;
 
     line-height: 1.75;
 }
 
 
 /* =========================================================
-   MEMBERSHIP CTA
+   NEWS BUTTON
+========================================================= */
+
+.kh-view-all {
+
+    margin-top: 38px;
+
+    text-align: center;
+}
+
+
+/* =========================================================
+   MEMBERSHIP
 ========================================================= */
 
 .kh-membership {
+
     padding: 90px 0;
 }
 
 .kh-membership-box {
+
     position: relative;
 
     display: grid;
@@ -1419,7 +1862,10 @@
 
     gap: 40px;
 
-    padding: 55px 60px;
+    padding:
+        55px 60px;
+
+    overflow: hidden;
 
     background:
         linear-gradient(
@@ -1428,12 +1874,13 @@
             #f5f8f9
         );
 
-    border: 1px solid #dcebea;
-
-    overflow: hidden;
+    border:
+        1px solid
+        #dcebea;
 }
 
 .kh-membership-box::after {
+
     content: "";
 
     position: absolute;
@@ -1444,60 +1891,59 @@
     right: -150px;
     top: -150px;
 
-    border: 1px solid rgba(0,121,107,.10);
+    border:
+        1px solid
+        rgba(0,121,107,.10);
 
     border-radius: 50%;
 }
 
 .kh-membership-copy {
+
     position: relative;
+
     z-index: 2;
 }
 
 .kh-membership-copy h2 {
+
     margin: 0;
 
-    color: var(--navy);
+    color:
+        var(--kh-navy);
 
-    font-family: "Playfair Display", serif;
+    font-family:
+        "Playfair Display",
+        serif;
 
-    font-size: clamp(
-        2rem,
-        4vw,
-        3rem
-    );
+    font-size:
+        clamp(
+            2rem,
+            4vw,
+            3rem
+        );
 }
 
 .kh-membership-copy p {
+
     max-width: 650px;
 
-    margin: 15px 0 0;
+    margin:
+        15px 0 0;
 
-    color: var(--text-light);
+    color:
+        var(--kh-muted);
 
-    font-size: .84rem;
+    font-size: .82rem;
 
     line-height: 1.8;
 }
 
 .kh-membership-action {
+
     position: relative;
+
     z-index: 2;
-}
-
-
-/* =========================================================
-   EMPTY STATES
-========================================================= */
-
-.kh-empty {
-    padding: 50px 25px;
-
-    color: var(--text-light);
-
-    background: var(--light-gray);
-
-    text-align: center;
 }
 
 
@@ -1505,29 +1951,26 @@
    RESPONSIVE
 ========================================================= */
 
-@media (max-width: 1050px) {
+@media (max-width: 1080px) {
 
     .kh-hero-inner {
-        grid-template-columns:
-            1fr
-            390px;
 
-        gap: 40px;
+        grid-template-columns:
+            1fr 420px;
+
+        gap: 25px;
     }
 
-    .kh-hero h1 {
-        font-size: clamp(
-            3rem,
-            6vw,
-            4.5rem
-        );
+    .kh-event-orbit {
+
+        width: 390px;
+        height: 390px;
     }
 
-    .kh-pillars,
-    .kh-events-grid,
-    .kh-news-grid {
-        grid-template-columns:
-            repeat(2, 1fr);
+    .kh-event-center {
+
+        width: 295px;
+        height: 295px;
     }
 
 }
@@ -1536,178 +1979,296 @@
 @media (max-width: 900px) {
 
     .kh-hero-inner {
+
         grid-template-columns: 1fr;
 
-        padding: 70px 0;
+        padding:
+            70px 0 85px;
     }
 
     .kh-hero-copy {
+
         max-width: 700px;
     }
 
     .kh-hero-visual {
-        min-height: auto;
 
-        justify-content: flex-start;
+        min-height: 470px;
+
+        margin-top: 10px;
     }
 
-    .kh-countdown-card {
-        margin: 0;
+    .kh-event-orbit {
+
+        width: 430px;
+        height: 430px;
+    }
+
+    .kh-event-center {
+
+        width: 315px;
+        height: 315px;
     }
 
     .kh-core-inner {
+
         grid-template-columns:
-            repeat(2, 1fr);
+            repeat(2,1fr);
     }
 
     .kh-core-item:nth-child(2) {
+
         border-right: 0;
     }
 
     .kh-core-item:nth-child(-n+2) {
-        border-bottom: 1px solid #e7ecef;
+
+        border-bottom:
+            1px solid
+            var(--kh-line);
     }
 
     .kh-intro-grid {
+
         grid-template-columns: 1fr;
 
         gap: 45px;
     }
 
     .kh-membership-box {
+
         grid-template-columns: 1fr;
     }
 
 }
 
 
-@media (max-width: 700px) {
+@media (max-width: 850px) {
 
-    .kh-container,
-    .kh-breaking-inner,
-    .kh-hero-inner {
-        width: min(
-            100% - 30px,
-            1180px
-        );
+    .kh-pillars,
+    .kh-events-grid,
+    .kh-news-grid {
+
+        grid-template-columns:
+            repeat(2,1fr);
     }
 
+}
+
+
+@media (max-width: 650px) {
+
     .kh-breaking-inner {
-        min-height: 52px;
+
+        width:
+            calc(100% - 30px);
 
         gap: 11px;
     }
 
-    .kh-breaking-label {
-        padding-right: 10px;
-    }
-
     .kh-breaking-date {
+
         display: none;
     }
 
     .kh-breaking-title {
-        font-size: .68rem;
+
+        font-size: .66rem;
     }
 
     .kh-breaking-link {
-        font-size: .61rem;
-    }
 
-    .kh-hero {
-        min-height: auto;
+        font-size: .59rem;
     }
 
     .kh-hero-inner {
-        padding: 55px 0 60px;
+
+        width:
+            calc(100% - 30px);
+
+        padding:
+            55px 0 65px;
     }
 
     .kh-hero h1 {
-        font-size: clamp(
-            2.7rem,
-            13vw,
-            4rem
-        );
+
+        font-size:
+            clamp(
+                3rem,
+                14vw,
+                4.2rem
+            );
     }
 
     .kh-hero-description {
-        font-size: .86rem;
+
+        font-size: .84rem;
+
+        line-height: 1.8;
     }
 
     .kh-hero-actions {
+
         flex-direction: column;
 
         align-items: stretch;
     }
 
-    .kh-btn {
+    .kh-hero-actions .kh-btn {
+
         width: 100%;
     }
 
-    .kh-countdown-card {
-        width: 100%;
+    .kh-hero-visual {
 
-        padding: 25px 21px;
+        min-height: 395px;
     }
 
-    .kh-countdown-content h2 {
-        font-size: 1.55rem;
+    .kh-event-orbit {
+
+        width: 350px;
+        height: 350px;
+    }
+
+    .kh-event-orbit::after {
+
+        inset: 25px;
+    }
+
+    .kh-event-center {
+
+        width: 265px;
+        height: 265px;
+    }
+
+    .kh-event-center h2 {
+
+        max-width: 200px;
+
+        margin-bottom: 12px;
+
+        font-size: 1.18rem;
+    }
+
+    .kh-event-date {
+
+        margin-bottom: 15px;
+
+        font-size: .57rem;
     }
 
     .kh-countdown {
-        gap: 4px;
 
-        padding: 16px 7px;
+        gap: 4px;
+    }
+
+    .kh-countdown-unit {
+
+        min-width: 39px;
     }
 
     .kh-countdown-unit strong {
+
         font-size: 1.35rem;
     }
 
     .kh-countdown-unit span {
-        font-size: .45rem;
+
+        font-size: .37rem;
     }
 
     .kh-countdown-separator {
-        font-size: 1rem;
+
+        font-size: 1.05rem;
+    }
+
+    .kh-event-info {
+
+        right: -4px;
+
+        bottom: 8px;
+
+        padding:
+            9px 11px;
+    }
+
+    .kh-event-info-icon {
+
+        width: 25px;
+        height: 25px;
+    }
+
+    .kh-event-info-text strong {
+
+        font-size: .53rem;
+    }
+
+    .kh-event-info-text span {
+
+        font-size: .46rem;
+    }
+
+    .kh-event-link {
+
+        top: 3px;
+
+        left: 10px;
     }
 
     .kh-core-inner {
+
         grid-template-columns: 1fr;
     }
 
     .kh-core-item,
     .kh-core-item:nth-child(2) {
+
         border-right: 0;
 
-        border-bottom: 1px solid #e7ecef;
+        border-bottom:
+            1px solid
+            var(--kh-line);
     }
 
     .kh-core-item:last-child {
+
         border-bottom: 0;
     }
 
     .kh-section {
-        padding: 75px 0;
+
+        padding:
+            75px 0;
     }
 
     .kh-pillars,
     .kh-events-grid,
     .kh-news-grid {
+
         grid-template-columns: 1fr;
     }
 
     .kh-intro-highlight {
+
         padding: 30px;
     }
 
     .kh-membership-box {
-        padding: 35px 27px;
+
+        padding:
+            35px 27px;
     }
 
     .kh-membership-action,
     .kh-membership-action .kh-btn {
+
         width: 100%;
+    }
+
+    .kh-no-event {
+
+        width: 310px;
+        height: 310px;
     }
 
 }
@@ -1719,13 +2280,54 @@
 
 @media (prefers-reduced-motion: reduce) {
 
-    *,
-    *::before,
-    *::after {
-        animation-duration: .01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: .01ms !important;
-        scroll-behavior: auto !important;
+    .kh-event-orbit::after,
+    .kh-breaking::after,
+    .kh-breaking-dot {
+
+        animation: none !important;
+    }
+
+}
+
+
+/* =========================================================
+   EXTRA SMALL PHONES
+========================================================= */
+
+@media (max-width: 380px) {
+
+    .kh-event-orbit {
+
+        width: 310px;
+        height: 310px;
+    }
+
+    .kh-event-center {
+
+        width: 235px;
+        height: 235px;
+    }
+
+    .kh-event-center h2 {
+
+        max-width: 175px;
+
+        font-size: 1.05rem;
+    }
+
+    .kh-countdown-unit {
+
+        min-width: 33px;
+    }
+
+    .kh-countdown-unit strong {
+
+        font-size: 1.15rem;
+    }
+
+    .kh-countdown-separator {
+
+        font-size: .9rem;
     }
 
 }
@@ -1734,7 +2336,7 @@
 
 
 <!-- =======================================================
-     LATEST NEWS
+     LATEST NEWS / ANNOUNCEMENT BAR
 ======================================================= -->
 
 {% if latest_news %}
@@ -1757,19 +2359,28 @@
             {% with post=latest_news.0 %}
 
                 <span class="kh-breaking-date">
+
                     {{ post.created_at|date:"M d, Y" }}
+
                 </span>
 
+
                 <span class="kh-breaking-title">
+
                     {{ post.title }}
+
                 </span>
+
 
                 <a
                     href="{% url 'news' %}"
                     class="kh-breaking-link"
                 >
+
                     Read update
+
                     <i class="fa-solid fa-arrow-right"></i>
+
                 </a>
 
             {% endwith %}
@@ -1793,26 +2404,36 @@
     <div class="kh-hero-inner">
 
 
-        <!-- HERO COPY -->
+        <!-- ===============================================
+             HERO COPY
+        ================================================ -->
 
         <div class="kh-hero-copy">
 
             <span class="kh-eyebrow">
+
                 Kabale University Surgical Society
+
             </span>
 
 
             <h1>
+
                 Shaping
-                <span>Future Surgeons.</span>
+
+                <span>
+                    Future Surgeons.
+                </span>
+
             </h1>
 
 
             <p class="kh-hero-description">
-                A student-led surgical society dedicated to
-                surgical education, research, mentorship,
-                professional development, and the cultivation
-                of future holistic surgeons.
+
+                A student-led surgical society committed to
+                surgical education, research, mentorship and
+                the development of future holistic surgeons.
+
             </p>
 
 
@@ -1822,8 +2443,11 @@
                     href="{% url 'join' %}"
                     class="kh-btn kh-btn-primary"
                 >
+
                     Join KUSS
+
                     <i class="fa-solid fa-arrow-right"></i>
+
                 </a>
 
 
@@ -1831,7 +2455,9 @@
                     href="{% url 'about' %}"
                     class="kh-btn kh-btn-outline"
                 >
+
                     Discover KUSS
+
                 </a>
 
             </div>
@@ -1840,9 +2466,9 @@
 
 
 
-        <!-- =================================================
-             HERO COUNTDOWN
-        ================================================== -->
+        <!-- ===============================================
+             UPCOMING EVENT / COUNTDOWN
+        ================================================ -->
 
         <div class="kh-hero-visual">
 
@@ -1850,71 +2476,45 @@
 
                 {% with next_event=upcoming_events.0 %}
 
-                    <div class="kh-countdown-card">
+                    <div class="kh-event-orbit">
 
 
-                        <div class="kh-countdown-top">
+                        <!-- rotating marker -->
 
-                            <span class="kh-countdown-status">
-
-                                <span class="kh-countdown-live-dot"></span>
-
-                                Next Event
-
-                            </span>
-
-
-                            <i class="fa-regular fa-calendar-days"></i>
-
-                        </div>
+                        <span class="kh-orbit-point"></span>
 
 
 
-                        <div class="kh-countdown-content">
+                        <!-- event circle -->
 
-                            <span class="kh-countdown-label">
-                                KUSS EVENT
+                        <div class="kh-event-center">
+
+
+                            <span class="kh-event-label">
+
+                                Next KUSS Event
+
                             </span>
 
 
                             <h2>
+
                                 {{ next_event.title }}
+
                             </h2>
 
 
-                            <div class="kh-countdown-meta">
+                            <div class="kh-event-date">
 
-                                <span>
+                                <i
+                                    class="fa-regular fa-calendar"
+                                ></i>
 
-                                    <i class="fa-regular fa-calendar"></i>
-
-                                    {{ next_event.date|date:"M d, Y" }}
-
-                                </span>
-
+                                {{ next_event.date|date:"M d, Y" }}
 
                                 {% if next_event.time %}
 
-                                    <span>
-
-                                        <i class="fa-regular fa-clock"></i>
-
-                                        {{ next_event.time }}
-
-                                    </span>
-
-                                {% endif %}
-
-
-                                {% if next_event.venue %}
-
-                                    <span>
-
-                                        <i class="fa-solid fa-location-dot"></i>
-
-                                        {{ next_event.venue }}
-
-                                    </span>
+                                    · {{ next_event.time }}
 
                                 {% endif %}
 
@@ -1922,15 +2522,18 @@
 
 
 
-                            <!-- TIMER -->
+                            <!-- COUNTDOWN -->
 
                             <div
                                 class="kh-countdown"
                                 data-event-date="{{ next_event.date|date:'Y-m-d' }}"
                                 {% if next_event.time %}
+
                                     data-event-time="{{ next_event.time|time:'H:i:s' }}"
+
                                 {% endif %}
                             >
+
 
                                 <div class="kh-countdown-unit">
 
@@ -1975,7 +2578,7 @@
                                     </strong>
 
                                     <span>
-                                        Minutes
+                                        Min
                                     </span>
 
                                 </div>
@@ -1993,77 +2596,108 @@
                                     </strong>
 
                                     <span>
-                                        Seconds
+                                        Sec
+                                    </span>
+
+                                </div>
+
+
+                            </div>
+
+                        </div>
+
+
+
+                        <!-- =================================
+                             VENUE
+                        ================================== -->
+
+                        {% if next_event.venue %}
+
+                            <div class="kh-event-info">
+
+                                <div class="kh-event-info-icon">
+
+                                    <i
+                                        class="fa-solid fa-location-dot"
+                                    ></i>
+
+                                </div>
+
+
+                                <div class="kh-event-info-text">
+
+                                    <strong>
+
+                                        {{ next_event.venue }}
+
+                                    </strong>
+
+                                    <span>
+
+                                        Event venue
+
                                     </span>
 
                                 </div>
 
                             </div>
 
+                        {% endif %}
 
 
-                            <a
-                                href="{% url 'event_detail' next_event.id %}"
-                                class="kh-countdown-button"
-                            >
 
-                                View Event
+                        <!-- =================================
+                             EVENT LINK
+                        ================================== -->
 
-                                <i class="fa-solid fa-arrow-right"></i>
+                        <a
+                            href="{% url 'event_detail' next_event.id %}"
+                            class="kh-event-link"
+                        >
 
-                            </a>
+                            View event
 
-                        </div>
+                            <i
+                                class="fa-solid fa-arrow-right"
+                            ></i>
+
+                        </a>
+
 
                     </div>
 
                 {% endwith %}
 
+
             {% else %}
 
-                <!-- fallback when there is no event -->
 
-                <div class="kh-countdown-card">
+                <!-- =======================================
+                     NO UPCOMING EVENT
+                ======================================== -->
 
-                    <div class="kh-countdown-top">
+                <div class="kh-no-event">
 
-                        <span class="kh-countdown-status">
+                    <i
+                        class="fa-regular fa-calendar-days"
+                    ></i>
 
-                            <span class="kh-countdown-live-dot"></span>
+                    <span>
 
-                            KUSS Calendar
+                        KUSS Calendar
 
-                        </span>
+                    </span>
 
-                        <i class="fa-regular fa-calendar-days"></i>
+                    <h2>
 
-                    </div>
+                        The next event
+                        is coming soon.
 
-
-                    <div class="kh-countdown-content">
-
-                        <span class="kh-countdown-label">
-                            UPCOMING EVENTS
-                        </span>
-
-                        <h2>
-                            Something exciting is coming.
-                        </h2>
-
-                        <p style="
-                            color:rgba(255,255,255,.58);
-                            font-size:.8rem;
-                            line-height:1.8;
-                            margin:0;
-                        ">
-                            Check back soon for the next
-                            KUSS programme, surgical session,
-                            mentorship event or academic activity.
-                        </p>
-
-                    </div>
+                    </h2>
 
                 </div>
+
 
             {% endif %}
 
@@ -2081,76 +2715,117 @@
 
 <section class="kh-core">
 
-    <div class="kh-core-inner kh-container"
-         style="width:min(1180px, calc(100% - 40px));">
+    <div
+        class="kh-core-inner kh-container"
+    >
 
+
+        <!-- education -->
 
         <div class="kh-core-item">
 
             <div class="kh-core-icon">
+
                 <i class="fa-solid fa-scalpel"></i>
+
             </div>
 
+
             <div>
-                <strong>Surgical Education</strong>
+
+                <strong>
+                    Surgical Education
+                </strong>
 
                 <span>
                     Learn beyond the classroom.
                 </span>
+
             </div>
 
         </div>
 
 
+
+        <!-- research -->
+
         <div class="kh-core-item">
 
             <div class="kh-core-icon">
+
                 <i class="fa-solid fa-microscope"></i>
+
             </div>
 
+
             <div>
-                <strong>Research</strong>
+
+                <strong>
+                    Research
+                </strong>
 
                 <span>
                     Ask better clinical questions.
                 </span>
+
             </div>
 
         </div>
 
 
+
+        <!-- mentorship -->
+
         <div class="kh-core-item">
 
             <div class="kh-core-icon">
+
                 <i class="fa-solid fa-user-doctor"></i>
+
             </div>
 
+
             <div>
-                <strong>Mentorship</strong>
+
+                <strong>
+                    Mentorship
+                </strong>
 
                 <span>
                     Connect with surgical role models.
                 </span>
+
             </div>
 
         </div>
 
+
+
+        <!-- professional development -->
 
         <div class="kh-core-item">
 
             <div class="kh-core-icon">
+
                 <i class="fa-solid fa-people-group"></i>
+
             </div>
 
+
             <div>
-                <strong>Professional Growth</strong>
+
+                <strong>
+                    Professional Growth
+                </strong>
 
                 <span>
                     Build the surgeon within.
                 </span>
+
             </div>
 
         </div>
+
 
     </div>
 
@@ -2171,35 +2846,45 @@
 
             <div class="kh-intro-copy">
 
+
                 <div class="kh-section-heading">
 
                     <span class="kh-overline">
+
                         Who We Are
+
                     </span>
 
+
                     <h2>
+
                         Above and beyond
                         the ordinary.
+
                     </h2>
 
                 </div>
 
 
                 <p>
+
                     The Kabale University Surgical Society
                     provides a platform for medical students
                     who aspire to explore, understand and
                     contribute to the field of surgery.
+
                 </p>
 
 
                 <p>
+
                     Through structured learning, mentorship,
                     research, surgical skills training and
                     professional engagement, KUSS helps
                     members develop the knowledge, confidence
                     and character required for a future in
                     surgical practice.
+
                 </p>
 
             </div>
@@ -2209,19 +2894,25 @@
             <div class="kh-intro-highlight">
 
                 <h3>
+
                     Our Mission
+
                 </h3>
 
+
                 <p>
+
                     To equip society members with the
                     knowledge, skills, mentorship and
                     opportunities necessary to pursue
                     successful careers in surgery while
                     fostering excellence, professionalism
                     and lifelong learning.
+
                 </p>
 
             </div>
+
 
         </div>
 
@@ -2243,18 +2934,26 @@
         <div class="kh-section-heading">
 
             <span class="kh-overline">
+
                 What We Do
+
             </span>
 
+
             <h2>
+
                 Building the complete
                 future surgeon.
+
             </h2>
 
+
             <p>
+
                 KUSS brings together education, research,
                 mentorship and professional development
                 around one shared surgical vision.
+
             </p>
 
         </div>
@@ -2264,65 +2963,96 @@
         <div class="kh-pillars">
 
 
+            <!-- pillar 1 -->
+
             <article class="kh-pillar">
 
                 <span class="kh-pillar-number">
+
                     01
+
                 </span>
 
+
                 <h3>
+
                     Surgical Education
+
                 </h3>
 
+
                 <p>
+
                     Case discussions, journal clubs,
                     surgical skills sessions, clinical
                     learning and exposure to different
                     surgical specialties.
+
                 </p>
 
             </article>
 
 
 
+            <!-- pillar 2 -->
+
             <article class="kh-pillar">
 
                 <span class="kh-pillar-number">
+
                     02
+
                 </span>
 
+
                 <h3>
+
                     Research
+
                 </h3>
 
+
                 <p>
+
                     Encouraging students to develop
                     research skills, ask clinically
                     meaningful questions and contribute
                     to evidence-based surgical practice.
+
                 </p>
 
             </article>
 
 
+
+            <!-- pillar 3 -->
 
             <article class="kh-pillar">
 
                 <span class="kh-pillar-number">
+
                     03
+
                 </span>
 
+
                 <h3>
+
                     Mentorship
+
                 </h3>
 
+
                 <p>
+
                     Creating meaningful connections between
                     students, residents, specialists and
                     experienced surgical professionals.
+
                 </p>
 
             </article>
+
 
         </div>
 
@@ -2346,16 +3076,24 @@
         <div class="kh-section-heading">
 
             <span class="kh-overline">
+
                 Calendar
+
             </span>
 
+
             <h2>
+
                 What's happening at KUSS.
+
             </h2>
 
+
             <p>
+
                 Stay connected with upcoming academic,
                 surgical and professional activities.
+
             </p>
 
         </div>
@@ -2364,19 +3102,25 @@
 
         <div class="kh-events-grid">
 
+
             {% for event in upcoming_events|slice:":3" %}
 
                 <article class="kh-event-card">
 
 
-                    <div class="kh-event-date">
+                    <div class="kh-event-date-block">
 
                         <strong>
+
                             {{ event.date|date:"d" }}
+
                         </strong>
 
+
                         <span>
+
                             {{ event.date|date:"F Y" }}
+
                         </span>
 
                     </div>
@@ -2385,18 +3129,24 @@
 
                     <div class="kh-event-body">
 
+
                         <h3>
+
                             {{ event.title }}
+
                         </h3>
 
 
                         <div class="kh-event-meta">
 
+
                             {% if event.time %}
 
                                 <span>
 
-                                    <i class="fa-regular fa-clock"></i>
+                                    <i
+                                        class="fa-regular fa-clock"
+                                    ></i>
 
                                     {{ event.time }}
 
@@ -2405,11 +3155,14 @@
                             {% endif %}
 
 
+
                             {% if event.venue %}
 
                                 <span>
 
-                                    <i class="fa-solid fa-location-dot"></i>
+                                    <i
+                                        class="fa-solid fa-location-dot"
+                                    ></i>
 
                                     {{ event.venue }}
 
@@ -2417,36 +3170,43 @@
 
                             {% endif %}
 
+
                         </div>
+
 
 
                         {% if event.description %}
 
                             <p class="kh-event-description">
 
-                                {{ event.description }}
+                                {{ event.description|truncatewords_html:25|urlize }}
 
                             </p>
 
                         {% endif %}
 
 
+
                         <a
                             href="{% url 'event_detail' event.id %}"
-                            class="kh-event-link"
+                            class="kh-event-link-card"
                         >
 
                             View event
 
-                            <i class="fa-solid fa-arrow-right"></i>
+                            <i
+                                class="fa-solid fa-arrow-right"
+                            ></i>
 
                         </a>
+
 
                     </div>
 
                 </article>
 
             {% endfor %}
+
 
         </div>
 
@@ -2459,25 +3219,35 @@
 
 
 <!-- =======================================================
-     VISION STATEMENT
+     VISION
 ======================================================= -->
 
 <section class="kh-statement">
 
     <div class="kh-statement-inner">
 
+
         <span>
+
             Our Vision
+
         </span>
 
+
         <blockquote>
+
             “To achieve a society that nurtures
             future holistic surgeons.”
+
         </blockquote>
 
+
         <cite>
+
             Kabale University Surgical Society
+
         </cite>
+
 
     </div>
 
@@ -2486,7 +3256,7 @@
 
 
 <!-- =======================================================
-     NEWS
+     LATEST NEWS
 ======================================================= -->
 
 {% if latest_news %}
@@ -2499,16 +3269,24 @@
         <div class="kh-section-heading">
 
             <span class="kh-overline">
+
                 KUSS News
+
             </span>
 
+
             <h2>
+
                 Latest from the society.
+
             </h2>
 
+
             <p>
+
                 Updates, announcements, opportunities and
                 stories from the KUSS community.
+
             </p>
 
         </div>
@@ -2516,6 +3294,7 @@
 
 
         <div class="kh-news-grid">
+
 
             {% for post in latest_news|slice:":3" %}
 
@@ -2540,45 +3319,57 @@
 
                     <div class="kh-news-content">
 
+
                         <div class="kh-news-date">
 
-                            {{ post.created_at|date:"M d, Y" }}
+                            {{ post.created_at|date:"F d, Y" }}
 
                         </div>
 
 
                         <h3>
+
                             {{ post.title }}
+
                         </h3>
 
 
                         <p>
-                            {{ post.content|striptags|truncatewords:28 }}
+
+                            {{ post.content|truncatewords:20 }}
+
                         </p>
 
+
                     </div>
+
 
                 </article>
 
             {% endfor %}
 
+
         </div>
 
 
-        <div style="
-            margin-top:38px;
-            text-align:center;
-        ">
+
+        <div class="kh-view-all">
 
             <a
                 href="{% url 'news' %}"
                 class="kh-btn kh-btn-primary"
             >
+
                 View All News
-                <i class="fa-solid fa-arrow-right"></i>
+
+                <i
+                    class="fa-solid fa-arrow-right"
+                ></i>
+
             </a>
 
         </div>
+
 
     </div>
 
@@ -2596,26 +3387,37 @@
 
     <div class="kh-container">
 
+
         <div class="kh-membership-box">
 
 
             <div class="kh-membership-copy">
 
+
                 <span class="kh-overline">
+
                     Become Part of KUSS
+
                 </span>
 
+
                 <h2>
+
                     Your surgical journey
                     starts here.
+
                 </h2>
 
+
                 <p>
+
                     Join a community of students committed
                     to surgical excellence, lifelong learning,
                     research, mentorship and professional
                     growth.
+
                 </p>
+
 
             </div>
 
@@ -2630,11 +3432,14 @@
 
                     Become a Member
 
-                    <i class="fa-solid fa-arrow-right"></i>
+                    <i
+                        class="fa-solid fa-arrow-right"
+                    ></i>
 
                 </a>
 
             </div>
+
 
         </div>
 
@@ -2654,62 +3459,76 @@ document.addEventListener(
     "DOMContentLoaded",
     function () {
 
+
         const countdown =
             document.querySelector(
                 ".kh-countdown"
             );
 
-        if (!countdown) return;
+
+        if (!countdown) {
+            return;
+        }
 
 
-        const daysElement =
+
+        const days =
             document.getElementById(
                 "kh-days"
             );
 
-        const hoursElement =
+
+        const hours =
             document.getElementById(
                 "kh-hours"
             );
 
-        const minutesElement =
+
+        const minutes =
             document.getElementById(
                 "kh-minutes"
             );
 
-        const secondsElement =
+
+        const seconds =
             document.getElementById(
                 "kh-seconds"
             );
 
 
+
         if (
-            !daysElement ||
-            !hoursElement ||
-            !minutesElement ||
-            !secondsElement
+            !days ||
+            !hours ||
+            !minutes ||
+            !seconds
         ) {
+
             return;
+
         }
+
 
 
         const eventDate =
             countdown.dataset.eventDate;
+
 
         const eventTime =
             countdown.dataset.eventTime ||
             "00:00:00";
 
 
-        if (!eventDate) return;
+
+        if (!eventDate) {
+            return;
+        }
+
 
 
         /*
-         * Build the event date.
-         *
-         * The browser interprets this as
-         * local time, which is appropriate
-         * for the KUSS student audience.
+         * The event date/time is interpreted
+         * in the visitor's local browser time.
          */
 
         const target =
@@ -2720,133 +3539,152 @@ document.addEventListener(
             );
 
 
+
         if (
             Number.isNaN(
                 target.getTime()
             )
         ) {
+
             return;
+
         }
 
 
+
         function updateCountdown() {
+
 
             const now =
                 new Date();
 
 
-            const difference =
+            const remaining =
                 target.getTime() -
                 now.getTime();
 
 
+
             /*
-             * Event time reached
+             * Event has started
              */
 
-            if (difference <= 0) {
+            if (remaining <= 0) {
 
-                daysElement.textContent = "00";
+                days.textContent = "00";
 
-                hoursElement.textContent = "00";
+                hours.textContent = "00";
 
-                minutesElement.textContent = "00";
+                minutes.textContent = "00";
 
-                secondsElement.textContent = "00";
-
-
-                countdown.classList.add(
-                    "finished"
-                );
+                seconds.textContent = "00";
 
                 return;
+
             }
+
 
 
             const totalSeconds =
                 Math.floor(
-                    difference / 1000
+                    remaining / 1000
                 );
 
 
-            const days =
+
+            const d =
                 Math.floor(
                     totalSeconds / 86400
                 );
 
 
-            const hours =
+            const h =
                 Math.floor(
-                    (totalSeconds % 86400) /
-                    3600
+                    (
+                        totalSeconds %
+                        86400
+                    ) / 3600
                 );
 
 
-            const minutes =
+            const m =
                 Math.floor(
-                    (totalSeconds % 3600) /
-                    60
+                    (
+                        totalSeconds %
+                        3600
+                    ) / 60
                 );
 
 
-            const seconds =
+            const s =
                 totalSeconds % 60;
 
 
-            daysElement.textContent =
-                String(days)
-                    .padStart(2, "0");
+
+            days.textContent =
+                String(d).padStart(
+                    2,
+                    "0"
+                );
 
 
-            hoursElement.textContent =
-                String(hours)
-                    .padStart(2, "0");
+            hours.textContent =
+                String(h).padStart(
+                    2,
+                    "0"
+                );
 
 
-            minutesElement.textContent =
-                String(minutes)
-                    .padStart(2, "0");
+            minutes.textContent =
+                String(m).padStart(
+                    2,
+                    "0"
+                );
 
 
-            secondsElement.textContent =
-                String(seconds)
-                    .padStart(2, "0");
+            seconds.textContent =
+                String(s).padStart(
+                    2,
+                    "0"
+                );
 
         }
 
 
+
         /*
-         * Run immediately so there is
-         * no visible delay.
+         * Initial update
          */
 
         updateCountdown();
 
 
+
         /*
-         * Refresh every second.
+         * Update every second
          */
 
-        const countdownInterval =
+        const timer =
             setInterval(
                 updateCountdown,
                 1000
             );
 
 
+
         /*
-         * Stop the timer after the
-         * event has been reached.
+         * Clean up when leaving page
          */
 
         window.addEventListener(
             "beforeunload",
             function () {
-                clearInterval(
-                    countdownInterval
-                );
+
+                clearInterval(timer);
+
             }
         );
+
 
     }
 
