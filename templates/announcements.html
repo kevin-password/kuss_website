@@ -1,33 +1,693 @@
 {% extends 'base.html' %}
-{% block title %}Announcements - KUSS{% endblock %}
+
+{% block title %}Announcements & Documents - KUSS{% endblock %}
+
 {% block content %}
-    <section class="page-header"><h1>Announcements & Documents</h1></section>
-    <section class="section container">
-        {% if announcements %}
-            <div class="announcement-list">
-                {% for doc in announcements %}
-                    <div class="announcement-card">
-                        <div class="announcement-details">
-                            <h3>{{ doc.title }}</h3>
-                            <p>{{ doc.description|default:"Official society document." }}</p>
-                            <small>Published: {{ doc.created_at|date:"F d, Y" }}</small>
-                        </div>
-                        
-                        <!-- Only show download button if document exists -->
-                        {% if doc.document %}
-                            <a href="{{ doc.document.url }}" class="btn-download" download>
-                                <i class="fa-solid fa-download"></i> Download File
-                            </a>
-                        {% else %}
-                            <span style="color: var(--text-light); font-style: italic; padding: 10px 20px;">
-                                <i class="fa-solid fa-circle-info"></i> No file attached
-                            </span>
-                        {% endif %}
-                    </div>
-                {% endfor %}
+
+<style>
+/* ============================================================
+   KUSS ANNOUNCEMENTS & DOCUMENT CENTRE
+   ============================================================ */
+
+.kuss-documents {
+    --doc-teal: var(--teal, #0f766e);
+    --doc-teal-dark: #0b5f59;
+    --doc-teal-soft: #e8f5f3;
+    --doc-navy: var(--navy, #102a43);
+    --doc-navy-light: var(--navy-light, #173f5f);
+    --doc-gold: #c69a45;
+    --doc-bg: #f6f9fb;
+    --doc-card: #ffffff;
+    --doc-text: var(--text-dark, #172b4d);
+    --doc-muted: var(--text-light, #6b7c93);
+    --doc-border: #e3e9ef;
+    --doc-shadow: 0 10px 32px rgba(16, 42, 67, .07);
+    --doc-shadow-hover: 0 18px 42px rgba(16, 42, 67, .13);
+
+    min-height: 100vh;
+    background: var(--doc-bg);
+    color: var(--doc-text);
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+
+.kuss-documents-hero {
+    position: relative;
+    overflow: hidden;
+    padding: clamp(55px, 8vw, 90px) 20px;
+    color: white;
+    background:
+        radial-gradient(
+            circle at 88% 15%,
+            rgba(198,154,69,.18),
+            transparent 28%
+        ),
+        radial-gradient(
+            circle at 5% 90%,
+            rgba(15,118,110,.22),
+            transparent 32%
+        ),
+        linear-gradient(
+            135deg,
+            #081d2d 0%,
+            #102f46 50%,
+            #0f766e 100%
+        );
+}
+
+.kuss-documents-hero::before {
+    content: "";
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    right: -170px;
+    top: -200px;
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 50%;
+}
+
+.kuss-documents-hero::after {
+    content: "";
+    position: absolute;
+    width: 260px;
+    height: 260px;
+    right: -90px;
+    top: -130px;
+    border: 1px solid rgba(255,255,255,.06);
+    border-radius: 50%;
+}
+
+.kuss-documents-hero-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 900px;
+    margin: auto;
+    text-align: center;
+}
+
+.kuss-documents-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 8px 15px;
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 999px;
+    background: rgba(255,255,255,.08);
+    backdrop-filter: blur(8px);
+    font-size: .73rem;
+    font-weight: 800;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+}
+
+.kuss-documents-badge i {
+    color: #e5bd69;
+}
+
+.kuss-documents-hero h1 {
+    margin: 21px 0 13px;
+    color: white;
+    font-size: clamp(2.2rem, 6vw, 4.3rem);
+    line-height: 1.04;
+    letter-spacing: -.045em;
+    font-weight: 850;
+}
+
+.kuss-documents-hero p {
+    max-width: 680px;
+    margin: auto;
+    color: rgba(255,255,255,.82);
+    font-size: clamp(.95rem, 2vw, 1.08rem);
+    line-height: 1.75;
+}
+
+/* ============================================================
+   MAIN
+   ============================================================ */
+
+.kuss-documents-main {
+    max-width: 1100px;
+    margin: auto;
+    padding: clamp(32px, 6vw, 70px) 20px 80px;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+
+.kuss-documents-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 25px;
+    margin-bottom: 30px;
+}
+
+.kuss-documents-heading h2 {
+    margin: 0 0 7px;
+    color: var(--doc-navy);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    font-weight: 850;
+}
+
+.kuss-documents-heading p {
+    margin: 0;
+    color: var(--doc-muted);
+    font-size: .9rem;
+    line-height: 1.6;
+}
+
+.kuss-document-count {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 13px;
+    border-radius: 999px;
+    background: var(--doc-teal-soft);
+    color: var(--doc-teal-dark);
+    font-size: .75rem;
+    font-weight: 800;
+}
+
+/* ============================================================
+   DOCUMENT LIST
+   ============================================================ */
+
+.kuss-announcement-list {
+    display: grid;
+    gap: 16px;
+}
+
+/* ============================================================
+   DOCUMENT CARD
+   ============================================================ */
+
+.kuss-announcement-card {
+    position: relative;
+    display: grid;
+    grid-template-columns: 70px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 22px;
+    padding: 22px;
+    background: var(--doc-card);
+    border: 1px solid var(--doc-border);
+    border-radius: 17px;
+    box-shadow: var(--doc-shadow);
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        border-color .25s ease;
+}
+
+.kuss-announcement-card::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 16px;
+    bottom: 16px;
+    width: 4px;
+    border-radius: 0 5px 5px 0;
+    background: linear-gradient(
+        180deg,
+        var(--doc-teal),
+        var(--doc-gold)
+    );
+}
+
+.kuss-announcement-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(15,118,110,.2);
+    box-shadow: var(--doc-shadow-hover);
+}
+
+/* ============================================================
+   DOCUMENT ICON
+   ============================================================ */
+
+.kuss-document-icon {
+    width: 70px;
+    height: 78px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 13px;
+    background: var(--doc-teal-soft);
+    color: var(--doc-teal);
+    font-size: 1.75rem;
+}
+
+.kuss-document-icon::after {
+    content: "";
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 19px;
+    height: 19px;
+    background: var(--doc-card);
+    clip-path: polygon(0 0, 100% 100%, 0 100%);
+}
+
+.kuss-document-icon i {
+    position: relative;
+    z-index: 1;
+}
+
+/* ============================================================
+   DETAILS
+   ============================================================ */
+
+.kuss-announcement-details {
+    min-width: 0;
+}
+
+.kuss-announcement-title {
+    margin: 0 0 7px;
+    color: var(--doc-navy);
+    font-size: 1.08rem;
+    line-height: 1.35;
+    font-weight: 800;
+}
+
+.kuss-announcement-description {
+    margin: 0 0 10px;
+    color: var(--doc-muted);
+    font-size: .88rem;
+    line-height: 1.65;
+}
+
+.kuss-announcement-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    color: #8a98a9;
+    font-size: .72rem;
+}
+
+.kuss-announcement-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.kuss-announcement-meta i {
+    color: var(--doc-teal);
+}
+
+/* ============================================================
+   DOWNLOAD BUTTON
+   ============================================================ */
+
+.kuss-download {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-width: 145px;
+    min-height: 44px;
+    padding: 10px 17px;
+    border: 1px solid rgba(15,118,110,.15);
+    border-radius: 10px;
+    background: var(--doc-teal);
+    color: white;
+    font-size: .8rem;
+    font-weight: 800;
+    text-decoration: none;
+    white-space: nowrap;
+    transition:
+        background .2s ease,
+        transform .2s ease,
+        box-shadow .2s ease;
+}
+
+.kuss-download:hover {
+    background: var(--doc-teal-dark);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(15,118,110,.22);
+}
+
+.kuss-download i {
+    font-size: .8rem;
+}
+
+/* ============================================================
+   NO FILE
+   ============================================================ */
+
+.kuss-no-file {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: #f5f7f9;
+    color: var(--doc-muted);
+    font-size: .76rem;
+    font-style: italic;
+    white-space: nowrap;
+}
+
+.kuss-no-file i {
+    color: #8c99a7;
+}
+
+/* ============================================================
+   EMPTY STATE
+   ============================================================ */
+
+.kuss-documents-empty {
+    padding: 65px 25px;
+    background: white;
+    border: 1px dashed var(--doc-border);
+    border-radius: 18px;
+    text-align: center;
+    box-shadow: var(--doc-shadow);
+}
+
+.kuss-empty-icon {
+    width: 65px;
+    height: 65px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: var(--doc-teal-soft);
+    color: var(--doc-teal);
+    font-size: 1.45rem;
+}
+
+.kuss-documents-empty h3 {
+    margin: 0 0 8px;
+    color: var(--doc-navy);
+    font-size: 1.2rem;
+}
+
+.kuss-documents-empty p {
+    max-width: 450px;
+    margin: auto;
+    color: var(--doc-muted);
+    font-size: .88rem;
+    line-height: 1.7;
+}
+
+/* ============================================================
+   MOBILE
+   ============================================================ */
+
+@media (max-width: 700px) {
+
+    .kuss-documents-hero {
+        padding: 48px 17px 55px;
+    }
+
+    .kuss-documents-hero h1 {
+        font-size: 2.3rem;
+    }
+
+    .kuss-documents-main {
+        padding: 32px 14px 60px;
+    }
+
+    .kuss-documents-heading {
+        align-items: flex-start;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .kuss-announcement-card {
+        grid-template-columns: 50px minmax(0, 1fr);
+        gap: 15px;
+        padding: 18px;
+    }
+
+    .kuss-document-icon {
+        width: 50px;
+        height: 58px;
+        font-size: 1.35rem;
+    }
+
+    .kuss-document-icon::after {
+        width: 15px;
+        height: 15px;
+    }
+
+    .kuss-announcement-title {
+        font-size: .98rem;
+    }
+
+    .kuss-announcement-description {
+        font-size: .83rem;
+    }
+
+    .kuss-announcement-meta {
+        font-size: .68rem;
+    }
+
+    .kuss-announcement-card > a,
+    .kuss-announcement-card > span {
+        grid-column: 1 / -1;
+    }
+
+    .kuss-download {
+        width: 100%;
+    }
+
+    .kuss-no-file {
+        width: 100%;
+        justify-content: center;
+        box-sizing: border-box;
+    }
+}
+
+/* ============================================================
+   VERY SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 380px) {
+
+    .kuss-documents-hero h1 {
+        font-size: 2rem;
+    }
+
+    .kuss-announcement-card {
+        grid-template-columns: 44px minmax(0, 1fr);
+        gap: 12px;
+        padding: 15px;
+    }
+
+    .kuss-document-icon {
+        width: 44px;
+        height: 52px;
+        font-size: 1.15rem;
+    }
+}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+
+    .kuss-announcement-card,
+    .kuss-download {
+        transition: none;
+    }
+}
+</style>
+
+
+<div class="kuss-documents">
+
+    <!-- ========================================================
+         HERO
+         ======================================================== -->
+
+    <section class="kuss-documents-hero">
+
+        <div class="kuss-documents-hero-inner">
+
+            <div class="kuss-documents-badge">
+                <i class="fa-solid fa-folder-open"></i>
+                Official KUSS Resources
             </div>
-        {% else %}
-            <div class="empty-state"><h3>No announcements yet.</h3></div>
-        {% endif %}
+
+            <h1>Announcements &amp; Documents</h1>
+
+            <p>
+                Access official announcements, society documents,
+                notices, reports and other resources published by
+                the Kabale University Surgical Society.
+            </p>
+
+        </div>
+
     </section>
+
+
+    <!-- ========================================================
+         MAIN CONTENT
+         ======================================================== -->
+
+    <main class="kuss-documents-main">
+
+        {% if announcements %}
+
+            <div class="kuss-documents-heading">
+
+                <div>
+                    <h2>Society Resources</h2>
+
+                    <p>
+                        Official documents and announcements from KUSS.
+                    </p>
+                </div>
+
+                <div class="kuss-document-count">
+
+                    <i class="fa-solid fa-file-lines"></i>
+
+                    {{ announcements|length }}
+                    document{{ announcements|length|pluralize }}
+
+                </div>
+
+            </div>
+
+
+            <div class="kuss-announcement-list">
+
+                {% for doc in announcements %}
+
+                    <article class="kuss-announcement-card">
+
+                        <!-- ==========================================
+                             DOCUMENT ICON
+                             ========================================== -->
+
+                        <div class="kuss-document-icon"
+                             aria-hidden="true">
+
+                            {% if doc.document %}
+
+                                <i class="fa-solid fa-file-arrow-down"></i>
+
+                            {% else %}
+
+                                <i class="fa-solid fa-file-circle-exclamation"></i>
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <!-- ==========================================
+                             DOCUMENT DETAILS
+                             ========================================== -->
+
+                        <div class="kuss-announcement-details">
+
+                            <h3 class="kuss-announcement-title">
+                                {{ doc.title }}
+                            </h3>
+
+
+                            <p class="kuss-announcement-description">
+                                {{ doc.description|default:"Official society document." }}
+                            </p>
+
+
+                            <div class="kuss-announcement-meta">
+
+                                <span>
+                                    <i class="fa-regular fa-calendar"></i>
+                                    Published:
+                                    {{ doc.created_at|date:"F d, Y" }}
+                                </span>
+
+
+                                {% if doc.document %}
+
+                                    <span>
+                                        <i class="fa-solid fa-file"></i>
+                                        Official document
+                                    </span>
+
+                                {% endif %}
+
+                            </div>
+
+                        </div>
+
+
+                        <!-- ==========================================
+                             DOWNLOAD ACTION
+                             ========================================== -->
+
+                        {% if doc.document %}
+
+                            <a
+                                href="{{ doc.document.url }}"
+                                class="kuss-download"
+                                download
+                                aria-label="Download {{ doc.title }}"
+                            >
+
+                                <i class="fa-solid fa-download"></i>
+
+                                Download File
+
+                            </a>
+
+                        {% else %}
+
+                            <span class="kuss-no-file">
+
+                                <i class="fa-solid fa-circle-info"></i>
+
+                                No file attached
+
+                            </span>
+
+                        {% endif %}
+
+                    </article>
+
+                {% endfor %}
+
+            </div>
+
+
+        {% else %}
+
+            <!-- ==================================================
+                 EMPTY STATE
+                 ================================================== -->
+
+            <div class="kuss-documents-empty">
+
+                <div class="kuss-empty-icon">
+                    <i class="fa-solid fa-folder-open"></i>
+                </div>
+
+                <h3>No announcements yet.</h3>
+
+                <p>
+                    Official KUSS announcements and documents will
+                    appear here once they are published.
+                </p>
+
+            </div>
+
+        {% endif %}
+
+    </main>
+
+</div>
+
 {% endblock %}
