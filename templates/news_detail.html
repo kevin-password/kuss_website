@@ -1,334 +1,230 @@
 {% extends "base.html" %}
 
-{% block title %}{{ post.title }} | KUSS News{% endblock %}
-
-{% block meta_description %}
-{{ post.content|striptags|truncatechars:160 }}
-{% endblock %}
+{% block title %}{{ event.title }} | KUSS Events{% endblock %}
 
 {% block content %}
 <style>
-    .news-detail {
-        --kuss-navy: #0e2148;
-        --kuss-orange: #f0631e;
-        --kuss-cream: #f5f0e6;
-        max-width: 1000px;
+    .event-detail {
+        max-width: 950px;
         margin: 0 auto;
-        padding: 36px 20px 64px;
-        color: #172033;
+        padding: 30px 18px 60px;
     }
 
-    .news-breadcrumb {
-        margin-bottom: 24px;
-        font-size: .9rem;
-        color: #64748b;
+    .event-breadcrumb {
+        margin-bottom: 22px;
+        color: #667085;
+        font-size: 14px;
     }
 
-    .news-breadcrumb a {
-        color: var(--kuss-navy);
+    .event-breadcrumb a {
+        color: #0e2148;
         text-decoration: none;
-        font-weight: 600;
     }
 
-    .news-breadcrumb a:hover {
-        color: var(--kuss-orange);
+    .event-breadcrumb a:hover {
+        text-decoration: underline;
     }
 
-    .news-article {
-        overflow: hidden;
-        background: #fff;
-        border: 1px solid #e8eaf0;
-        border-radius: 20px;
-        box-shadow: 0 12px 36px rgba(14, 33, 72, .08);
-    }
-
-    .news-article-header {
-        padding: clamp(24px, 5vw, 52px);
-        background: linear-gradient(135deg, #f5f0e6 0%, #fff 75%);
-        border-bottom: 1px solid #eceef2;
-    }
-
-    .news-label {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        margin-bottom: 18px;
-        padding: 7px 12px;
-        border-radius: 999px;
-        background: rgba(240, 99, 30, .11);
-        color: #c94a10;
-        font-size: .78rem;
-        font-weight: 800;
-        letter-spacing: .08em;
-        text-transform: uppercase;
-    }
-
-    .news-label::before {
-        content: "";
-        width: 7px;
-        height: 7px;
-        border-radius: 50%;
-        background: var(--kuss-orange);
-    }
-
-    .news-title {
-        margin: 0 0 20px;
-        color: var(--kuss-navy);
-        font-size: clamp(2rem, 5vw, 3.4rem);
-        line-height: 1.12;
-        letter-spacing: -.035em;
+    .event-detail h1 {
+        color: #0e2148;
+        font-size: clamp(28px, 5vw, 44px);
+        line-height: 1.2;
+        margin: 0 0 16px;
         overflow-wrap: anywhere;
     }
 
-    .news-meta {
+    .event-meta {
         display: flex;
         flex-wrap: wrap;
-        gap: 12px 20px;
-        color: #64748b;
-        font-size: .9rem;
+        gap: 20px;
+        color: #344054;
+        font-size: 15px;
+        margin-bottom: 25px;
+        padding: 16px;
+        background: #f9fafb;
+        border-radius: 10px;
+        border-left: 4px solid #0e2148;
     }
 
-    .news-meta span {
-        display: inline-flex;
+    .event-meta-item {
+        display: flex;
         align-items: center;
-        gap: 7px;
+        gap: 8px;
     }
 
-    .news-hero {
-        width: 100%;
-        max-height: 560px;
-        overflow: hidden;
-        background: #edf0f5;
+    .event-meta-item strong {
+        color: #0e2148;
     }
 
-    .news-hero img {
+    .event-flyer {
         display: block;
         width: 100%;
-        max-height: 560px;
+        max-height: 520px;
         object-fit: cover;
+        border-radius: 14px;
+        margin-bottom: 28px;
+        background: #f2f4f7;
     }
 
-    .news-article-body {
-        padding: clamp(24px, 5vw, 52px);
-    }
-
-    .news-content {
-        color: #303b4e;
-        font-size: 1.08rem;
-        line-height: 1.9;
+    .event-body {
+        color: #344054;
+        font-size: 17px;
+        line-height: 1.85;
         overflow-wrap: anywhere;
     }
 
-    .news-content p {
-        margin: 0 0 1.4em;
+    .event-body p {
+        margin-bottom: 18px;
     }
 
-    .news-content h2,
-    .news-content h3,
-    .news-content h4 {
-        margin: 1.8em 0 .65em;
-        color: var(--kuss-navy);
-        line-height: 1.3;
-    }
-
-    .news-content img {
-        max-width: 100%;
-        height: auto;
-        border-radius: 12px;
-    }
-
-    .news-content a {
-        color: #c94a10;
-        text-decoration: underline;
-        text-underline-offset: 3px;
-    }
-
-    .news-content blockquote {
-        margin: 1.5em 0;
-        padding: 16px 22px;
-        border-left: 4px solid var(--kuss-orange);
-        background: #f8f6f1;
-        color: var(--kuss-navy);
-    }
-
-    .news-content ul,
-    .news-content ol {
-        padding-left: 1.5em;
-        margin-bottom: 1.4em;
-    }
-
-    .news-share {
+    .event-actions {
         display: flex;
         flex-wrap: wrap;
-        align-items: center;
         gap: 12px;
-        margin-top: 36px;
-        padding-top: 26px;
-        border-top: 1px solid #e8eaf0;
+        margin-top: 35px;
+        padding-top: 22px;
+        border-top: 1px solid #eaecf0;
     }
 
-    .news-share-label {
-        width: 100%;
-        color: var(--kuss-navy);
-        font-weight: 800;
-    }
-
-    .news-share a {
+    .event-button {
         display: inline-flex;
-        justify-content: center;
         align-items: center;
-        gap: 8px;
-        min-height: 44px;
-        padding: 11px 17px;
-        border-radius: 10px;
+        justify-content: center;
+        padding: 12px 18px;
+        border-radius: 8px;
         text-decoration: none;
-        font-size: .92rem;
-        font-weight: 700;
-        transition: transform .2s, opacity .2s;
-    }
-
-    .news-share a:hover {
-        transform: translateY(-2px);
-        opacity: .9;
-    }
-
-    .share-whatsapp {
-        background: #168b52;
-        color: #fff;
-    }
-
-    .share-copy {
-        background: var(--kuss-navy);
-        color: #fff;
+        font-size: 14px;
+        font-weight: 600;
         cursor: pointer;
         border: 0;
-        font: inherit;
-        font-weight: 700;
     }
 
-    .news-back {
-        display: inline-flex;
-        margin-top: 26px;
-        color: var(--kuss-navy);
-        font-weight: 800;
-        text-decoration: none;
+    .event-button-primary {
+        color: white;
+        background: #0e2148;
     }
 
-    .news-back:hover {
-        color: var(--kuss-orange);
+    .event-button-whatsapp {
+        color: white;
+        background: #168a52;
+    }
+
+    .event-button:hover {
+        opacity: 0.9;
     }
 
     @media (max-width: 600px) {
-        .news-detail {
-            padding: 24px 12px 44px;
+        .event-detail {
+            padding: 22px 14px 40px;
         }
 
-        .news-article {
-            border-radius: 14px;
+        .event-meta {
+            flex-direction: column;
+            gap: 12px;
         }
 
-        .news-content {
-            font-size: 1rem;
-            line-height: 1.8;
-        }
-
-        .news-share a,
-        .share-copy {
-            flex: 1 1 100%;
-            width: 100%;
+        .event-body {
+            font-size: 16px;
         }
     }
 </style>
 
-<main class="news-detail">
-    <nav class="news-breadcrumb" aria-label="Breadcrumb">
+<main class="event-detail">
+    <nav class="event-breadcrumb" aria-label="Breadcrumb">
         <a href="/">Home</a>
-        <span aria-hidden="true"> / </span>
-        <a href="{% url 'news' %}">News</a>
-        <span aria-hidden="true"> / </span>
-        <span>{{ post.title|truncatechars:55 }}</span>
+        &nbsp;›&nbsp;
+        <a href="{% url 'home' %}#events">Events</a>
+        &nbsp;›&nbsp;
+        <span>{{ event.title }}</span>
     </nav>
 
-    <article class="news-article">
-        <header class="news-article-header">
-            <div class="news-label">KUSS News &amp; Updates</div>
+    <article>
+        <header>
+            <h1>{{ event.title }}</h1>
 
-            <h1 class="news-title">{{ post.title }}</h1>
-
-            <div class="news-meta">
-                {% if post.created_at %}
-                <span>
-                    <span aria-hidden="true">📅</span>
-                    <time datetime="{{ post.created_at|date:'c' }}">
-                        {{ post.created_at|date:"F j, Y" }}
-                    </time>
-                </span>
+            <div class="event-meta">
+                {% if event.date %}
+                    <div class="event-meta-item">
+                        <strong>📅 Date:</strong>
+                        <time datetime="{{ event.date|date:'c' }}">
+                            {{ event.date|date:"F j, Y" }}
+                        </time>
+                    </div>
                 {% endif %}
 
-                <span>
-                    <span aria-hidden="true">🏛️</span>
-                    Kabale University Surgical Society
-                </span>
+                {% if event.time %}
+                    <div class="event-meta-item">
+                        <strong>🕒 Time:</strong>
+                        <span>{{ event.time|date:"g:i A" }}</span>
+                    </div>
+                {% endif %}
+
+                {% if event.venue %}
+                    <div class="event-meta-item">
+                        <strong>📍 Venue:</strong>
+                        <span>{{ event.venue }}</span>
+                    </div>
+                {% endif %}
             </div>
         </header>
 
-        {% if post.image %}
-        <figure class="news-hero">
+        {% if event.flyer %}
             <img
-                src="{{ post.image.url }}"
-                alt="{{ post.title }}"
+                class="event-flyer"
+                src="{{ event.flyer.url }}"
+                alt="Flyer for {{ event.title }}"
                 fetchpriority="high"
             >
-        </figure>
         {% endif %}
 
-        <div class="news-article-body">
-            <div class="news-content">
-                {{ post.content|linebreaks }}
-            </div>
-
-            <div class="news-share">
-                <div class="news-share-label">Share this news</div>
-
-                <a
-                    class="share-whatsapp"
-                    href="https://wa.me/?text={{ post.title|urlencode }}%20%E2%80%94%20{{ request.build_absolute_uri|urlencode }}"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    aria-label="Share this article on WhatsApp"
-                >
-                    Share on WhatsApp
-                </a>
-
-                <button
-                    class="share-copy"
-                    type="button"
-                    onclick="copyNewsLink()"
-                >
-                    Copy article link
-                </button>
-            </div>
+        <div class="event-body">
+            {{ event.description|linebreaks }}
         </div>
     </article>
 
-    <a class="news-back" href="{% url 'news' %}">
-        ← Back to all news
-    </a>
+    <div class="event-actions">
+        <a
+            class="event-button event-button-primary"
+            href="{% url 'home' %}#events"
+        >
+            ← Back to all events
+        </a>
+
+        <a
+            class="event-button event-button-whatsapp"
+            href="https://wa.me/?text=Check%20out%20this%20event:%20{{ event.title|urlencode }}%20{{ request.build_absolute_uri|urlencode }}"
+            target="_blank"
+            rel="noopener noreferrer"
+        >
+            Share on WhatsApp
+        </a>
+
+        <button
+            class="event-button event-button-primary"
+            type="button"
+            onclick="copyEventLink(this)"
+        >
+            Copy event link
+        </button>
+    </div>
 </main>
 
 <script>
-    function copyNewsLink() {
-        const url = window.location.href;
+    async function copyEventLink(button) {
+        const eventUrl = window.location.href;
+        const originalText = button.textContent;
 
-        if (navigator.clipboard && window.isSecureContext) {
-            navigator.clipboard.writeText(url).then(() => {
-                alert("Article link copied.");
-            }).catch(() => {
-                window.prompt("Copy this article link:", url);
-            });
-        } else {
-            window.prompt("Copy this article link:", url);
+        try {
+            await navigator.clipboard.writeText(eventUrl);
+            button.textContent = "Link copied!";
+        } catch (error) {
+            window.prompt("Copy this event link:", eventUrl);
+            return;
         }
+
+        window.setTimeout(() => {
+            button.textContent = originalText;
+        }, 2000);
     }
 </script>
 {% endblock %}
