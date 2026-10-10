@@ -1,31 +1,31 @@
 {% extends "base.html" %}
 
-{% block title %}{{ event.title }} | KUSS Events{% endblock %}
+{% block title %}{{ post.title }} | KUSS{% endblock %}
 
 {% block content %}
 <style>
-    .event-detail {
+    .news-detail {
         max-width: 950px;
         margin: 0 auto;
         padding: 30px 18px 60px;
     }
 
-    .event-breadcrumb {
+    .news-breadcrumb {
         margin-bottom: 22px;
         color: #667085;
         font-size: 14px;
     }
 
-    .event-breadcrumb a {
+    .news-breadcrumb a {
         color: #0e2148;
         text-decoration: none;
     }
 
-    .event-breadcrumb a:hover {
+    .news-breadcrumb a:hover {
         text-decoration: underline;
     }
 
-    .event-detail h1 {
+    .news-detail h1 {
         color: #0e2148;
         font-size: clamp(28px, 5vw, 44px);
         line-height: 1.2;
@@ -33,30 +33,13 @@
         overflow-wrap: anywhere;
     }
 
-    .event-meta {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        color: #344054;
-        font-size: 15px;
+    .news-meta {
+        color: #667085;
+        font-size: 14px;
         margin-bottom: 25px;
-        padding: 16px;
-        background: #f9fafb;
-        border-radius: 10px;
-        border-left: 4px solid #0e2148;
     }
 
-    .event-meta-item {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-
-    .event-meta-item strong {
-        color: #0e2148;
-    }
-
-    .event-flyer {
+    .news-cover {
         display: block;
         width: 100%;
         max-height: 520px;
@@ -66,18 +49,33 @@
         background: #f2f4f7;
     }
 
-    .event-body {
+    .news-body {
         color: #344054;
         font-size: 17px;
         line-height: 1.85;
         overflow-wrap: anywhere;
     }
 
-    .event-body p {
+    .news-body p {
         margin-bottom: 18px;
     }
 
-    .event-actions {
+    .news-gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 14px;
+        margin-top: 30px;
+    }
+
+    .news-gallery img {
+        width: 100%;
+        height: 240px;
+        object-fit: cover;
+        border-radius: 10px;
+        background: #f2f4f7;
+    }
+
+    .news-actions {
         display: flex;
         flex-wrap: wrap;
         gap: 12px;
@@ -86,7 +84,7 @@
         border-top: 1px solid #eaecf0;
     }
 
-    .event-button {
+    .news-button {
         display: inline-flex;
         align-items: center;
         justify-content: center;
@@ -99,100 +97,102 @@
         border: 0;
     }
 
-    .event-button-primary {
+    .news-button-primary {
         color: white;
         background: #0e2148;
     }
 
-    .event-button-whatsapp {
+    .news-button-whatsapp {
         color: white;
         background: #168a52;
     }
 
-    .event-button:hover {
+    .news-button:hover {
         opacity: 0.9;
     }
 
     @media (max-width: 600px) {
-        .event-detail {
+        .news-detail {
             padding: 22px 14px 40px;
         }
 
-        .event-meta {
-            flex-direction: column;
-            gap: 12px;
+        .news-body {
+            font-size: 16px;
         }
 
-        .event-body {
-            font-size: 16px;
+        .news-gallery img {
+            height: 210px;
         }
     }
 </style>
 
-<main class="event-detail">
-    <nav class="event-breadcrumb" aria-label="Breadcrumb">
-        <a href="/">Home</a>
+<main class="news-detail">
+    <nav class="news-breadcrumb" aria-label="Breadcrumb">
+        <a href="{% url 'home' %}">Home</a>
         &nbsp;›&nbsp;
-        <a href="{% url 'home' %}#events">Events</a>
+        <a href="{% url 'news' %}">News</a>
         &nbsp;›&nbsp;
-        <span>{{ event.title }}</span>
+        <span>{{ post.title }}</span>
     </nav>
 
     <article>
         <header>
-            <h1>{{ event.title }}</h1>
+            <h1>{{ post.title }}</h1>
 
-            <div class="event-meta">
-                {% if event.date %}
-                    <div class="event-meta-item">
-                        <strong>📅 Date:</strong>
-                        <time datetime="{{ event.date|date:'c' }}">
-                            {{ event.date|date:"F j, Y" }}
-                        </time>
-                    </div>
-                {% endif %}
+            <div class="news-meta">
+                Published
+                <time datetime="{{ post.created_at|date:'c' }}">
+                    {{ post.created_at|date:"F j, Y" }}
+                </time>
 
-                {% if event.time %}
-                    <div class="event-meta-item">
-                        <strong>🕒 Time:</strong>
-                        <span>{{ event.time|date:"g:i A" }}</span>
-                    </div>
-                {% endif %}
-
-                {% if event.venue %}
-                    <div class="event-meta-item">
-                        <strong>📍 Venue:</strong>
-                        <span>{{ event.venue }}</span>
-                    </div>
+                {% if post.author %}
+                    &nbsp;|&nbsp; By
+                    {{ post.author.get_full_name|default:post.author.username }}
                 {% endif %}
             </div>
         </header>
 
-        {% if event.flyer %}
+        {% if post.image %}
             <img
-                class="event-flyer"
-                src="{{ event.flyer.url }}"
-                alt="Flyer for {{ event.title }}"
+                class="news-cover"
+                src="{{ post.image.url }}"
+                alt="{{ post.title }}"
                 fetchpriority="high"
             >
         {% endif %}
 
-        <div class="event-body">
-            {{ event.description|linebreaks }}
+        <div class="news-body">
+            {{ post.content|linebreaks }}
         </div>
+
+        {% if post.additional_images.all %}
+            <section aria-label="Additional article photographs">
+                <div class="news-gallery">
+                    {% for item in post.additional_images.all %}
+                        {% if item.image %}
+                            <img
+                                src="{{ item.image.url }}"
+                                alt="{{ post.title }} — photograph {{ forloop.counter }}"
+                                loading="lazy"
+                            >
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
     </article>
 
-    <div class="event-actions">
+    <div class="news-actions">
         <a
-            class="event-button event-button-primary"
-            href="{% url 'home' %}#events"
+            class="news-button news-button-primary"
+            href="{% url 'news' %}"
         >
-            ← Back to all events
+            ← Back to all news
         </a>
 
         <a
-            class="event-button event-button-whatsapp"
-            href="https://wa.me/?text=Check%20out%20this%20event:%20{{ event.title|urlencode }}%20{{ request.build_absolute_uri|urlencode }}"
+            class="news-button news-button-whatsapp"
+            href="https://wa.me/?text={{ post.title|urlencode }}%20{{ request.build_absolute_uri|urlencode }}"
             target="_blank"
             rel="noopener noreferrer"
         >
@@ -200,25 +200,25 @@
         </a>
 
         <button
-            class="event-button event-button-primary"
+            class="news-button news-button-primary"
             type="button"
-            onclick="copyEventLink(this)"
+            onclick="copyNewsLink(this)"
         >
-            Copy event link
+            Copy article link
         </button>
     </div>
 </main>
 
 <script>
-    async function copyEventLink(button) {
-        const eventUrl = window.location.href;
+    async function copyNewsLink(button) {
+        const articleUrl = window.location.href;
         const originalText = button.textContent;
 
         try {
-            await navigator.clipboard.writeText(eventUrl);
+            await navigator.clipboard.writeText(articleUrl);
             button.textContent = "Link copied!";
         } catch (error) {
-            window.prompt("Copy this event link:", eventUrl);
+            window.prompt("Copy this article link:", articleUrl);
             return;
         }
 
