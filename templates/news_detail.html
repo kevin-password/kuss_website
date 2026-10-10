@@ -1,0 +1,334 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }} | KUSS News{% endblock %}
+
+{% block meta_description %}
+{{ post.content|striptags|truncatechars:160 }}
+{% endblock %}
+
+{% block content %}
+<style>
+    .news-detail {
+        --kuss-navy: #0e2148;
+        --kuss-orange: #f0631e;
+        --kuss-cream: #f5f0e6;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 36px 20px 64px;
+        color: #172033;
+    }
+
+    .news-breadcrumb {
+        margin-bottom: 24px;
+        font-size: .9rem;
+        color: #64748b;
+    }
+
+    .news-breadcrumb a {
+        color: var(--kuss-navy);
+        text-decoration: none;
+        font-weight: 600;
+    }
+
+    .news-breadcrumb a:hover {
+        color: var(--kuss-orange);
+    }
+
+    .news-article {
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #e8eaf0;
+        border-radius: 20px;
+        box-shadow: 0 12px 36px rgba(14, 33, 72, .08);
+    }
+
+    .news-article-header {
+        padding: clamp(24px, 5vw, 52px);
+        background: linear-gradient(135deg, #f5f0e6 0%, #fff 75%);
+        border-bottom: 1px solid #eceef2;
+    }
+
+    .news-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 18px;
+        padding: 7px 12px;
+        border-radius: 999px;
+        background: rgba(240, 99, 30, .11);
+        color: #c94a10;
+        font-size: .78rem;
+        font-weight: 800;
+        letter-spacing: .08em;
+        text-transform: uppercase;
+    }
+
+    .news-label::before {
+        content: "";
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--kuss-orange);
+    }
+
+    .news-title {
+        margin: 0 0 20px;
+        color: var(--kuss-navy);
+        font-size: clamp(2rem, 5vw, 3.4rem);
+        line-height: 1.12;
+        letter-spacing: -.035em;
+        overflow-wrap: anywhere;
+    }
+
+    .news-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px 20px;
+        color: #64748b;
+        font-size: .9rem;
+    }
+
+    .news-meta span {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+    }
+
+    .news-hero {
+        width: 100%;
+        max-height: 560px;
+        overflow: hidden;
+        background: #edf0f5;
+    }
+
+    .news-hero img {
+        display: block;
+        width: 100%;
+        max-height: 560px;
+        object-fit: cover;
+    }
+
+    .news-article-body {
+        padding: clamp(24px, 5vw, 52px);
+    }
+
+    .news-content {
+        color: #303b4e;
+        font-size: 1.08rem;
+        line-height: 1.9;
+        overflow-wrap: anywhere;
+    }
+
+    .news-content p {
+        margin: 0 0 1.4em;
+    }
+
+    .news-content h2,
+    .news-content h3,
+    .news-content h4 {
+        margin: 1.8em 0 .65em;
+        color: var(--kuss-navy);
+        line-height: 1.3;
+    }
+
+    .news-content img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 12px;
+    }
+
+    .news-content a {
+        color: #c94a10;
+        text-decoration: underline;
+        text-underline-offset: 3px;
+    }
+
+    .news-content blockquote {
+        margin: 1.5em 0;
+        padding: 16px 22px;
+        border-left: 4px solid var(--kuss-orange);
+        background: #f8f6f1;
+        color: var(--kuss-navy);
+    }
+
+    .news-content ul,
+    .news-content ol {
+        padding-left: 1.5em;
+        margin-bottom: 1.4em;
+    }
+
+    .news-share {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 12px;
+        margin-top: 36px;
+        padding-top: 26px;
+        border-top: 1px solid #e8eaf0;
+    }
+
+    .news-share-label {
+        width: 100%;
+        color: var(--kuss-navy);
+        font-weight: 800;
+    }
+
+    .news-share a {
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        min-height: 44px;
+        padding: 11px 17px;
+        border-radius: 10px;
+        text-decoration: none;
+        font-size: .92rem;
+        font-weight: 700;
+        transition: transform .2s, opacity .2s;
+    }
+
+    .news-share a:hover {
+        transform: translateY(-2px);
+        opacity: .9;
+    }
+
+    .share-whatsapp {
+        background: #168b52;
+        color: #fff;
+    }
+
+    .share-copy {
+        background: var(--kuss-navy);
+        color: #fff;
+        cursor: pointer;
+        border: 0;
+        font: inherit;
+        font-weight: 700;
+    }
+
+    .news-back {
+        display: inline-flex;
+        margin-top: 26px;
+        color: var(--kuss-navy);
+        font-weight: 800;
+        text-decoration: none;
+    }
+
+    .news-back:hover {
+        color: var(--kuss-orange);
+    }
+
+    @media (max-width: 600px) {
+        .news-detail {
+            padding: 24px 12px 44px;
+        }
+
+        .news-article {
+            border-radius: 14px;
+        }
+
+        .news-content {
+            font-size: 1rem;
+            line-height: 1.8;
+        }
+
+        .news-share a,
+        .share-copy {
+            flex: 1 1 100%;
+            width: 100%;
+        }
+    }
+</style>
+
+<main class="news-detail">
+    <nav class="news-breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Home</a>
+        <span aria-hidden="true"> / </span>
+        <a href="{% url 'news' %}">News</a>
+        <span aria-hidden="true"> / </span>
+        <span>{{ post.title|truncatechars:55 }}</span>
+    </nav>
+
+    <article class="news-article">
+        <header class="news-article-header">
+            <div class="news-label">KUSS News &amp; Updates</div>
+
+            <h1 class="news-title">{{ post.title }}</h1>
+
+            <div class="news-meta">
+                {% if post.created_at %}
+                <span>
+                    <span aria-hidden="true">📅</span>
+                    <time datetime="{{ post.created_at|date:'c' }}">
+                        {{ post.created_at|date:"F j, Y" }}
+                    </time>
+                </span>
+                {% endif %}
+
+                <span>
+                    <span aria-hidden="true">🏛️</span>
+                    Kabale University Surgical Society
+                </span>
+            </div>
+        </header>
+
+        {% if post.image %}
+        <figure class="news-hero">
+            <img
+                src="{{ post.image.url }}"
+                alt="{{ post.title }}"
+                fetchpriority="high"
+            >
+        </figure>
+        {% endif %}
+
+        <div class="news-article-body">
+            <div class="news-content">
+                {{ post.content|linebreaks }}
+            </div>
+
+            <div class="news-share">
+                <div class="news-share-label">Share this news</div>
+
+                <a
+                    class="share-whatsapp"
+                    href="https://wa.me/?text={{ post.title|urlencode }}%20%E2%80%94%20{{ request.build_absolute_uri|urlencode }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Share this article on WhatsApp"
+                >
+                    Share on WhatsApp
+                </a>
+
+                <button
+                    class="share-copy"
+                    type="button"
+                    onclick="copyNewsLink()"
+                >
+                    Copy article link
+                </button>
+            </div>
+        </div>
+    </article>
+
+    <a class="news-back" href="{% url 'news' %}">
+        ← Back to all news
+    </a>
+</main>
+
+<script>
+    function copyNewsLink() {
+        const url = window.location.href;
+
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(url).then(() => {
+                alert("Article link copied.");
+            }).catch(() => {
+                window.prompt("Copy this article link:", url);
+            });
+        } else {
+            window.prompt("Copy this article link:", url);
+        }
+    }
+</script>
+{% endblock %}
