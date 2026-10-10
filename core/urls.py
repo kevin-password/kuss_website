@@ -1,3 +1,4 @@
+
 from django.urls import path
 from django.views.generic import TemplateView
 
@@ -27,10 +28,18 @@ urlpatterns = [
         name="about"
     ),
 
+    # News listing
     path(
         "news/",
         views.news_view,
         name="news"
+    ),
+
+    # Individual news article
+    path(
+        "news/<int:news_id>/",
+        views.news_detail_view,
+        name="news_detail"
     ),
 
     path(
