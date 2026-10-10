@@ -1,23 +1,493 @@
+
 {% extends 'base.html' %}
-{% block title %}News - KUSS{% endblock %}
+
+{% block title %}Latest News & Events | KUSS{% endblock %}
+
 {% block content %}
-    <section class="page-header"><h1>Latest News & Events</h1></section>
-    <section class="section container">
-        {% if news_posts %}
-            <div class="news-preview-grid">
-                {% for post in news_posts %}
-                    <div class="preview-card">
-                        {% if post.image %}<img src="{{ post.image.url }}" alt="{{ post.title }}" class="preview-img">{% endif %}
-                        <div class="preview-content">
-                            <span class="preview-date">{{ post.created_at|date:"F d, Y" }}</span>
-                            <h3 class="preview-title">{{ post.title }}</h3>
-                            <p style="color: var(--text-light);">{{ post.content }}</p>
-                        </div>
-                    </div>
-                {% endfor %}
+
+{% block meta_tags %}
+<meta name="description" content="Discover the latest news, academic activities, research initiatives, events, and mentorship updates from Kabale University Surgical Society.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Kabale University Surgical Society">
+<meta property="og:title" content="Latest News &amp; Events | KUSS">
+<meta property="og:description" content="Stay connected with the latest announcements, surgical education, research, events, and mentorship opportunities at KUSS.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Latest News &amp; Events | KUSS">
+<meta name="twitter:description" content="The latest announcements and updates from Kabale University Surgical Society.">
+{% endblock %}
+
+<style>
+    .kuss-news {
+        --kn-navy: var(--navy, #0e2148);
+        --kn-orange: var(--orange, #f0631e);
+        --kn-muted: #64748b;
+        --kn-border: #e5eaf1;
+        background: #f6f8fc;
+        min-height: 100vh;
+        padding-bottom: 65px;
+    }
+
+    .kn-hero {
+        position: relative;
+        isolation: isolate;
+        overflow: hidden;
+        text-align: center;
+        padding: 64px 20px 68px;
+        color: #fff;
+        background: linear-gradient(135deg, #0e2148, #204576);
+    }
+
+    .kn-hero::before,
+    .kn-hero::after {
+        content: "";
+        position: absolute;
+        z-index: -1;
+        border: 1px solid rgba(255,255,255,.13);
+        border-radius: 50%;
+        pointer-events: none;
+    }
+
+    .kn-hero::before {
+        width: 280px;
+        height: 280px;
+        top: -155px;
+        right: -65px;
+        box-shadow: 0 0 0 30px rgba(255,255,255,.025),
+                    0 0 0 65px rgba(255,255,255,.025);
+    }
+
+    .kn-hero::after {
+        width: 210px;
+        height: 210px;
+        bottom: -150px;
+        left: -65px;
+        box-shadow: 0 0 0 30px rgba(255,255,255,.025);
+    }
+
+    .kn-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        margin-bottom: 16px;
+        color: #ffd3ba;
+        font-size: .76rem;
+        font-weight: 800;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    .kn-hero h1 {
+        color: #fff;
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: clamp(2rem, 5vw, 3.25rem);
+        line-height: 1.18;
+        margin: 0 0 16px;
+    }
+
+    .kn-hero p {
+        max-width: 650px;
+        margin: 0 auto;
+        color: #dce5f2;
+        font-size: 1rem;
+        line-height: 1.8;
+    }
+
+    .kn-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 42px 22px 0;
+    }
+
+    .kn-section-heading {
+        display: flex;
+        align-items: end;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .kn-section-heading h2 {
+        margin: 0;
+        color: var(--kn-navy);
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: clamp(1.5rem, 3vw, 2rem);
+    }
+
+    .kn-section-heading p {
+        margin: 8px 0 0;
+        color: var(--kn-muted);
+        font-size: .92rem;
+        line-height: 1.6;
+    }
+
+    .kn-count {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 9px 14px;
+        background: #fff;
+        border: 1px solid var(--kn-border);
+        border-radius: 30px;
+        color: var(--kn-navy);
+        font-size: .82rem;
+        font-weight: 700;
+    }
+
+    .kn-count-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--kn-orange);
+    }
+
+    .kn-grid {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 24px;
+        align-items: stretch;
+    }
+
+    .kn-card {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid var(--kn-border);
+        border-radius: 18px;
+        box-shadow: 0 6px 24px rgba(14,33,72,.05);
+        transition: transform .22s ease, box-shadow .22s ease;
+    }
+
+    .kn-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 16px 36px rgba(14,33,72,.12);
+    }
+
+    .kn-image-wrap {
+        position: relative;
+        overflow: hidden;
+        aspect-ratio: 16 / 10;
+        background: #e9eef5;
+    }
+
+    .kn-image {
+        display: block;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform .35s ease;
+    }
+
+    .kn-card:hover .kn-image {
+        transform: scale(1.04);
+    }
+
+    .kn-placeholder {
+        display: grid;
+        place-items: center;
+        width: 100%;
+        height: 100%;
+        min-height: 190px;
+        background: linear-gradient(135deg, #0e2148, #234b7e);
+        color: rgba(255,255,255,.8);
+        font-size: 3rem;
+    }
+
+    .kn-date-badge {
+        position: absolute;
+        bottom: 14px;
+        left: 14px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 58px;
+        padding: 8px 10px;
+        border-radius: 11px;
+        background: #fff;
+        color: var(--kn-navy);
+        box-shadow: 0 4px 15px rgba(0,0,0,.13);
+        line-height: 1.2;
+    }
+
+    .kn-date-day {
+        font-size: 1.3rem;
+        font-weight: 800;
+    }
+
+    .kn-date-month {
+        margin-top: 3px;
+        color: var(--kn-orange);
+        font-size: .7rem;
+        font-weight: 800;
+        text-transform: uppercase;
+    }
+
+    .kn-card-content {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        padding: 21px;
+    }
+
+    .kn-date-line {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-bottom: 12px;
+        color: var(--kn-muted);
+        font-size: .8rem;
+    }
+
+    .kn-date-line i {
+        color: var(--kn-orange);
+    }
+
+    .kn-card-title {
+        margin: 0 0 12px;
+        color: var(--kn-navy);
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: 1.28rem;
+        font-weight: 700;
+        line-height: 1.45;
+        overflow-wrap: anywhere;
+    }
+
+    .kn-excerpt {
+        margin: 0;
+        color: #59677b;
+        font-size: .92rem;
+        line-height: 1.8;
+        overflow-wrap: anywhere;
+        display: -webkit-box;
+        -webkit-line-clamp: 5;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .kn-card-footer {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        padding: 17px 21px;
+        border-top: 1px solid #edf0f5;
+    }
+
+    .kn-brand {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: var(--kn-muted);
+        font-size: .76rem;
+        font-weight: 700;
+    }
+
+    .kn-brand i {
+        color: var(--kn-orange);
+    }
+
+    .kn-card-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        color: var(--kn-navy);
+        font-size: .83rem;
+        font-weight: 800;
+    }
+
+    .kn-card-link i {
+        color: var(--kn-orange);
+    }
+
+    .kn-empty {
+        padding: 60px 22px;
+        background: #fff;
+        border: 1px dashed #cbd5e1;
+        border-radius: 18px;
+        text-align: center;
+    }
+
+    .kn-empty-icon {
+        display: grid;
+        place-items: center;
+        width: 68px;
+        height: 68px;
+        margin: 0 auto 18px;
+        border-radius: 20px;
+        background: #edf2fa;
+        color: var(--kn-navy);
+        font-size: 1.7rem;
+    }
+
+    .kn-empty h3 {
+        margin: 0 0 10px;
+        color: var(--kn-navy);
+        font-family: 'Playfair Display', Georgia, serif;
+        font-size: 1.5rem;
+    }
+
+    .kn-empty p {
+        margin: 0;
+        color: var(--kn-muted);
+        line-height: 1.7;
+    }
+
+    @media (max-width: 950px) {
+        .kn-grid {
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 20px;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .kn-hero {
+            padding: 44px 18px 48px;
+        }
+
+        .kn-container {
+            padding: 30px 14px 0;
+        }
+
+        .kn-grid {
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+        .kn-section-heading {
+            align-items: flex-start;
+            flex-direction: column;
+        }
+
+        .kn-card-content {
+            padding: 19px;
+        }
+
+        .kn-card-footer {
+            padding: 16px 19px;
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .kn-card,
+        .kn-image {
+            transition: none;
+        }
+
+        .kn-card:hover,
+        .kn-card:hover .kn-image {
+            transform: none;
+        }
+    }
+</style>
+
+<div class="kuss-news">
+
+    <header class="kn-hero">
+        <div class="kn-eyebrow">
+            <i class="fa-solid fa-newspaper"></i>
+            KUSS Newsroom
+        </div>
+
+        <h1>Latest News &amp; Events</h1>
+
+        <p>
+            Discover the latest announcements, academic activities,
+            surgical education, research initiatives, and mentorship
+            opportunities from the Kabale University Surgical Society.
+        </p>
+    </header>
+
+    <section class="kn-container container">
+        <div class="kn-section-heading">
+            <div>
+                <h2>From the KUSS Community</h2>
+                <p>Stay informed. Stay connected. Keep moving forward.</p>
             </div>
+
+            {% if news_posts %}
+            <span class="kn-count">
+                <span class="kn-count-dot"></span>
+                {{ news_posts|length }} update{{ news_posts|length|pluralize }}
+            </span>
+            {% endif %}
+        </div>
+
+        {% if news_posts %}
+        <div class="kn-grid">
+            {% for post in news_posts %}
+            <article class="kn-card">
+
+                <div class="kn-image-wrap">
+                    {% if post.image %}
+                    <img
+                        src="{{ post.image.url }}"
+                        alt="{{ post.title }}"
+                        class="kn-image"
+                        loading="{% if forloop.counter <= 3 %}eager{% else %}lazy{% endif %}"
+                        decoding="async"
+                    >
+                    {% else %}
+                    <div class="kn-placeholder" aria-hidden="true">
+                        <i class="fa-solid fa-newspaper"></i>
+                    </div>
+                    {% endif %}
+
+                    <div class="kn-date-badge">
+                        <span class="kn-date-day">
+                            {{ post.created_at|date:"d" }}
+                        </span>
+                        <span class="kn-date-month">
+                            {{ post.created_at|date:"M" }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="kn-card-content">
+                    <div class="kn-date-line">
+                        <i class="fa-regular fa-calendar"></i>
+                        <time datetime="{{ post.created_at|date:'Y-m-d' }}">
+                            {{ post.created_at|date:"F d, Y" }}
+                        </time>
+                    </div>
+
+                    <h3 class="kn-card-title">{{ post.title }}</h3>
+
+                    <p class="kn-excerpt">
+                        {{ post.content|striptags|truncatewords:35 }}
+                    </p>
+                </div>
+
+                <footer class="kn-card-footer">
+                    <span class="kn-brand">
+                        <i class="fa-solid fa-stethoscope"></i>
+                        KUSS
+                    </span>
+
+                    <span class="kn-card-link">
+                        News update
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </span>
+                </footer>
+
+            </article>
+            {% endfor %}
+        </div>
+
         {% else %}
-            <div class="empty-state"><h3>No news yet.</h3></div>
+        <div class="kn-empty">
+            <div class="kn-empty-icon">
+                <i class="fa-regular fa-newspaper"></i>
+            </div>
+            <h3>No news just yet</h3>
+            <p>
+                There are no published updates at the moment.
+                Check back soon for the latest from KUSS.
+            </p>
+        </div>
         {% endif %}
     </section>
+</div>
+
 {% endblock %}
