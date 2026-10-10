@@ -648,6 +648,34 @@ def news_view(request):
     )
 
 
+def news_detail_view(request, news_id):
+    """
+    Display a single KUSS news article.
+
+    Provides the article to the template for:
+    - Displaying the complete story
+    - Generating social media metadata
+    - Sharing the article through WhatsApp
+    - Displaying the article's additional images
+    """
+
+    post = get_object_or_404(
+        NewsPost.objects.select_related("author").prefetch_related(
+            "additional_images"
+        ),
+        id=news_id,
+    )
+
+    settings = SiteSettings.load()
+
+    context = {
+        "post": post,
+        "settings": settings,
+    }
+
+    return render(request, "news_detail.html", context)
+
+
 def announcements_view(request):
 
     announcements = (
@@ -3293,4 +3321,4 @@ def my_orders(request):
             'orders': orders,
             'settings': settings
         }
-    )
+        )
