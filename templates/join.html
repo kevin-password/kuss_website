@@ -3,93 +3,446 @@
 {% block title %}Join KUSS{% endblock %}
 
 {% block content %}
-    <section class="page-header">
-        <h1>Become a Member</h1>
-        <p>Join the Kabale University Surgical Society today.</p>
-    </section>
 
-    <section class="section container">
-        <div class="form-container">
-            <h2>Membership Application</h2>
-            <p class="subtitle">Please review Chapter Two of the Constitution for eligibility and fees before applying.</p>
-            
-            <!-- PAYMENT INSTRUCTIONS BOX - Phone hidden from Google -->
-            {% if settings and settings.treasurer_phone %}
-            <div style="background: #e8f5e9; border-left: 5px solid var(--teal); padding: 25px; border-radius: 8px; margin-bottom: 30px;">
-                <h3 style="color: var(--navy); margin-bottom: 10px;">
-                    <i class="fa-solid fa-money-bill-wave" style="color: var(--teal);"></i> Payment Instructions
-                </h3>
-                <p style="color: var(--text-dark); line-height: 1.8;">
-                    {% if settings.payment_instructions %}
-                        {{ settings.payment_instructions|linebreaksbr }}
-                    {% else %}
-                        Please send your membership fees to the Treasurer:
+<style>
+/* KUSS liquid-metal application button */
+.kuss-join .kuss-liquid-button {
+    position: relative;
+    isolation: isolate;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 62px;
+    padding: 0 24px;
+    border: 0;
+    border-radius: 40px;
+    background: transparent;
+    color: #0E2148;
+    font: inherit;
+    font-weight: 750;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: filter .2s ease;
+}
+
+.kuss-join .kuss-liquid-button:hover:not(:disabled) {
+    filter: brightness(1.05);
+}
+
+.kuss-join .kuss-liquid-button:focus-visible {
+    outline: 3px solid #F0631E;
+    outline-offset: 5px;
+}
+
+.kuss-join .kuss-liquid-button:disabled {
+    cursor: wait;
+}
+
+.kuss-join .kuss-liquid-svg {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+}
+
+.kuss-join .kuss-liquid-shape {
+    fill: url(#kussJoinMetalGradient);
+    stroke: rgba(255,255,255,.8);
+    stroke-width: 1.2;
+    filter: drop-shadow(0 7px 12px rgba(8,18,38,.18));
+}
+
+.kuss-join .kuss-liquid-highlight {
+    fill: none;
+    stroke: rgba(255,255,255,.75);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    pointer-events: none;
+}
+
+.kuss-join .kuss-button-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-height: 62px;
+    position: relative;
+}
+
+.kuss-join .kuss-button-label {
+    white-space: nowrap;
+}
+
+.kuss-join .kuss-check {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 23px;
+    height: 23px;
+    border-radius: 50%;
+    background: #D8F6E7;
+    color: #08794E;
+    opacity: 0;
+    transform: scale(.25) rotate(-35deg);
+    transition:
+        opacity .2s ease,
+        transform .3s cubic-bezier(.2,1.7,.4,1);
+}
+
+.kuss-join .kuss-liquid-button.is-success .kuss-check {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+}
+
+.kuss-join .kuss-liquid-button.is-success .kuss-button-label {
+    color: #08794E;
+}
+
+.kuss-join .kuss-liquid-button.is-success .kuss-button-icon {
+    display: none;
+}
+
+.kuss-join .kuss-error-status {
+    margin-top: 12px;
+    color: #c62828;
+    font-size: .9rem;
+    text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .kuss-join .kuss-check {
+        transition: none;
+    }
+}
+</style>
+
+<section class="page-header">
+    <h1>Become a Member</h1>
+    <p>Join the Kabale University Surgical Society today.</p>
+</section>
+
+<section class="section container kuss-join">
+    <div class="form-container">
+        <h2>Membership Application</h2>
+        <p class="subtitle">
+            Please review Chapter Two of the Constitution for eligibility
+            and fees before applying.
+        </p>
+
+        <!-- PAYMENT INSTRUCTIONS -->
+        {% if settings and settings.treasurer_phone %}
+        <div style="background:#e8f5e9;border-left:5px solid var(--teal);
+                    padding:25px;border-radius:8px;margin-bottom:30px;">
+
+            <h3 style="color:var(--navy);margin-bottom:10px;">
+                <i class="fa-solid fa-money-bill-wave"
+                   style="color:var(--teal);"></i>
+                Payment Instructions
+            </h3>
+
+            <p style="color:var(--text-dark);line-height:1.8;">
+                {% if settings.payment_instructions %}
+                    {{ settings.payment_instructions|linebreaksbr }}
+                {% else %}
+                    Please send your membership fees to the Treasurer:
+                {% endif %}
+            </p>
+
+            <div style="margin-top:15px;padding:15px;background:white;
+                        border-radius:6px;border:1px solid #c8e6c9;">
+
+                <p style="color:var(--text-dark);margin-bottom:10px;">
+                    <strong>Treasurer Contact:</strong>
+                    {% if settings.treasurer_name %}
+                        {{ settings.treasurer_name }}
                     {% endif %}
                 </p>
-                
-                <!-- Treasurer contact - Click to reveal (prevents Google indexing) -->
-                <div style="margin-top: 15px; padding: 15px; background: white; border-radius: 6px; border: 1px solid #c8e6c9;">
-                    <p style="color: var(--text-dark); margin-bottom: 10px;">
-                        <strong>Treasurer Contact:</strong>
-                        {% if settings.treasurer_name %}
-                            {{ settings.treasurer_name }}
-                        {% endif %}
+
+                {% if request.session.member_id %}
+                    <p style="font-size:1.1rem;font-weight:700;
+                              color:var(--teal);margin:0;">
+                        <i class="fa-solid fa-phone"></i>
+                        {{ settings.treasurer_phone }}
                     </p>
-                    
-                    {% if request.session.member_id %}
-                        <!-- Show phone to logged-in members -->
-                        <p style="font-size: 1.1rem; font-weight: 700; color: var(--teal); margin: 0;">
-                            <i class="fa-solid fa-phone"></i> {{ settings.treasurer_phone }}
-                        </p>
-                    {% else %}
-                        <!-- Click to reveal for non-members -->
-                        <button onclick="revealTreasurerPhone()" id="treasurerPhoneBtn"
-                           style="display: inline-flex; align-items: center; gap: 8px; background: var(--teal); color: white; padding: 10px 20px; border-radius: 6px; font-weight: 600; border: none; cursor: pointer; transition: all 0.3s ease;">
-                            <i class="fa-solid fa-lock"></i>
-                            <span>Click to View Phone Number</span>
-                        </button>
-                        <p style="color: var(--text-light); font-size: 0.85rem; margin-top: 8px; margin-bottom: 0;">
-                            <i class="fa-solid fa-info-circle"></i> You can also <a href="{% url 'login' %}" style="color: var(--teal); font-weight: 600;">login</a> to view contact details
-                        </p>
-                    {% endif %}
-                </div>
+                {% else %}
+                    <button type="button"
+                            onclick="revealTreasurerPhone()"
+                            id="treasurerPhoneBtn"
+                            style="display:inline-flex;align-items:center;
+                                   gap:8px;background:var(--teal);color:white;
+                                   padding:10px 20px;border-radius:6px;
+                                   font-weight:600;border:none;cursor:pointer;">
+                        <i class="fa-solid fa-lock"></i>
+                        <span>Click to View Phone Number</span>
+                    </button>
+
+                    <p style="color:var(--text-light);font-size:.85rem;
+                              margin-top:8px;margin-bottom:0;">
+                        <i class="fa-solid fa-info-circle"></i>
+                        You can also
+                        <a href="{% url 'login' %}"
+                           style="color:var(--teal);font-weight:600;">
+                            login
+                        </a>
+                        to view contact details
+                    </p>
+                {% endif %}
             </div>
-
-            <!-- JavaScript to reveal phone (prevents Google from indexing) -->
-            <script>
-            function revealTreasurerPhone() {
-                var phone = "{{ settings.treasurer_phone }}";
-                var btn = document.getElementById('treasurerPhoneBtn');
-                btn.innerHTML = '<i class="fa-solid fa-phone"></i> ' + phone;
-                btn.style.background = 'var(--navy)';
-                btn.style.cursor = 'default';
-                btn.onclick = null;
-            }
-            </script>
-            {% endif %}
-
-            <!-- ERROR BOX -->
-            {% if form.errors %}
-                <div style="background: #ffebee; color: #c62828; padding: 15px; border-radius: 6px; margin-bottom: 20px; border: 1px solid #ef9a9a;">
-                    <strong>Please fix the following errors:</strong>
-                    <ul style="margin-top: 10px; padding-left: 20px;">
-                        {% for field, errors in form.errors.items %}
-                            {% for error in errors %}
-                                <li><strong>{{ field }}:</strong> {{ error }}</li>
-                            {% endfor %}
-                        {% endfor %}
-                    </ul>
-                </div>
-            {% endif %}
-
-            <!-- Registration Form -->
-            <form method="POST" enctype="multipart/form-data">
-                {% csrf_token %}
-                
-                {{ form.as_p }}
-                
-                <button type="submit" class="btn-submit">Submit Application</button>
-            </form>
         </div>
-    </section>
+
+        <script>
+        function revealTreasurerPhone() {
+            const phone = "{{ settings.treasurer_phone|escapejs }}";
+            const btn = document.getElementById('treasurerPhoneBtn');
+
+            if (!btn) return;
+
+            btn.textContent = phone;
+            btn.style.background = 'var(--navy)';
+            btn.style.cursor = 'default';
+            btn.onclick = null;
+        }
+        </script>
+        {% endif %}
+
+        <!-- SERVER-SIDE VALIDATION ERRORS -->
+        {% if form.errors %}
+        <div role="alert"
+             style="background:#ffebee;color:#c62828;padding:15px;
+                    border-radius:6px;margin-bottom:20px;border:1px solid #ef9a9a;">
+
+            <strong>Please fix the following errors:</strong>
+            <ul style="margin-top:10px;padding-left:20px;">
+                {% for field, errors in form.errors.items %}
+                    {% for error in errors %}
+                        <li>
+                            <strong>{{ field }}:</strong> {{ error }}
+                        </li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <!-- MEMBERSHIP APPLICATION FORM -->
+        <form method="POST"
+              enctype="multipart/form-data"
+              id="kussJoinForm">
+
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <button type="submit"
+                    class="kuss-liquid-button"
+                    id="kussJoinButton">
+
+                <svg class="kuss-liquid-svg"
+                     viewBox="0 0 320 64"
+                     preserveAspectRatio="none"
+                     aria-hidden="true">
+
+                    <defs>
+                        <linearGradient id="kussJoinMetalGradient"
+                                        x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#FFFFFF"/>
+                            <stop offset="24%" stop-color="#F2F8F6"/>
+                            <stop offset="56%" stop-color="#DCE9E6"/>
+                            <stop offset="100%" stop-color="#BFD5D1"/>
+                        </linearGradient>
+                    </defs>
+
+                    <path id="kussJoinLiquidShape"
+                          class="kuss-liquid-shape"
+                          d="M32 2 H288 A30 30 0 0 1 288 62
+                             H32 A30 30 0 0 1 32 2 Z"/>
+
+                    <path class="kuss-liquid-highlight"
+                          d="M30 7 H290"/>
+                </svg>
+
+                <span class="kuss-button-content">
+                    <i class="fa-solid fa-paper-plane kuss-button-icon"></i>
+
+                    <span class="kuss-button-label" id="kussJoinLabel">
+                        Submit Application
+                    </span>
+
+                    <span class="kuss-check" aria-hidden="true">
+                        <i class="fa-solid fa-check"></i>
+                    </span>
+                </span>
+            </button>
+
+            <p id="kussJoinStatus"
+               class="kuss-error-status"
+               role="status"
+               aria-live="polite"
+               hidden></p>
+        </form>
+    </div>
+</section>
+
+<script>
+(() => {
+    const form = document.getElementById('kussJoinForm');
+    const button = document.getElementById('kussJoinButton');
+    const shape = document.getElementById('kussJoinLiquidShape');
+    const label = document.getElementById('kussJoinLabel');
+    const status = document.getElementById('kussJoinStatus');
+
+    if (!form || !button || !shape || !label) return;
+
+    // Spring parameters based on the reference animation.
+    const K = 55;
+    const DAMPING = 11;
+    const NECK = 0.34;
+    const PULL = 26;
+
+    const CENTER = 160;
+    const WIDTH = 320;
+    const HEIGHT = 64;
+
+    let busy = false;
+    let frameId = null;
+
+    const reducedMotion = window.matchMedia(
+        '(prefers-reduced-motion: reduce)'
+    );
+
+    function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+    }
+
+    function drawShape(pull) {
+        const amount = clamp(pull, 0, PULL);
+
+        if (amount < 0.05) {
+            shape.setAttribute(
+                'd',
+                'M32 2 H288 A30 30 0 0 1 288 62 H32 A30 30 0 0 1 32 2 Z'
+            );
+            return;
+        }
+
+        const leftEnd = CENTER - 30 - amount;
+        const rightStart = CENTER + 30 + amount;
+        const neckHalf = Math.max(2, 30 * NECK - amount * 0.45);
+        const midY = HEIGHT / 2;
+
+        const d = [
+            'M32 2',
+            `H${leftEnd}`,
+            `C${leftEnd - 13} 2 ${leftEnd - 15} ${midY - neckHalf} ${CENTER - 7} ${midY - neckHalf}`,
+            `C${CENTER - 2} ${midY - neckHalf} ${CENTER + 2} ${midY - neckHalf} ${CENTER + 7} ${midY - neckHalf}`,
+            `C${rightStart + 15} ${midY - neckHalf} ${rightStart + 13} 2 ${rightStart} 2`,
+            'H288',
+            'A30 30 0 0 1 288 62',
+            `H${rightStart}`,
+            `C${rightStart + 13} 62 ${rightStart + 15} ${midY + neckHalf} ${CENTER + 7} ${midY + neckHalf}`,
+            `C${CENTER + 2} ${midY + neckHalf} ${CENTER - 2} ${midY + neckHalf} ${CENTER - 7} ${midY + neckHalf}`,
+            `C${leftEnd - 15} ${midY + neckHalf} ${leftEnd - 13} 62 ${leftEnd} 62`,
+            'H32',
+            'A30 30 0 0 1 32 2',
+            'Z'
+        ].join(' ');
+
+        shape.setAttribute('d', d);
+    }
+
+    function animateSpring(onComplete) {
+        if (reducedMotion.matches) {
+            drawShape(0);
+            onComplete();
+            return;
+        }
+
+        cancelAnimationFrame(frameId);
+
+        let position = 0;
+        let velocity = PULL * 5.8;
+        let lastTime = null;
+        let elapsed = 0;
+
+        function tick(time) {
+            if (lastTime === null) lastTime = time;
+
+            const dt = Math.min((time - lastTime) / 1000, 0.032);
+            lastTime = time;
+            elapsed += dt;
+
+            const acceleration = -K * position - DAMPING * velocity;
+            velocity += acceleration * dt;
+            position += velocity * dt;
+            position = clamp(position, -2, PULL);
+
+            drawShape(Math.max(0, position));
+
+            if ((elapsed > 0.18 &&
+                 Math.abs(position) < 0.15 &&
+                 Math.abs(velocity) < 1.2) ||
+                elapsed > 1.4) {
+                drawShape(0);
+                onComplete();
+                return;
+            }
+
+            frameId = requestAnimationFrame(tick);
+        }
+
+        frameId = requestAnimationFrame(tick);
+    }
+
+    /*
+     * A valid form submission begins the animation.
+     * The server remains responsible for validating and saving
+     * the application. This template does not fake server success.
+     */
+    form.addEventListener('submit', (event) => {
+        if (busy) {
+            event.preventDefault();
+            return;
+        }
+
+        // Allow the browser's native required/type validation.
+        if (!form.checkValidity()) return;
+
+        event.preventDefault();
+        busy = true;
+
+        button.disabled = true;
+        button.setAttribute('aria-busy', 'true');
+        label.textContent = 'Submitting…';
+
+        animateSpring(() => {
+            /*
+             * Show the success-like transition as the request
+             * is submitted. Django's response determines whether
+             * the application was actually accepted.
+             */
+            button.classList.add('is-success');
+            label.textContent = 'Application Submitted';
+
+            window.setTimeout(() => {
+                HTMLFormElement.prototype.submit.call(form);
+            }, 260);
+        });
+    });
+
+    /*
+     * If Django re-renders this page with form errors, restore
+     * the button so the applicant can correct and resubmit.
+     */
+    {% if form.errors %}
+    button.disabled = false;
+    button.removeAttribute('aria-busy');
+    button.classList.remove('is-success');
+    label.textContent = 'Submit Application';
+    busy = false;
+    {% endif %}
+})();
+</script>
+
 {% endblock %}
