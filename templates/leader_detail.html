@@ -1,15 +1,12 @@
+
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ member.first_name }} {{ member.last_name }} — {{ leadership.get_role_display }} | KUSS{% endblock %}
+{% block title %}{{ member.first_name|default:"KUSS Member" }} {{ member.last_name|default:"" }} — {{ leadership.get_role_display|default:"Leadership" }} | KUSS{% endblock %}
 
 {% block content %}
 
 <style>
-/* =========================================================
-   KUSS EXECUTIVE PROFILE — DESIGN SYSTEM
-========================================================= */
-
 :root {
     --kuss-navy: #081629;
     --kuss-navy-light: #102642;
@@ -21,48 +18,54 @@
     --kuss-line: rgba(255,255,255,.09);
 }
 
+.kuss-profile,
+.kuss-profile * {
+    box-sizing: border-box;
+}
+
 .kuss-profile {
     background: var(--kuss-navy);
     color: var(--kuss-cream);
     min-height: 100vh;
-    padding: 35px 18px 90px;
+    padding: 35px 18px 80px;
     font-family: 'Inter', 'Poppins', sans-serif;
     position: relative;
     overflow: hidden;
 }
 
-.kuss-profile::before {
-    content: "";
-    position: absolute;
-    width: 650px;
-    height: 650px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(240,99,30,.10), transparent 70%);
-    top: -250px;
-    right: -220px;
-    pointer-events: none;
-}
-
+.kuss-profile::before,
 .kuss-profile::after {
     content: "";
     position: absolute;
-    width: 500px;
-    height: 500px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(37,99,235,.10), transparent 70%);
-    bottom: -250px;
-    left: -200px;
     pointer-events: none;
 }
 
+.kuss-profile::before {
+    width: 650px;
+    height: 650px;
+    top: -250px;
+    right: -220px;
+    background: radial-gradient(circle, rgba(240,99,30,.10), transparent 70%);
+}
+
+.kuss-profile::after {
+    width: 500px;
+    height: 500px;
+    bottom: -250px;
+    left: -200px;
+    background: radial-gradient(circle, rgba(37,99,235,.10), transparent 70%);
+}
+
 .kuss-container {
+    width: 100%;
     max-width: 1120px;
-    margin: auto;
+    margin: 0 auto;
     position: relative;
     z-index: 1;
 }
 
-/* NAVIGATION */
+/* BACK NAVIGATION */
 
 .kuss-back {
     display: inline-flex;
@@ -72,7 +75,6 @@
     text-decoration: none;
     font-size: 13px;
     font-weight: 600;
-    letter-spacing: .3px;
     margin-bottom: 30px;
     transition: .25s ease;
 }
@@ -82,14 +84,13 @@
     transform: translateX(-4px);
 }
 
-/* PROFILE HERO */
+/* HERO */
 
 .profile-hero {
-    background: linear-gradient(135deg, #102642 0%, #09182C 65%, #142A43 100%);
+    background: linear-gradient(135deg, #102642, #09182C 65%, #142A43);
     border: 1px solid var(--kuss-line);
     border-radius: 24px;
     overflow: hidden;
-    position: relative;
     box-shadow: 0 30px 80px rgba(0,0,0,.30);
 }
 
@@ -117,6 +118,7 @@
     font-weight: 900;
     letter-spacing: 12px;
     color: rgba(255,255,255,.035);
+    pointer-events: none;
 }
 
 .cover-accent {
@@ -169,6 +171,7 @@
     letter-spacing: -3px;
     color: white;
     background: linear-gradient(145deg, #173653, #0B1C30);
+    transform: rotate(2deg);
 }
 
 .hero-identity {
@@ -193,6 +196,7 @@
     font-weight: 850;
     letter-spacing: -1.5px;
     margin: 0 0 12px;
+    overflow-wrap: anywhere;
 }
 
 .profile-role {
@@ -220,7 +224,7 @@
     color: var(--kuss-orange);
 }
 
-/* ACTIVE BADGE */
+/* STATUS */
 
 .profile-status {
     display: inline-flex;
@@ -269,6 +273,7 @@
     padding: 27px;
     backdrop-filter: blur(12px);
     transition: border-color .25s ease, transform .25s ease;
+    min-width: 0;
 }
 
 .profile-card:hover {
@@ -288,6 +293,7 @@
 .section-icon {
     width: 38px;
     height: 38px;
+    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -308,14 +314,14 @@
     color: #CBD5E1;
     font-size: 14px;
     line-height: 1.95;
-    font-weight: 400;
+    overflow-wrap: anywhere;
 }
 
 .biography p {
     margin-bottom: 12px;
 }
 
-/* MEMBERSHIP INFORMATION */
+/* MEMBERSHIP DETAILS */
 
 .details-grid {
     display: grid;
@@ -368,11 +374,12 @@
     font-weight: 700;
 }
 
-/* CONTACT PANEL */
+/* CONTACT SIDEBAR */
 
 .profile-sidebar {
     position: sticky;
     top: 25px;
+    min-width: 0;
 }
 
 .contact-card {
@@ -463,7 +470,67 @@
     margin-right: 5px;
 }
 
-/* SOCIETY FOOTER */
+.privacy-note a {
+    color: #FDBA91;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+/* SOCIETY IDENTITY */
+
+.society-card {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.society-icon {
+    width: 52px;
+    height: 52px;
+    margin: 0 auto 15px;
+    border-radius: 15px;
+    background: rgba(240,99,30,.12);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #FF8A47;
+    font-size: 21px;
+}
+
+.society-name {
+    font-size: 12px;
+    color: white;
+    font-weight: 850;
+    letter-spacing: 1px;
+    margin-bottom: 7px;
+}
+
+.society-subtitle {
+    color: #91A0B5;
+    font-size: 10px;
+    line-height: 1.7;
+}
+
+.society-divider {
+    height: 2px;
+    width: 45px;
+    background: #F0631E;
+    margin: 17px auto;
+}
+
+.society-motto {
+    font-size: 11px;
+    color: #FDBA91;
+    font-weight: 800;
+    font-style: italic;
+}
+
+.society-translation {
+    font-size: 9px;
+    color: #91A0B5;
+    margin-top: 4px;
+}
+
+/* FOOTER */
 
 .profile-footer {
     margin-top: 30px;
@@ -521,14 +588,17 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .profile-hero,
-    .profile-card,
-    .contact-card {
-        animation: none;
+    *,
+    *::before,
+    *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
     }
 }
 
-/* RESPONSIVE */
+/* TABLET */
 
 @media (max-width: 850px) {
     .profile-layout {
@@ -543,6 +613,8 @@
         max-width: none;
     }
 }
+
+/* MOBILE */
 
 @media (max-width: 600px) {
     .kuss-profile {
@@ -584,7 +656,7 @@
     }
 
     .details-grid {
-        grid-template-columns: 1fr 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
         gap: 9px;
     }
 
@@ -605,6 +677,10 @@
 @media (max-width: 360px) {
     .details-grid {
         grid-template-columns: 1fr;
+    }
+
+    .profile-name {
+        font-size: 25px;
     }
 }
 </style>
@@ -630,17 +706,19 @@
             <div class="hero-content">
 
                 <div class="profile-photo-wrap">
+
                     {% if member.profile_picture %}
                         <img
                             src="{{ member.profile_picture.url }}"
-                            alt="{{ member.first_name }} {{ member.last_name }}"
+                            alt="{{ member.first_name|default:'KUSS member' }} {{ member.last_name|default:'' }}"
                             class="profile-photo"
                         >
                     {% else %}
                         <div class="profile-initials">
-                            {{ member.first_name|first|upper }}{{ member.last_name|first|upper }}
+                            {{ member.first_name|default:"K"|first|upper }}{{ member.last_name|default:"U"|first|upper }}
                         </div>
                     {% endif %}
+
                 </div>
 
                 <div class="hero-identity">
@@ -655,18 +733,27 @@
                     </div>
 
                     <h1 class="profile-name">
-                        {{ member.first_name }} {{ member.last_name }}
+                        {{ member.first_name|default:"KUSS" }}
+                        {{ member.last_name|default:"Member" }}
                     </h1>
 
                     <div class="profile-role">
-                        {{ leadership.get_role_display }}
+                        {{ leadership.get_role_display|default:"Executive Member" }}
                     </div>
 
                     <div class="profile-meta">
+
                         <span>
                             <i class="fa-regular fa-calendar"></i>
-                            {{ leadership.term_start|date:"M Y" }}
+
+                            {% if leadership.term_start %}
+                                {{ leadership.term_start|date:"M Y" }}
+                            {% else %}
+                                Term date unavailable
+                            {% endif %}
+
                             –
+
                             {% if leadership.term_end %}
                                 {{ leadership.term_end|date:"M Y" }}
                             {% else %}
@@ -678,6 +765,7 @@
                             <i class="fa-solid fa-graduation-cap"></i>
                             KUSS Leadership
                         </span>
+
                     </div>
 
                 </div>
@@ -726,30 +814,46 @@
                     <div class="details-grid">
 
                         <div class="detail-item">
-                            <div class="detail-label">Registration Number</div>
+                            <div class="detail-label">
+                                Registration Number
+                            </div>
+
                             <div class="detail-value">
                                 {{ member.registration_number|default:"Not available" }}
                             </div>
                         </div>
 
                         <div class="detail-item">
-                            <div class="detail-label">Membership Category</div>
+                            <div class="detail-label">
+                                Membership Category
+                            </div>
+
                             <div class="detail-value">
                                 {{ member.get_membership_type_display|default:"Not specified" }}
                             </div>
                         </div>
 
                         <div class="detail-item">
-                            <div class="detail-label">Member Since</div>
+                            <div class="detail-label">
+                                Member Since
+                            </div>
+
                             <div class="detail-value">
-                                {{ member.date_joined|date:"F Y"|default:"Not available" }}
+                                {% if member.date_joined %}
+                                    {{ member.date_joined|date:"F Y" }}
+                                {% else %}
+                                    Not available
+                                {% endif %}
                             </div>
                         </div>
 
                         <div class="detail-item">
-                            <div class="detail-label">Leadership Position</div>
+                            <div class="detail-label">
+                                Leadership Position
+                            </div>
+
                             <div class="detail-value">
-                                {{ leadership.get_role_display }}
+                                {{ leadership.get_role_display|default:"Not specified" }}
                             </div>
                         </div>
 
@@ -769,12 +873,14 @@
                     </h2>
 
                     <div class="role-list">
+
                         {% for role in other_roles %}
                             <span class="role-chip">
                                 <i class="fa-solid fa-check-circle"></i>
-                                {{ role.get_role_display }}
+                                {{ role.get_role_display|default:"Additional role" }}
                             </span>
                         {% endfor %}
+
                     </div>
 
                 </section>
@@ -803,15 +909,20 @@
                             </div>
 
                             <div>
-                                <div class="contact-label">Email Address</div>
+                                <div class="contact-label">
+                                    Email Address
+                                </div>
+
                                 <div class="contact-value">
+
                                     {% if member.email %}
-                                        <a href="mailto:{{ member.email }}">
+                                        <a href="mailto:{{ member.email|urlencode }}">
                                             {{ member.email }}
                                         </a>
                                     {% else %}
                                         Not provided
                                     {% endif %}
+
                                 </div>
                             </div>
 
@@ -826,13 +937,15 @@
                             </div>
 
                             <div>
-                                <div class="contact-label">Telephone</div>
+                                <div class="contact-label">
+                                    Telephone
+                                </div>
 
                                 <div class="contact-value">
 
                                     {% if show_phone and member.phone_number %}
 
-                                        <a href="tel:{{ member.phone_number }}">
+                                        <a href="tel:{{ member.phone_number|urlencode }}">
                                             {{ member.phone_number }}
                                         </a>
 
@@ -857,16 +970,20 @@
                         </div>
 
 
+                        <!-- PRIVACY NOTICE -->
                         {% if not show_phone %}
                         <div class="privacy-note">
+
                             <i class="fa-solid fa-shield-halved"></i>
+
                             Phone numbers are protected to maintain member privacy.
 
-                            <a href="{% url 'login' %}"
-                               style="color:#FDBA91;font-weight:800;text-decoration:none;">
+                            <a href="{% url 'login' %}">
                                 Log in
                             </a>
+
                             as a KUSS member to view available contact details.
+
                         </div>
                         {% endif %}
 
@@ -875,62 +992,28 @@
 
 
                 <!-- SOCIETY IDENTITY -->
-                <section class="profile-card" style="margin-top:20px;">
+                <section class="profile-card society-card">
 
-                    <div style="text-align:center;">
+                    <div class="society-icon">
+                        <i class="fa-solid fa-user-doctor"></i>
+                    </div>
 
-                        <div style="
-                            width:52px;
-                            height:52px;
-                            margin:0 auto 15px;
-                            border-radius:15px;
-                            background:rgba(240,99,30,.12);
-                            display:flex;
-                            align-items:center;
-                            justify-content:center;
-                            color:#FF8A47;
-                            font-size:21px;">
-                            <i class="fa-solid fa-user-doctor"></i>
-                        </div>
+                    <div class="society-name">
+                        KABALE UNIVERSITY
+                    </div>
 
-                        <div style="
-                            font-size:12px;
-                            color:white;
-                            font-weight:850;
-                            letter-spacing:1px;
-                            margin-bottom:7px;">
-                            KABELE UNIVERSITY
-                        </div>
+                    <div class="society-subtitle">
+                        Surgical Society
+                    </div>
 
-                        <div style="
-                            color:#91A0B5;
-                            font-size:10px;
-                            line-height:1.7;">
-                            Surgical Society
-                        </div>
+                    <div class="society-divider"></div>
 
-                        <div style="
-                            height:2px;
-                            width:45px;
-                            background:#F0631E;
-                            margin:17px auto;">
-                        </div>
+                    <div class="society-motto">
+                        Supra et Ultra
+                    </div>
 
-                        <div style="
-                            font-size:11px;
-                            color:#FDBA91;
-                            font-weight:800;
-                            font-style:italic;">
-                            Supra et Ultra
-                        </div>
-
-                        <div style="
-                            font-size:9px;
-                            color:#91A0B5;
-                            margin-top:4px;">
-                            Above and Beyond
-                        </div>
-
+                    <div class="society-translation">
+                        Above and Beyond
                     </div>
 
                 </section>
@@ -958,26 +1041,4 @@
     </div>
 </div>
 
-{% endblock %}                         <p class="text-xs leading-relaxed" style="color: rgb(100, 116, 139);">
-                                                <a href="{% url 'login' %}" class="font-semibold hover:underline transition-colors" style="color: rgb(129, 140, 248);">Log in</a> as a KUSS member to view contact details.
-                                            </p>
-                                        {% endif %}
-                                    </div>
-                                </div>
-
-                                <!-- Optional: Divider -->
-                                <div class="border-t pt-4" style="border-color: rgb(30, 41, 59);">
-                                    <p class="text-xs text-center" style="color: rgb(100, 116, 139);">
-                                        Kabale University Surgical Society
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock %}
