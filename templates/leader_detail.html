@@ -2,1043 +2,1207 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ member.first_name|default:"KUSS Member" }} {{ member.last_name|default:"" }} — {{ leadership.get_role_display|default:"Leadership" }} | KUSS{% endblock %}
+{% block title %}
+    {{ member.first_name }} {{ member.last_name }} — {{ leadership.get_role_display }} | KUSS
+{% endblock %}
 
 {% block content %}
 
 <style>
-:root {
-    --kuss-navy: #081629;
-    --kuss-navy-light: #102642;
-    --kuss-orange: #F0631E;
-    --kuss-orange-light: #FF8A47;
-    --kuss-cream: #F5F0E6;
-    --kuss-white: #FFFFFF;
-    --kuss-muted: #91A0B5;
-    --kuss-line: rgba(255,255,255,.09);
+/* =========================================================
+   KUSS INDIVIDUAL LEADERSHIP PROFILE
+   Matches the KUSS Leadership Directory
+   ========================================================= */
+
+.leader-detail-page {
+    --kuss-teal: #0f766e;
+    --kuss-teal-dark: #0b5f59;
+    --kuss-navy: #102a43;
+    --kuss-deep: #0b2638;
+    --kuss-gold: #c89b3c;
+    --kuss-bg: #f6f9fb;
+    --kuss-card: #ffffff;
+    --kuss-text: #172b4d;
+    --kuss-muted: #6b7c93;
+    --kuss-border: #e5e9ef;
+    --kuss-shadow: 0 12px 35px rgba(16,42,67,.08);
+    --kuss-shadow-hover: 0 20px 45px rgba(16,42,67,.13);
+
+    background: var(--kuss-bg);
+    color: var(--kuss-text);
+    min-height: 100vh;
+    padding-bottom: 70px;
 }
 
-.kuss-profile,
-.kuss-profile * {
+.leader-detail-page * {
     box-sizing: border-box;
 }
 
-.kuss-profile {
-    background: var(--kuss-navy);
-    color: var(--kuss-cream);
-    min-height: 100vh;
-    padding: 35px 18px 80px;
-    font-family: 'Inter', 'Poppins', sans-serif;
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.ld-hero {
     position: relative;
     overflow: hidden;
+    background:
+        radial-gradient(circle at 85% 15%, rgba(200,155,60,.16), transparent 28%),
+        radial-gradient(circle at 10% 90%, rgba(15,118,110,.20), transparent 32%),
+        linear-gradient(135deg, #0b2638 0%, #103d4a 52%, #0f766e 100%);
+    color: #fff;
+    padding: 35px 20px 115px;
 }
 
-.kuss-profile::before,
-.kuss-profile::after {
+.ld-hero::before,
+.ld-hero::after {
     content: "";
     position: absolute;
+    border: 1px solid rgba(255,255,255,.09);
     border-radius: 50%;
     pointer-events: none;
 }
 
-.kuss-profile::before {
-    width: 650px;
-    height: 650px;
-    top: -250px;
-    right: -220px;
-    background: radial-gradient(circle, rgba(240,99,30,.10), transparent 70%);
+.ld-hero::before {
+    width: 350px;
+    height: 350px;
+    right: -120px;
+    top: -160px;
 }
 
-.kuss-profile::after {
-    width: 500px;
-    height: 500px;
-    bottom: -250px;
-    left: -200px;
-    background: radial-gradient(circle, rgba(37,99,235,.10), transparent 70%);
+.ld-hero::after {
+    width: 240px;
+    height: 240px;
+    right: -35px;
+    bottom: -160px;
 }
 
-.kuss-container {
-    width: 100%;
-    max-width: 1120px;
-    margin: 0 auto;
+.ld-hero-inner {
     position: relative;
-    z-index: 1;
+    z-index: 2;
+    max-width: 1150px;
+    margin: auto;
 }
 
-/* BACK NAVIGATION */
+/* BREADCRUMB */
 
-.kuss-back {
-    display: inline-flex;
+.ld-breadcrumb {
+    display: flex;
     align-items: center;
-    gap: 11px;
-    color: var(--kuss-muted);
-    text-decoration: none;
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 30px;
-    transition: .25s ease;
-}
-
-.kuss-back:hover {
-    color: var(--kuss-orange-light);
-    transform: translateX(-4px);
-}
-
-/* HERO */
-
-.profile-hero {
-    background: linear-gradient(135deg, #102642, #09182C 65%, #142A43);
-    border: 1px solid var(--kuss-line);
-    border-radius: 24px;
-    overflow: hidden;
-    box-shadow: 0 30px 80px rgba(0,0,0,.30);
-}
-
-.profile-cover {
-    height: 210px;
-    position: relative;
-    background:
-        linear-gradient(115deg, rgba(8,22,41,.15), rgba(240,99,30,.20)),
-        repeating-linear-gradient(
-            135deg,
-            transparent,
-            transparent 30px,
-            rgba(255,255,255,.025) 31px,
-            rgba(255,255,255,.025) 32px
-        ),
-        linear-gradient(120deg, #0C2039, #183653);
-}
-
-.profile-cover::after {
-    content: "KUSS";
-    position: absolute;
-    right: 7%;
-    top: 20px;
-    font-size: clamp(65px, 12vw, 140px);
-    font-weight: 900;
-    letter-spacing: 12px;
-    color: rgba(255,255,255,.035);
-    pointer-events: none;
-}
-
-.cover-accent {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 4px;
-    background: linear-gradient(90deg, var(--kuss-orange), var(--kuss-orange-light), transparent 85%);
-}
-
-.hero-content {
-    display: flex;
-    align-items: flex-end;
-    gap: 30px;
-    padding: 0 55px 42px;
-    margin-top: -100px;
-    position: relative;
-}
-
-.profile-photo-wrap {
-    width: 190px;
-    height: 190px;
-    flex-shrink: 0;
-    padding: 6px;
-    border-radius: 22px;
-    background: linear-gradient(145deg, var(--kuss-orange), #FFB17D);
-    box-shadow: 0 15px 40px rgba(0,0,0,.4);
-    transform: rotate(-2deg);
-}
-
-.profile-photo {
-    width: 100%;
-    height: 100%;
-    border-radius: 17px;
-    object-fit: cover;
-    background: #1D354F;
-    transform: rotate(2deg);
-}
-
-.profile-initials {
-    width: 100%;
-    height: 100%;
-    border-radius: 17px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 55px;
-    font-weight: 900;
-    letter-spacing: -3px;
-    color: white;
-    background: linear-gradient(145deg, #173653, #0B1C30);
-    transform: rotate(2deg);
-}
-
-.hero-identity {
-    flex: 1;
-    padding-bottom: 5px;
-    min-width: 0;
-}
-
-.profile-eyebrow {
-    color: var(--kuss-orange-light);
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    font-weight: 800;
-    margin-bottom: 12px;
-}
-
-.profile-name {
-    color: white;
-    font-size: clamp(27px, 4vw, 43px);
-    line-height: 1.15;
-    font-weight: 850;
-    letter-spacing: -1.5px;
-    margin: 0 0 12px;
-    overflow-wrap: anywhere;
-}
-
-.profile-role {
-    color: #F8A16F;
-    font-size: 16px;
-    font-weight: 650;
-    margin-bottom: 15px;
-}
-
-.profile-meta {
-    display: flex;
+    gap: 10px;
     flex-wrap: wrap;
-    gap: 17px;
-    color: var(--kuss-muted);
-    font-size: 12px;
+    margin-bottom: 42px;
+    color: rgba(255,255,255,.72);
+    font-size: .83rem;
 }
 
-.profile-meta span {
+.ld-breadcrumb a {
+    color: #fff;
+    text-decoration: none;
+    transition: color .2s ease;
+}
+
+.ld-breadcrumb a:hover {
+    color: #f2ca6b;
+}
+
+.ld-breadcrumb i {
+    font-size: .68rem;
+    opacity: .7;
+}
+
+.ld-breadcrumb span {
+    color: #f2ca6b;
+}
+
+/* HERO CONTENT */
+
+.ld-hero-kicker {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-}
-
-.profile-meta i {
-    color: var(--kuss-orange);
-}
-
-/* STATUS */
-
-.profile-status {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    background: rgba(34,197,94,.10);
-    color: #86EFAC;
-    border: 1px solid rgba(34,197,94,.25);
-    border-radius: 50px;
-    padding: 7px 12px;
-    font-size: 10px;
+    gap: 9px;
+    padding: 7px 14px;
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 999px;
+    background: rgba(255,255,255,.08);
+    font-size: .75rem;
     font-weight: 800;
-    letter-spacing: 1px;
+    letter-spacing: .12em;
     text-transform: uppercase;
-    margin-bottom: 15px;
+    margin-bottom: 18px;
 }
 
-.status-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #4ADE80;
-    box-shadow: 0 0 10px #4ADE80;
+.ld-hero-kicker i {
+    color: #f2ca6b;
 }
 
-/* MAIN LAYOUT */
+.ld-hero h1 {
+    margin: 0;
+    color: #fff;
+    font-size: clamp(2.1rem, 5vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -.04em;
+}
 
-.profile-layout {
+.ld-hero-description {
+    max-width: 650px;
+    margin: 16px 0 0;
+    color: rgba(255,255,255,.82);
+    font-size: 1rem;
+    line-height: 1.75;
+}
+
+/* =========================================================
+   PROFILE CONTAINER
+   ========================================================= */
+
+.ld-container {
+    position: relative;
+    z-index: 3;
+    max-width: 1120px;
+    margin: -78px auto 0;
+    padding: 0 20px;
+}
+
+.ld-layout {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 315px;
+    grid-template-columns: minmax(0, 1.65fr) minmax(280px, .85fr);
     gap: 25px;
-    margin-top: 28px;
     align-items: start;
 }
 
-.profile-main {
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
+/* =========================================================
+   WHITE CARDS
+   ========================================================= */
+
+.ld-card {
+    background: var(--kuss-card);
+    border: 1px solid var(--kuss-border);
+    border-radius: 21px;
+    box-shadow: var(--kuss-shadow);
+    overflow: hidden;
+    margin-bottom: 23px;
 }
 
-.profile-card {
-    background: rgba(16,38,66,.78);
-    border: 1px solid var(--kuss-line);
-    border-radius: 18px;
-    padding: 27px;
-    backdrop-filter: blur(12px);
-    transition: border-color .25s ease, transform .25s ease;
-    min-width: 0;
-}
-
-.profile-card:hover {
-    border-color: rgba(240,99,30,.35);
-}
-
-.section-heading {
+.ld-card-header {
     display: flex;
     align-items: center;
     gap: 13px;
-    color: white;
-    font-size: 16px;
-    font-weight: 750;
-    margin: 0 0 20px;
+    padding: 22px 25px;
+    border-bottom: 1px solid var(--kuss-border);
 }
 
-.section-icon {
+.ld-card-header-icon {
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: rgba(15,118,110,.09);
+    color: var(--kuss-teal);
+    font-size: 1rem;
+}
+
+.ld-card-header h2 {
+    margin: 0;
+    color: var(--kuss-navy);
+    font-size: 1.05rem;
+    font-weight: 800;
+}
+
+.ld-card-header p {
+    margin: 4px 0 0;
+    color: var(--kuss-muted);
+    font-size: .78rem;
+}
+
+.ld-card-body {
+    padding: 25px;
+}
+
+/* =========================================================
+   PROFILE IDENTITY CARD
+   ========================================================= */
+
+.ld-identity {
+    text-align: center;
+    padding: 35px 28px 30px;
+    position: relative;
+}
+
+.ld-identity::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(90deg, var(--kuss-teal), var(--kuss-gold));
+}
+
+.ld-avatar {
+    width: 155px;
+    height: 155px;
+    margin: 0 auto 22px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 5px solid #fff;
+    box-shadow:
+        0 0 0 2px rgba(15,118,110,.2),
+        0 12px 28px rgba(16,42,67,.16);
+    background: linear-gradient(135deg, var(--kuss-teal), var(--kuss-navy));
+    color: white;
+    font-size: 2.7rem;
+    font-weight: 800;
+}
+
+.ld-identity h2 {
+    margin: 0 0 12px;
+    color: var(--kuss-navy);
+    font-size: clamp(1.4rem, 3vw, 1.9rem);
+    line-height: 1.3;
+    font-weight: 800;
+}
+
+.ld-role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: rgba(15,118,110,.09);
+    color: var(--kuss-teal-dark);
+    font-size: .76rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .05em;
+}
+
+.ld-role-badge i {
+    color: var(--kuss-gold);
+}
+
+.ld-identity-description {
+    max-width: 550px;
+    margin: 20px auto 0;
+    color: var(--kuss-muted);
+    font-size: .92rem;
+    line-height: 1.8;
+}
+
+/* TERM INFORMATION */
+
+.ld-term {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 22px;
+}
+
+.ld-term-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 8px 12px;
+    border-radius: 9px;
+    background: #f7f9fb;
+    color: var(--kuss-muted);
+    font-size: .76rem;
+    font-weight: 700;
+}
+
+.ld-term-item i {
+    color: var(--kuss-teal);
+}
+
+/* =========================================================
+   BIOGRAPHY
+   ========================================================= */
+
+.ld-bio {
+    color: var(--kuss-muted);
+    font-size: .94rem;
+    line-height: 1.9;
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+.ld-bio-empty {
+    padding: 18px;
+    border-radius: 12px;
+    background: #f7f9fb;
+    color: var(--kuss-muted);
+    font-size: .88rem;
+    line-height: 1.7;
+}
+
+/* =========================================================
+   MEMBERSHIP INFORMATION
+   ========================================================= */
+
+.ld-info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.ld-info-item {
+    min-width: 0;
+    padding: 16px;
+    border: 1px solid var(--kuss-border);
+    border-radius: 13px;
+    background: #fff;
+    transition: border-color .2s ease, transform .2s ease;
+}
+
+.ld-info-item:hover {
+    border-color: rgba(15,118,110,.35);
+    transform: translateY(-2px);
+}
+
+.ld-info-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 9px;
+    color: var(--kuss-muted);
+    font-size: .72rem;
+    font-weight: 800;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+}
+
+.ld-info-label i {
+    color: var(--kuss-teal);
+}
+
+.ld-info-value {
+    color: var(--kuss-navy);
+    font-size: .9rem;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+/* =========================================================
+   OTHER LEADERSHIP ROLES
+   ========================================================= */
+
+.ld-roles-list {
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+}
+
+.ld-other-role {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 15px;
+    border: 1px solid var(--kuss-border);
+    border-radius: 12px;
+    background: #fff;
+}
+
+.ld-other-role-icon {
+    flex: 0 0 35px;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: rgba(15,118,110,.09);
+    color: var(--kuss-teal);
+}
+
+.ld-other-role span {
+    color: var(--kuss-navy);
+    font-size: .85rem;
+    font-weight: 700;
+}
+
+/* =========================================================
+   SIDEBAR
+   ========================================================= */
+
+.ld-sidebar {
+    position: sticky;
+    top: 25px;
+}
+
+.ld-contact-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.ld-contact-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    min-width: 0;
+}
+
+.ld-contact-icon {
+    flex: 0 0 38px;
     width: 38px;
     height: 38px;
-    flex-shrink: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 11px;
-    color: var(--kuss-orange-light);
-    background: rgba(240,99,30,.12);
-    border: 1px solid rgba(240,99,30,.18);
-    font-size: 14px;
+    background: rgba(15,118,110,.09);
+    color: var(--kuss-teal);
 }
 
-.section-subtitle {
-    font-size: 11px;
+.ld-contact-text {
+    min-width: 0;
+    flex: 1;
+}
+
+.ld-contact-text small {
+    display: block;
+    margin-bottom: 4px;
     color: var(--kuss-muted);
-    margin: -12px 0 20px 51px;
-}
-
-.biography {
-    color: #CBD5E1;
-    font-size: 14px;
-    line-height: 1.95;
-    overflow-wrap: anywhere;
-}
-
-.biography p {
-    margin-bottom: 12px;
-}
-
-/* MEMBERSHIP DETAILS */
-
-.details-grid {
-    display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 13px;
-}
-
-.detail-item {
-    padding: 17px;
-    border-radius: 12px;
-    background: rgba(8,22,41,.65);
-    border: 1px solid rgba(255,255,255,.045);
-    min-width: 0;
-}
-
-.detail-label {
-    color: #8293AA;
+    font-size: .7rem;
+    font-weight: 800;
+    letter-spacing: .06em;
     text-transform: uppercase;
-    font-size: 9px;
-    letter-spacing: 1.2px;
-    font-weight: 800;
-    margin-bottom: 9px;
 }
 
-.detail-value {
-    color: #F8FAFC;
-    font-size: 13px;
-    font-weight: 700;
+.ld-contact-text a,
+.ld-contact-text span {
+    display: block;
+    color: var(--kuss-navy);
+    font-size: .84rem;
+    font-weight: 600;
+    line-height: 1.5;
     overflow-wrap: anywhere;
-}
-
-/* OTHER ROLES */
-
-.role-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.role-chip {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 10px 14px;
-    border-radius: 9px;
-    color: #FDBA91;
-    background: rgba(240,99,30,.09);
-    border: 1px solid rgba(240,99,30,.2);
-    font-size: 11px;
-    font-weight: 700;
-}
-
-/* CONTACT SIDEBAR */
-
-.profile-sidebar {
-    position: sticky;
-    top: 25px;
-    min-width: 0;
-}
-
-.contact-card {
-    background: linear-gradient(160deg, #122D4A, #0B1B30);
-    border: 1px solid var(--kuss-line);
-    border-radius: 18px;
-    overflow: hidden;
-}
-
-.contact-header {
-    padding: 23px 23px 18px;
-    border-bottom: 1px solid var(--kuss-line);
-}
-
-.contact-header h2 {
-    color: white;
-    font-size: 16px;
-    font-weight: 800;
-    margin: 0 0 6px;
-}
-
-.contact-header p {
-    color: var(--kuss-muted);
-    font-size: 11px;
-    margin: 0;
-}
-
-.contact-body {
-    padding: 23px;
-}
-
-.contact-item {
-    display: flex;
-    gap: 13px;
-    margin-bottom: 23px;
-    min-width: 0;
-}
-
-.contact-icon {
-    width: 38px;
-    height: 38px;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 10px;
-    background: rgba(240,99,30,.11);
-    color: var(--kuss-orange-light);
-}
-
-.contact-label {
-    font-size: 10px;
-    color: #8293AA;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    font-weight: 800;
-    margin-bottom: 6px;
-}
-
-.contact-value {
-    font-size: 12px;
-    color: white;
-    font-weight: 650;
-    overflow-wrap: anywhere;
-}
-
-.contact-value a {
-    color: #FDBA91;
     text-decoration: none;
 }
 
-.contact-value a:hover {
+.ld-contact-text a:hover {
+    color: var(--kuss-teal);
     text-decoration: underline;
 }
 
-.privacy-note {
+/* PRIVACY NOTICE */
+
+.ld-privacy {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 20px;
     padding: 13px;
-    background: rgba(8,22,41,.75);
-    border: 1px solid var(--kuss-line);
-    border-radius: 10px;
-    color: #9AAAC0;
-    font-size: 10px;
-    line-height: 1.7;
+    border-radius: 11px;
+    background: #f7f9fb;
+    color: var(--kuss-muted);
+    font-size: .77rem;
+    line-height: 1.6;
 }
 
-.privacy-note i {
-    color: var(--kuss-orange-light);
-    margin-right: 5px;
+.ld-privacy i {
+    margin-top: 2px;
+    color: var(--kuss-teal);
 }
 
-.privacy-note a {
-    color: #FDBA91;
+.ld-privacy a {
+    color: var(--kuss-teal);
     font-weight: 800;
     text-decoration: none;
 }
 
-/* SOCIETY IDENTITY */
+/* =========================================================
+   SOCIETY CARD
+   ========================================================= */
 
-.society-card {
-    margin-top: 20px;
-    text-align: center;
+.ld-society-card {
+    position: relative;
+    overflow: hidden;
+    padding: 25px;
+    border-radius: 19px;
+    background:
+        radial-gradient(circle at 100% 0%, rgba(200,155,60,.15), transparent 40%),
+        linear-gradient(135deg, #0b2638, #0f766e);
+    color: white;
+    box-shadow: var(--kuss-shadow);
 }
 
-.society-icon {
-    width: 52px;
-    height: 52px;
-    margin: 0 auto 15px;
-    border-radius: 15px;
-    background: rgba(240,99,30,.12);
+.ld-society-card h3 {
+    position: relative;
+    margin: 0 0 12px;
+    color: #fff;
+    font-size: 1.05rem;
+    font-weight: 800;
+}
+
+.ld-society-card p {
+    position: relative;
+    margin: 0;
+    color: rgba(255,255,255,.82);
+    font-size: .85rem;
+    line-height: 1.75;
+}
+
+.ld-society-motto {
+    display: block;
+    margin-top: 17px;
+    padding-top: 15px;
+    border-top: 1px solid rgba(255,255,255,.18);
+    color: #f2ca6b;
+    font-size: .8rem;
+    font-weight: 800;
+    font-style: italic;
+}
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+.ld-back-wrap {
     display: flex;
+    justify-content: center;
+    margin-top: 12px;
+}
+
+.ld-back-button {
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    color: #FF8A47;
-    font-size: 21px;
-}
-
-.society-name {
-    font-size: 12px;
-    color: white;
-    font-weight: 850;
-    letter-spacing: 1px;
-    margin-bottom: 7px;
-}
-
-.society-subtitle {
-    color: #91A0B5;
-    font-size: 10px;
-    line-height: 1.7;
-}
-
-.society-divider {
-    height: 2px;
-    width: 45px;
-    background: #F0631E;
-    margin: 17px auto;
-}
-
-.society-motto {
-    font-size: 11px;
-    color: #FDBA91;
+    gap: 10px;
+    padding: 12px 21px;
+    border: 1px solid rgba(15,118,110,.2);
+    border-radius: 11px;
+    background: #fff;
+    color: var(--kuss-teal) !important;
+    font-size: .85rem;
     font-weight: 800;
-    font-style: italic;
+    text-decoration: none !important;
+    box-shadow: 0 5px 15px rgba(16,42,67,.05);
+    transition: all .25s ease;
 }
 
-.society-translation {
-    font-size: 9px;
-    color: #91A0B5;
-    margin-top: 4px;
+.ld-back-button:hover {
+    background: var(--kuss-teal);
+    color: #fff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(15,118,110,.18);
 }
 
-/* FOOTER */
+/* =========================================================
+   RESPONSIVE DESIGN
+   ========================================================= */
 
-.profile-footer {
-    margin-top: 30px;
-    padding: 25px 10px 0;
-    border-top: 1px solid var(--kuss-line);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    gap: 15px;
-}
-
-.footer-brand {
-    color: white;
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 1px;
-}
-
-.footer-motto {
-    color: var(--kuss-muted);
-    font-size: 10px;
-    font-style: italic;
-}
-
-.footer-motto strong {
-    color: var(--kuss-orange-light);
-}
-
-/* ANIMATION */
-
-@keyframes profileFade {
-    from {
-        opacity: 0;
-        transform: translateY(18px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.profile-hero,
-.profile-card,
-.contact-card {
-    animation: profileFade .65s ease both;
-}
-
-.profile-layout .profile-card:nth-child(2) {
-    animation-delay: .08s;
-}
-
-.profile-layout .profile-card:nth-child(3) {
-    animation-delay: .14s;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    *,
-    *::before,
-    *::after {
-        animation-duration: .01ms !important;
-        animation-iteration-count: 1 !important;
-        scroll-behavior: auto !important;
-        transition-duration: .01ms !important;
-    }
-}
-
-/* TABLET */
-
-@media (max-width: 850px) {
-    .profile-layout {
+@media(max-width:850px) {
+    .ld-layout {
         grid-template-columns: 1fr;
+        gap: 0;
     }
 
-    .profile-sidebar {
+    .ld-sidebar {
         position: static;
     }
 
-    .contact-card {
-        max-width: none;
+    .ld-hero {
+        padding-bottom: 105px;
+    }
+
+    .ld-container {
+        margin-top: -75px;
     }
 }
 
-/* MOBILE */
-
-@media (max-width: 600px) {
-    .kuss-profile {
-        padding: 22px 12px 55px;
+@media(max-width:600px) {
+    .leader-detail-page {
+        padding-bottom: 45px;
     }
 
-    .profile-cover {
-        height: 155px;
+    .ld-hero {
+        padding: 25px 17px 100px;
     }
 
-    .hero-content {
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        padding: 0 20px 28px;
-        margin-top: -82px;
-        gap: 18px;
+    .ld-breadcrumb {
+        margin-bottom: 32px;
+        font-size: .75rem;
     }
 
-    .profile-photo-wrap {
-        width: 155px;
-        height: 155px;
+    .ld-hero h1 {
+        font-size: 2.15rem;
     }
 
-    .hero-identity {
-        width: 100%;
+    .ld-hero-description {
+        font-size: .88rem;
+        line-height: 1.7;
     }
 
-    .profile-name {
-        font-size: 29px;
+    .ld-container {
+        padding: 0 13px;
+        margin-top: -70px;
     }
 
-    .profile-meta {
-        justify-content: center;
+    .ld-card {
+        border-radius: 17px;
+        margin-bottom: 17px;
     }
 
-    .profile-card {
-        padding: 21px 17px;
+    .ld-identity {
+        padding: 30px 18px 25px;
     }
 
-    .details-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 9px;
+    .ld-avatar {
+        width: 125px;
+        height: 125px;
+        font-size: 2.2rem;
     }
 
-    .detail-item {
-        padding: 13px;
+    .ld-identity h2 {
+        font-size: 1.45rem;
     }
 
-    .detail-value {
-        font-size: 11px;
+    .ld-card-header {
+        padding: 18px;
     }
 
-    .profile-footer {
-        justify-content: center;
-        text-align: center;
+    .ld-card-body {
+        padding: 19px;
     }
-}
 
-@media (max-width: 360px) {
-    .details-grid {
+    .ld-info-grid {
         grid-template-columns: 1fr;
+        gap: 10px;
     }
 
-    .profile-name {
-        font-size: 25px;
+    .ld-info-item {
+        padding: 14px;
+    }
+
+    .ld-society-card {
+        padding: 22px;
+    }
+}
+
+/* SMALL PHONES */
+
+@media(max-width:380px) {
+    .ld-hero h1 {
+        font-size: 1.85rem;
+    }
+
+    .ld-hero-kicker {
+        font-size: .65rem;
+    }
+
+    .ld-term {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .ld-term-item {
+        justify-content: center;
+    }
+}
+
+/* ACCESSIBILITY */
+
+@media(prefers-reduced-motion:reduce) {
+    .ld-info-item,
+    .ld-back-button {
+        transition: none;
     }
 }
 </style>
 
 
-<div class="kuss-profile">
-    <div class="kuss-container">
+<div class="leader-detail-page">
 
-        <!-- BACK NAVIGATION -->
-        <a href="{% url 'leadership' %}" class="kuss-back">
-            <i class="fa-solid fa-arrow-left"></i>
-            Back to Leadership Directory
-        </a>
+    <!-- HERO -->
 
+    <section class="ld-hero">
 
-        <!-- EXECUTIVE PROFILE HERO -->
-        <section class="profile-hero">
+        <div class="ld-hero-inner">
 
-            <div class="profile-cover">
-                <div class="cover-accent"></div>
+            <nav class="ld-breadcrumb" aria-label="Breadcrumb">
+
+                <a href="{% url 'leadership' %}">
+                    <i class="fa-solid fa-house"></i>
+                    Leadership
+                </a>
+
+                <i class="fa-solid fa-chevron-right"></i>
+
+                <span>Leader Profile</span>
+
+            </nav>
+
+            <div class="ld-hero-kicker">
+                <i class="fa-solid fa-user-tie"></i>
+                KUSS Executive Leadership
             </div>
 
-            <div class="hero-content">
+            <h1>Leadership Profile</h1>
 
-                <div class="profile-photo-wrap">
+            <p class="ld-hero-description">
+                Get to know the individuals serving the Kabale University
+                Surgical Society and contributing to its mission of
+                education, research, mentorship, and professional development.
+            </p>
+
+        </div>
+
+    </section>
+
+
+    <!-- PROFILE CONTENT -->
+
+    <main class="ld-container">
+
+        <div class="ld-layout">
+
+
+            <!-- MAIN PROFILE COLUMN -->
+
+            <div class="ld-main">
+
+
+                <!-- PROFILE IDENTITY -->
+
+                <section class="ld-card ld-identity">
 
                     {% if member.profile_picture %}
+
                         <img
                             src="{{ member.profile_picture.url }}"
-                            alt="{{ member.first_name|default:'KUSS member' }} {{ member.last_name|default:'' }}"
-                            class="profile-photo"
+                            alt="Profile picture of {{ member.first_name }} {{ member.last_name }}"
+                            class="ld-avatar"
                         >
+
                     {% else %}
-                        <div class="profile-initials">
+
+                        <div
+                            class="ld-avatar"
+                            role="img"
+                            aria-label="Initials of {{ member.first_name }} {{ member.last_name }}"
+                        >
                             {{ member.first_name|default:"K"|first|upper }}{{ member.last_name|default:"U"|first|upper }}
                         </div>
+
                     {% endif %}
 
-                </div>
 
-                <div class="hero-identity">
+                    <h2>
+                        {{ member.first_name }}
+                        {{ member.last_name }}
+                    </h2>
 
-                    <div class="profile-eyebrow">
-                        Kabale University Surgical Society
+
+                    <div class="ld-role-badge">
+                        <i class="fa-solid fa-award"></i>
+                        {{ leadership.get_role_display }}
                     </div>
 
-                    <div class="profile-status">
-                        <span class="status-dot"></span>
-                        Current Leadership
-                    </div>
 
-                    <h1 class="profile-name">
-                        {{ member.first_name|default:"KUSS" }}
-                        {{ member.last_name|default:"Member" }}
-                    </h1>
+                    {% if member.bio %}
 
-                    <div class="profile-role">
-                        {{ leadership.get_role_display|default:"Executive Member" }}
-                    </div>
+                        <p class="ld-identity-description">
+                            {{ member.bio }}
+                        </p>
 
-                    <div class="profile-meta">
+                    {% else %}
 
-                        <span>
-                            <i class="fa-regular fa-calendar"></i>
+                        <p class="ld-identity-description">
+                            A dedicated member of the Kabale University
+                            Surgical Society, committed to serving the
+                            student community and advancing the mission
+                            of the society.
+                        </p>
 
-                            {% if leadership.term_start %}
+                    {% endif %}
+
+
+                    <div class="ld-term">
+
+                        {% if leadership.term_start %}
+
+                            <div class="ld-term-item">
+                                <i class="fa-regular fa-calendar-check"></i>
+                                Term started:
                                 {{ leadership.term_start|date:"M Y" }}
-                            {% else %}
-                                Term date unavailable
-                            {% endif %}
+                            </div>
 
-                            –
+                        {% endif %}
 
-                            {% if leadership.term_end %}
+
+                        {% if leadership.term_end %}
+
+                            <div class="ld-term-item">
+                                <i class="fa-regular fa-calendar"></i>
+                                Term ends:
                                 {{ leadership.term_end|date:"M Y" }}
-                            {% else %}
-                                Present
-                            {% endif %}
-                        </span>
-
-                        <span>
-                            <i class="fa-solid fa-graduation-cap"></i>
-                            KUSS Leadership
-                        </span>
-
-                    </div>
-
-                </div>
-            </div>
-        </section>
-
-
-        <!-- PROFILE INFORMATION -->
-        <div class="profile-layout">
-
-            <main class="profile-main">
-
-                <!-- BIOGRAPHY -->
-                {% if member.bio %}
-                <section class="profile-card">
-
-                    <h2 class="section-heading">
-                        <span class="section-icon">
-                            <i class="fa-solid fa-user-pen"></i>
-                        </span>
-                        About the Leader
-                    </h2>
-
-                    <div class="biography">
-                        {{ member.bio|linebreaks }}
-                    </div>
-
-                </section>
-                {% endif %}
-
-
-                <!-- MEMBERSHIP INFORMATION -->
-                <section class="profile-card">
-
-                    <h2 class="section-heading">
-                        <span class="section-icon">
-                            <i class="fa-solid fa-id-card"></i>
-                        </span>
-                        Membership Profile
-                    </h2>
-
-                    <p class="section-subtitle">
-                        Official membership information within KUSS.
-                    </p>
-
-                    <div class="details-grid">
-
-                        <div class="detail-item">
-                            <div class="detail-label">
-                                Registration Number
                             </div>
 
-                            <div class="detail-value">
-                                {{ member.registration_number|default:"Not available" }}
-                            </div>
-                        </div>
-
-                        <div class="detail-item">
-                            <div class="detail-label">
-                                Membership Category
-                            </div>
-
-                            <div class="detail-value">
-                                {{ member.get_membership_type_display|default:"Not specified" }}
-                            </div>
-                        </div>
-
-                        <div class="detail-item">
-                            <div class="detail-label">
-                                Member Since
-                            </div>
-
-                            <div class="detail-value">
-                                {% if member.date_joined %}
-                                    {{ member.date_joined|date:"F Y" }}
-                                {% else %}
-                                    Not available
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <div class="detail-item">
-                            <div class="detail-label">
-                                Leadership Position
-                            </div>
-
-                            <div class="detail-value">
-                                {{ leadership.get_role_display|default:"Not specified" }}
-                            </div>
-                        </div>
-
-                    </div>
-                </section>
-
-
-                <!-- ADDITIONAL RESPONSIBILITIES -->
-                {% if other_roles %}
-                <section class="profile-card">
-
-                    <h2 class="section-heading">
-                        <span class="section-icon">
-                            <i class="fa-solid fa-briefcase"></i>
-                        </span>
-                        Additional Responsibilities
-                    </h2>
-
-                    <div class="role-list">
-
-                        {% for role in other_roles %}
-                            <span class="role-chip">
-                                <i class="fa-solid fa-check-circle"></i>
-                                {{ role.get_role_display|default:"Additional role" }}
-                            </span>
-                        {% endfor %}
-
-                    </div>
-
-                </section>
-                {% endif %}
-
-            </main>
-
-
-            <!-- CONTACT SIDEBAR -->
-            <aside class="profile-sidebar">
-
-                <section class="contact-card">
-
-                    <div class="contact-header">
-                        <h2>Get in Touch</h2>
-                        <p>Official contact information</p>
-                    </div>
-
-                    <div class="contact-body">
-
-                        <!-- EMAIL -->
-                        <div class="contact-item">
-
-                            <div class="contact-icon">
-                                <i class="fa-solid fa-envelope"></i>
-                            </div>
-
-                            <div>
-                                <div class="contact-label">
-                                    Email Address
-                                </div>
-
-                                <div class="contact-value">
-
-                                    {% if member.email %}
-                                        <a href="mailto:{{ member.email|urlencode }}">
-                                            {{ member.email }}
-                                        </a>
-                                    {% else %}
-                                        Not provided
-                                    {% endif %}
-
-                                </div>
-                            </div>
-
-                        </div>
-
-
-                        <!-- PHONE -->
-                        <div class="contact-item">
-
-                            <div class="contact-icon">
-                                <i class="fa-solid fa-phone"></i>
-                            </div>
-
-                            <div>
-                                <div class="contact-label">
-                                    Telephone
-                                </div>
-
-                                <div class="contact-value">
-
-                                    {% if show_phone and member.phone_number %}
-
-                                        <a href="tel:{{ member.phone_number|urlencode }}">
-                                            {{ member.phone_number }}
-                                        </a>
-
-                                    {% elif show_phone %}
-
-                                        <span style="color:#91A0B5;">
-                                            Not provided
-                                        </span>
-
-                                    {% else %}
-
-                                        <span style="color:#91A0B5;">
-                                            <i class="fa-solid fa-lock"></i>
-                                            Protected information
-                                        </span>
-
-                                    {% endif %}
-
-                                </div>
-                            </div>
-
-                        </div>
-
-
-                        <!-- PRIVACY NOTICE -->
-                        {% if not show_phone %}
-                        <div class="privacy-note">
-
-                            <i class="fa-solid fa-shield-halved"></i>
-
-                            Phone numbers are protected to maintain member privacy.
-
-                            <a href="{% url 'login' %}">
-                                Log in
-                            </a>
-
-                            as a KUSS member to view available contact details.
-
-                        </div>
                         {% endif %}
 
                     </div>
+
+                </section>
+
+
+                <!-- BIOGRAPHY -->
+
+                <section class="ld-card">
+
+                    <div class="ld-card-header">
+
+                        <div class="ld-card-header-icon">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+
+                        <div>
+                            <h2>About the Leader</h2>
+                            <p>Personal introduction and biography</p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="ld-card-body">
+
+                        {% if member.bio %}
+
+                            <div class="ld-bio">
+                                {{ member.bio }}
+                            </div>
+
+                        {% else %}
+
+                            <div class="ld-bio-empty">
+                                <i class="fa-solid fa-circle-info"></i>
+                                This leader has not yet added a biography.
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
                 </section>
 
 
-                <!-- SOCIETY IDENTITY -->
-                <section class="profile-card society-card">
+                <!-- MEMBERSHIP INFORMATION -->
 
-                    <div class="society-icon">
-                        <i class="fa-solid fa-user-doctor"></i>
+                <section class="ld-card">
+
+                    <div class="ld-card-header">
+
+                        <div class="ld-card-header-icon">
+                            <i class="fa-solid fa-id-card"></i>
+                        </div>
+
+                        <div>
+                            <h2>Membership Information</h2>
+                            <p>Society membership details</p>
+                        </div>
+
                     </div>
 
-                    <div class="society-name">
-                        KABALE UNIVERSITY
-                    </div>
 
-                    <div class="society-subtitle">
-                        Surgical Society
-                    </div>
+                    <div class="ld-card-body">
 
-                    <div class="society-divider"></div>
+                        <div class="ld-info-grid">
 
-                    <div class="society-motto">
-                        Supra et Ultra
-                    </div>
+                            <!-- MEMBERSHIP TYPE -->
 
-                    <div class="society-translation">
-                        Above and Beyond
+                            <div class="ld-info-item">
+
+                                <div class="ld-info-label">
+                                    <i class="fa-solid fa-graduation-cap"></i>
+                                    Membership Type
+                                </div>
+
+                                <div class="ld-info-value">
+                                    {{ member.get_membership_type_display|default:"Not specified" }}
+                                </div>
+
+                            </div>
+
+
+                            <!-- MEMBER SINCE -->
+
+                            <div class="ld-info-item">
+
+                                <div class="ld-info-label">
+                                    <i class="fa-solid fa-calendar-plus"></i>
+                                    Member Since
+                                </div>
+
+                                <div class="ld-info-value">
+                                    {% if member.date_joined %}
+                                        {{ member.date_joined|date:"F Y" }}
+                                    {% else %}
+                                        Not specified
+                                    {% endif %}
+                                </div>
+
+                            </div>
+
+
+                            <!-- INSTITUTION -->
+
+                            <div class="ld-info-item">
+
+                                <div class="ld-info-label">
+                                    <i class="fa-solid fa-building-columns"></i>
+                                    Institution
+                                </div>
+
+                                <div class="ld-info-value">
+                                    Kabale University
+                                </div>
+
+                            </div>
+
+                        </div>
+
                     </div>
 
                 </section>
+
+
+                <!-- OTHER LEADERSHIP ROLES -->
+
+                {% if other_roles %}
+
+                    <section class="ld-card">
+
+                        <div class="ld-card-header">
+
+                            <div class="ld-card-header-icon">
+                                <i class="fa-solid fa-people-group"></i>
+                            </div>
+
+                            <div>
+                                <h2>Other Leadership Responsibilities</h2>
+                                <p>Additional positions held within KUSS</p>
+                            </div>
+
+                        </div>
+
+
+                        <div class="ld-card-body">
+
+                            <div class="ld-roles-list">
+
+                                {% for role in other_roles %}
+
+                                    <div class="ld-other-role">
+
+                                        <div class="ld-other-role-icon">
+                                            <i class="fa-solid fa-user-check"></i>
+                                        </div>
+
+                                        <span>
+                                            {{ role.get_role_display }}
+                                        </span>
+
+                                    </div>
+
+                                {% endfor %}
+
+                            </div>
+
+                        </div>
+
+                    </section>
+
+                {% endif %}
+
+
+            </div>
+
+
+            <!-- SIDEBAR -->
+
+            <aside class="ld-sidebar">
+
+
+                <!-- CONTACT INFORMATION -->
+
+                <section class="ld-card">
+
+                    <div class="ld-card-header">
+
+                        <div class="ld-card-header-icon">
+                            <i class="fa-solid fa-address-book"></i>
+                        </div>
+
+                        <div>
+                            <h2>Contact Information</h2>
+                            <p>Connect with this leader</p>
+                        </div>
+
+                    </div>
+
+
+                    <div class="ld-card-body">
+
+                        <div class="ld-contact-list">
+
+
+                            <!-- EMAIL -->
+
+                            {% if member.email %}
+
+                                <div class="ld-contact-item">
+
+                                    <div class="ld-contact-icon">
+                                        <i class="fa-solid fa-envelope"></i>
+                                    </div>
+
+                                    <div class="ld-contact-text">
+
+                                        <small>Email Address</small>
+
+                                        <a href="mailto:{{ member.email }}">
+                                            {{ member.email }}
+                                        </a>
+
+                                    </div>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            <!-- PHONE -->
+
+                            {% if show_phone %}
+
+                                {% if member.phone_number %}
+
+                                    <div class="ld-contact-item">
+
+                                        <div class="ld-contact-icon">
+                                            <i class="fa-solid fa-phone"></i>
+                                        </div>
+
+                                        <div class="ld-contact-text">
+
+                                            <small>Phone Number</small>
+
+                                            <a href="tel:{{ member.phone_number }}">
+                                                {{ member.phone_number }}
+                                            </a>
+
+                                        </div>
+
+                                    </div>
+
+                                {% else %}
+
+                                    <div class="ld-contact-item">
+
+                                        <div class="ld-contact-icon">
+                                            <i class="fa-solid fa-phone"></i>
+                                        </div>
+
+                                        <div class="ld-contact-text">
+
+                                            <small>Phone Number</small>
+                                            <span>Not provided</span>
+
+                                        </div>
+
+                                    </div>
+
+                                {% endif %}
+
+                            {% else %}
+
+                                <div class="ld-privacy">
+
+                                    <i class="fa-solid fa-lock"></i>
+
+                                    <span>
+                                        Phone number is protected.
+                                        <a href="{% url 'login' %}">
+                                            Login
+                                        </a>
+                                        to access contact information.
+                                    </span>
+
+                                </div>
+
+                            {% endif %}
+
+
+                            {% if not member.email and not member.phone_number %}
+
+                                <div class="ld-privacy">
+                                    <i class="fa-solid fa-circle-info"></i>
+                                    No additional contact information is currently available.
+                                </div>
+
+                            {% endif %}
+
+
+                        </div>
+
+                    </div>
+
+                </section>
+
+
+                <!-- ABOUT KUSS -->
+
+                <section class="ld-society-card">
+
+                    <h3>
+                        <i class="fa-solid fa-shield-heart"></i>
+                        About KUSS
+                    </h3>
+
+                    <p>
+                        The Kabale University Surgical Society is committed
+                        to nurturing future holistic surgeons through
+                        education, research, mentorship, advocacy, and
+                        professional development.
+                    </p>
+
+                    <span class="ld-society-motto">
+                        Supra et Ultra — Above and Beyond
+                    </span>
+
+                </section>
+
 
             </aside>
 
         </div>
 
 
-        <!-- FOOTER -->
-        <footer class="profile-footer">
+        <!-- BACK TO DIRECTORY -->
 
-            <div class="footer-brand">
-                KUSS <span style="color:#F0631E;">/</span>
-                LEADERSHIP
-            </div>
+        <div class="ld-back-wrap">
 
-            <div class="footer-motto">
-                Nurturing future holistic surgeons —
-                <strong>Supra et Ultra.</strong>
-            </div>
+            <a href="{% url 'leadership' %}" class="ld-back-button">
 
-        </footer>
+                <i class="fa-solid fa-arrow-left"></i>
 
-    </div>
+                Back to Leadership Directory
+
+            </a>
+
+        </div>
+
+
+    </main>
+
 </div>
 
 {% endblock %}
