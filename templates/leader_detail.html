@@ -1,154 +1,964 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}{{ member.first_name }} {{ member.last_name }} - {{ leadership.get_role_display }} | KUSS{% endblock %}
+{% block title %}{{ member.first_name }} {{ member.last_name }} — {{ leadership.get_role_display }} | KUSS{% endblock %}
 
 {% block content %}
-<div class="min-h-screen" style="background-color: rgb(15, 23, 42);">
-    <div class="max-w-4xl mx-auto px-4 py-12">
-        
-        <!-- Back to Directory Link -->
-        <a href="{% url 'leadership' %}" class="inline-flex items-center mb-8 transition-opacity duration-200 hover:opacity-80" style="color: rgb(129, 140, 248);">
-            <i class="fa-solid fa-arrow-left mr-2"></i>
-            <span class="font-medium">Back to Leadership Directory</span>
+
+<style>
+/* =========================================================
+   KUSS EXECUTIVE PROFILE — DESIGN SYSTEM
+========================================================= */
+
+:root {
+    --kuss-navy: #081629;
+    --kuss-navy-light: #102642;
+    --kuss-orange: #F0631E;
+    --kuss-orange-light: #FF8A47;
+    --kuss-cream: #F5F0E6;
+    --kuss-white: #FFFFFF;
+    --kuss-muted: #91A0B5;
+    --kuss-line: rgba(255,255,255,.09);
+}
+
+.kuss-profile {
+    background: var(--kuss-navy);
+    color: var(--kuss-cream);
+    min-height: 100vh;
+    padding: 35px 18px 90px;
+    font-family: 'Inter', 'Poppins', sans-serif;
+    position: relative;
+    overflow: hidden;
+}
+
+.kuss-profile::before {
+    content: "";
+    position: absolute;
+    width: 650px;
+    height: 650px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(240,99,30,.10), transparent 70%);
+    top: -250px;
+    right: -220px;
+    pointer-events: none;
+}
+
+.kuss-profile::after {
+    content: "";
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(37,99,235,.10), transparent 70%);
+    bottom: -250px;
+    left: -200px;
+    pointer-events: none;
+}
+
+.kuss-container {
+    max-width: 1120px;
+    margin: auto;
+    position: relative;
+    z-index: 1;
+}
+
+/* NAVIGATION */
+
+.kuss-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 11px;
+    color: var(--kuss-muted);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: .3px;
+    margin-bottom: 30px;
+    transition: .25s ease;
+}
+
+.kuss-back:hover {
+    color: var(--kuss-orange-light);
+    transform: translateX(-4px);
+}
+
+/* PROFILE HERO */
+
+.profile-hero {
+    background: linear-gradient(135deg, #102642 0%, #09182C 65%, #142A43 100%);
+    border: 1px solid var(--kuss-line);
+    border-radius: 24px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 30px 80px rgba(0,0,0,.30);
+}
+
+.profile-cover {
+    height: 210px;
+    position: relative;
+    background:
+        linear-gradient(115deg, rgba(8,22,41,.15), rgba(240,99,30,.20)),
+        repeating-linear-gradient(
+            135deg,
+            transparent,
+            transparent 30px,
+            rgba(255,255,255,.025) 31px,
+            rgba(255,255,255,.025) 32px
+        ),
+        linear-gradient(120deg, #0C2039, #183653);
+}
+
+.profile-cover::after {
+    content: "KUSS";
+    position: absolute;
+    right: 7%;
+    top: 20px;
+    font-size: clamp(65px, 12vw, 140px);
+    font-weight: 900;
+    letter-spacing: 12px;
+    color: rgba(255,255,255,.035);
+}
+
+.cover-accent {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 4px;
+    background: linear-gradient(90deg, var(--kuss-orange), var(--kuss-orange-light), transparent 85%);
+}
+
+.hero-content {
+    display: flex;
+    align-items: flex-end;
+    gap: 30px;
+    padding: 0 55px 42px;
+    margin-top: -100px;
+    position: relative;
+}
+
+.profile-photo-wrap {
+    width: 190px;
+    height: 190px;
+    flex-shrink: 0;
+    padding: 6px;
+    border-radius: 22px;
+    background: linear-gradient(145deg, var(--kuss-orange), #FFB17D);
+    box-shadow: 0 15px 40px rgba(0,0,0,.4);
+    transform: rotate(-2deg);
+}
+
+.profile-photo {
+    width: 100%;
+    height: 100%;
+    border-radius: 17px;
+    object-fit: cover;
+    background: #1D354F;
+    transform: rotate(2deg);
+}
+
+.profile-initials {
+    width: 100%;
+    height: 100%;
+    border-radius: 17px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 55px;
+    font-weight: 900;
+    letter-spacing: -3px;
+    color: white;
+    background: linear-gradient(145deg, #173653, #0B1C30);
+}
+
+.hero-identity {
+    flex: 1;
+    padding-bottom: 5px;
+    min-width: 0;
+}
+
+.profile-eyebrow {
+    color: var(--kuss-orange-light);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 800;
+    margin-bottom: 12px;
+}
+
+.profile-name {
+    color: white;
+    font-size: clamp(27px, 4vw, 43px);
+    line-height: 1.15;
+    font-weight: 850;
+    letter-spacing: -1.5px;
+    margin: 0 0 12px;
+}
+
+.profile-role {
+    color: #F8A16F;
+    font-size: 16px;
+    font-weight: 650;
+    margin-bottom: 15px;
+}
+
+.profile-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 17px;
+    color: var(--kuss-muted);
+    font-size: 12px;
+}
+
+.profile-meta span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.profile-meta i {
+    color: var(--kuss-orange);
+}
+
+/* ACTIVE BADGE */
+
+.profile-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(34,197,94,.10);
+    color: #86EFAC;
+    border: 1px solid rgba(34,197,94,.25);
+    border-radius: 50px;
+    padding: 7px 12px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+}
+
+.status-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #4ADE80;
+    box-shadow: 0 0 10px #4ADE80;
+}
+
+/* MAIN LAYOUT */
+
+.profile-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 315px;
+    gap: 25px;
+    margin-top: 28px;
+    align-items: start;
+}
+
+.profile-main {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+}
+
+.profile-card {
+    background: rgba(16,38,66,.78);
+    border: 1px solid var(--kuss-line);
+    border-radius: 18px;
+    padding: 27px;
+    backdrop-filter: blur(12px);
+    transition: border-color .25s ease, transform .25s ease;
+}
+
+.profile-card:hover {
+    border-color: rgba(240,99,30,.35);
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    color: white;
+    font-size: 16px;
+    font-weight: 750;
+    margin: 0 0 20px;
+}
+
+.section-icon {
+    width: 38px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 11px;
+    color: var(--kuss-orange-light);
+    background: rgba(240,99,30,.12);
+    border: 1px solid rgba(240,99,30,.18);
+    font-size: 14px;
+}
+
+.section-subtitle {
+    font-size: 11px;
+    color: var(--kuss-muted);
+    margin: -12px 0 20px 51px;
+}
+
+.biography {
+    color: #CBD5E1;
+    font-size: 14px;
+    line-height: 1.95;
+    font-weight: 400;
+}
+
+.biography p {
+    margin-bottom: 12px;
+}
+
+/* MEMBERSHIP INFORMATION */
+
+.details-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 13px;
+}
+
+.detail-item {
+    padding: 17px;
+    border-radius: 12px;
+    background: rgba(8,22,41,.65);
+    border: 1px solid rgba(255,255,255,.045);
+    min-width: 0;
+}
+
+.detail-label {
+    color: #8293AA;
+    text-transform: uppercase;
+    font-size: 9px;
+    letter-spacing: 1.2px;
+    font-weight: 800;
+    margin-bottom: 9px;
+}
+
+.detail-value {
+    color: #F8FAFC;
+    font-size: 13px;
+    font-weight: 700;
+    overflow-wrap: anywhere;
+}
+
+/* OTHER ROLES */
+
+.role-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.role-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    border-radius: 9px;
+    color: #FDBA91;
+    background: rgba(240,99,30,.09);
+    border: 1px solid rgba(240,99,30,.2);
+    font-size: 11px;
+    font-weight: 700;
+}
+
+/* CONTACT PANEL */
+
+.profile-sidebar {
+    position: sticky;
+    top: 25px;
+}
+
+.contact-card {
+    background: linear-gradient(160deg, #122D4A, #0B1B30);
+    border: 1px solid var(--kuss-line);
+    border-radius: 18px;
+    overflow: hidden;
+}
+
+.contact-header {
+    padding: 23px 23px 18px;
+    border-bottom: 1px solid var(--kuss-line);
+}
+
+.contact-header h2 {
+    color: white;
+    font-size: 16px;
+    font-weight: 800;
+    margin: 0 0 6px;
+}
+
+.contact-header p {
+    color: var(--kuss-muted);
+    font-size: 11px;
+    margin: 0;
+}
+
+.contact-body {
+    padding: 23px;
+}
+
+.contact-item {
+    display: flex;
+    gap: 13px;
+    margin-bottom: 23px;
+    min-width: 0;
+}
+
+.contact-icon {
+    width: 38px;
+    height: 38px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    background: rgba(240,99,30,.11);
+    color: var(--kuss-orange-light);
+}
+
+.contact-label {
+    font-size: 10px;
+    color: #8293AA;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-weight: 800;
+    margin-bottom: 6px;
+}
+
+.contact-value {
+    font-size: 12px;
+    color: white;
+    font-weight: 650;
+    overflow-wrap: anywhere;
+}
+
+.contact-value a {
+    color: #FDBA91;
+    text-decoration: none;
+}
+
+.contact-value a:hover {
+    text-decoration: underline;
+}
+
+.privacy-note {
+    padding: 13px;
+    background: rgba(8,22,41,.75);
+    border: 1px solid var(--kuss-line);
+    border-radius: 10px;
+    color: #9AAAC0;
+    font-size: 10px;
+    line-height: 1.7;
+}
+
+.privacy-note i {
+    color: var(--kuss-orange-light);
+    margin-right: 5px;
+}
+
+/* SOCIETY FOOTER */
+
+.profile-footer {
+    margin-top: 30px;
+    padding: 25px 10px 0;
+    border-top: 1px solid var(--kuss-line);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.footer-brand {
+    color: white;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.footer-motto {
+    color: var(--kuss-muted);
+    font-size: 10px;
+    font-style: italic;
+}
+
+.footer-motto strong {
+    color: var(--kuss-orange-light);
+}
+
+/* ANIMATION */
+
+@keyframes profileFade {
+    from {
+        opacity: 0;
+        transform: translateY(18px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.profile-hero,
+.profile-card,
+.contact-card {
+    animation: profileFade .65s ease both;
+}
+
+.profile-layout .profile-card:nth-child(2) {
+    animation-delay: .08s;
+}
+
+.profile-layout .profile-card:nth-child(3) {
+    animation-delay: .14s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .profile-hero,
+    .profile-card,
+    .contact-card {
+        animation: none;
+    }
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 850px) {
+    .profile-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-sidebar {
+        position: static;
+    }
+
+    .contact-card {
+        max-width: none;
+    }
+}
+
+@media (max-width: 600px) {
+    .kuss-profile {
+        padding: 22px 12px 55px;
+    }
+
+    .profile-cover {
+        height: 155px;
+    }
+
+    .hero-content {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 0 20px 28px;
+        margin-top: -82px;
+        gap: 18px;
+    }
+
+    .profile-photo-wrap {
+        width: 155px;
+        height: 155px;
+    }
+
+    .hero-identity {
+        width: 100%;
+    }
+
+    .profile-name {
+        font-size: 29px;
+    }
+
+    .profile-meta {
+        justify-content: center;
+    }
+
+    .profile-card {
+        padding: 21px 17px;
+    }
+
+    .details-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+    }
+
+    .detail-item {
+        padding: 13px;
+    }
+
+    .detail-value {
+        font-size: 11px;
+    }
+
+    .profile-footer {
+        justify-content: center;
+        text-align: center;
+    }
+}
+
+@media (max-width: 360px) {
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
+
+
+<div class="kuss-profile">
+    <div class="kuss-container">
+
+        <!-- BACK NAVIGATION -->
+        <a href="{% url 'leadership' %}" class="kuss-back">
+            <i class="fa-solid fa-arrow-left"></i>
+            Back to Leadership Directory
         </a>
 
-        <!-- Main Profile Card -->
-        <div class="rounded-2xl shadow-2xl overflow-hidden" style="background-color: rgb(30, 41, 59);">
-            
-            <!-- Header Banner -->
-            <div class="h-32 md:h-48 w-full" style="background: linear-gradient(135deg, rgb(15, 23, 42) 0%, rgb(30, 41, 59) 100%);"></div>
-            
-            <div class="px-6 md:px-10 pb-10">
-                <div class="relative flex flex-col md:flex-row items-start md:items-end -mt-16 mb-6">
-                    
-                    <!-- Profile Photograph -->
-                    <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 shadow-lg overflow-hidden flex-shrink-0" style="border-color: rgb(30, 41, 59); background-color: rgb(100, 116, 139);">
-                        {% if member.profile_picture %}
-                            <img src="{{ member.profile_picture.url }}" alt="{{ member.first_name }} {{ member.last_name }}" class="w-full h-full object-cover">
-                        {% else %}
-                            <div class="w-full h-full flex items-center justify-center text-4xl font-bold" style="color: rgb(226, 232, 240);">
-                                {{ member.first_name|first }}{{ member.last_name|first }}
-                            </div>
-                        {% endif %}
-                    </div>
-                    
-                    <!-- Name, Role & Term -->
-                    <div class="mt-4 md:mt-0 md:ml-6 flex-1 text-center md:text-left">
-                        <h1 class="text-3xl md:text-4xl font-bold" style="color: rgb(226, 232, 240);">
-                            {{ member.first_name }} {{ member.last_name }}
-                        </h1>
-                        <p class="text-lg md:text-xl font-medium mt-1" style="color: rgb(129, 140, 248);">
-                            {{ leadership.get_role_display }}
-                        </p>
-                        <p class="text-sm mt-2 flex items-center justify-center md:justify-start" style="color: rgb(100, 116, 139);">
-                            <i class="fa-regular fa-calendar mr-2"></i> 
-                            Term: {{ leadership.term_start|date:"M Y" }} – {% if leadership.term_end %}{{ leadership.term_end|date:"M Y" }}{% else %}Present{% endif %}
-                        </p>
-                    </div>
+
+        <!-- EXECUTIVE PROFILE HERO -->
+        <section class="profile-hero">
+
+            <div class="profile-cover">
+                <div class="cover-accent"></div>
+            </div>
+
+            <div class="hero-content">
+
+                <div class="profile-photo-wrap">
+                    {% if member.profile_picture %}
+                        <img
+                            src="{{ member.profile_picture.url }}"
+                            alt="{{ member.first_name }} {{ member.last_name }}"
+                            class="profile-photo"
+                        >
+                    {% else %}
+                        <div class="profile-initials">
+                            {{ member.first_name|first|upper }}{{ member.last_name|first|upper }}
+                        </div>
+                    {% endif %}
                 </div>
 
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    
-                    <!-- Left Column: Biography & Details -->
-                    <div class="md:col-span-2 space-y-6">
-                        
-                        <!-- Biography -->
-                        {% if member.bio %}
-                        <div>
-                            <h2 class="text-xl font-semibold mb-3 flex items-center" style="color: rgb(226, 232, 240);">
-                                <i class="fa-solid fa-user-pen mr-2" style="color: rgb(129, 140, 248);"></i> Biography
-                            </h2>
-                            <div class="rounded-xl p-5" style="background-color: rgb(15, 23, 42);">
-                                <p class="leading-relaxed" style="color: rgb(226, 232, 240);">
-                                    {{ member.bio|linebreaks }}
-                                </p>
+                <div class="hero-identity">
+
+                    <div class="profile-eyebrow">
+                        Kabale University Surgical Society
+                    </div>
+
+                    <div class="profile-status">
+                        <span class="status-dot"></span>
+                        Current Leadership
+                    </div>
+
+                    <h1 class="profile-name">
+                        {{ member.first_name }} {{ member.last_name }}
+                    </h1>
+
+                    <div class="profile-role">
+                        {{ leadership.get_role_display }}
+                    </div>
+
+                    <div class="profile-meta">
+                        <span>
+                            <i class="fa-regular fa-calendar"></i>
+                            {{ leadership.term_start|date:"M Y" }}
+                            –
+                            {% if leadership.term_end %}
+                                {{ leadership.term_end|date:"M Y" }}
+                            {% else %}
+                                Present
+                            {% endif %}
+                        </span>
+
+                        <span>
+                            <i class="fa-solid fa-graduation-cap"></i>
+                            KUSS Leadership
+                        </span>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+
+        <!-- PROFILE INFORMATION -->
+        <div class="profile-layout">
+
+            <main class="profile-main">
+
+                <!-- BIOGRAPHY -->
+                {% if member.bio %}
+                <section class="profile-card">
+
+                    <h2 class="section-heading">
+                        <span class="section-icon">
+                            <i class="fa-solid fa-user-pen"></i>
+                        </span>
+                        About the Leader
+                    </h2>
+
+                    <div class="biography">
+                        {{ member.bio|linebreaks }}
+                    </div>
+
+                </section>
+                {% endif %}
+
+
+                <!-- MEMBERSHIP INFORMATION -->
+                <section class="profile-card">
+
+                    <h2 class="section-heading">
+                        <span class="section-icon">
+                            <i class="fa-solid fa-id-card"></i>
+                        </span>
+                        Membership Profile
+                    </h2>
+
+                    <p class="section-subtitle">
+                        Official membership information within KUSS.
+                    </p>
+
+                    <div class="details-grid">
+
+                        <div class="detail-item">
+                            <div class="detail-label">Registration Number</div>
+                            <div class="detail-value">
+                                {{ member.registration_number|default:"Not available" }}
                             </div>
                         </div>
-                        {% endif %}
 
-                        <!-- Membership Details -->
-                        <div class="rounded-xl p-5" style="background-color: rgb(15, 23, 42);">
-                            <h2 class="text-xl font-semibold mb-4 flex items-center" style="color: rgb(226, 232, 240);">
-                                <i class="fa-solid fa-id-card mr-2" style="color: rgb(129, 140, 248);"></i> Member Details
-                            </h2>
-                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
-                                <div>
-                                    <p class="text-sm font-medium mb-1" style="color: rgb(100, 116, 139);">Registration Number</p>
-                                    <p class="text-base font-semibold" style="color: rgb(226, 232, 240);">{{ member.registration_number|default:"N/A" }}</p>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-medium mb-1" style="color: rgb(100, 116, 139);">Membership Type</p>
-                                    <p class="text-base font-semibold" style="color: rgb(226, 232, 240);">{{ member.get_membership_type_display }}</p>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-medium mb-1" style="color: rgb(100, 116, 139);">Member Since</p>
-                                    <p class="text-base font-semibold" style="color: rgb(226, 232, 240);">{{ member.date_joined|date:"F Y" }}</p>
-                                </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Membership Category</div>
+                            <div class="detail-value">
+                                {{ member.get_membership_type_display|default:"Not specified" }}
                             </div>
                         </div>
 
-                        <!-- Other Current Roles -->
-                        {% if other_roles %}
-                        <div>
-                            <h2 class="text-xl font-semibold mb-3 flex items-center" style="color: rgb(226, 232, 240);">
-                                <i class="fa-solid fa-briefcase mr-2" style="color: rgb(129, 140, 248);"></i> Other Current Responsibilities
-                            </h2>
-                            <div class="flex flex-wrap gap-2">
-                                {% for role in other_roles %}
-                                    <span class="px-3 py-1.5 rounded-full text-sm font-medium" style="background-color: rgba(129, 140, 248, 0.15); color: rgb(129, 140, 248); border: 1px solid rgb(129, 140, 248);">
-                                        {{ role.get_role_display }}
-                                    </span>
-                                {% endfor %}
+                        <div class="detail-item">
+                            <div class="detail-label">Member Since</div>
+                            <div class="detail-value">
+                                {{ member.date_joined|date:"F Y"|default:"Not available" }}
                             </div>
+                        </div>
+
+                        <div class="detail-item">
+                            <div class="detail-label">Leadership Position</div>
+                            <div class="detail-value">
+                                {{ leadership.get_role_display }}
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+
+                <!-- ADDITIONAL RESPONSIBILITIES -->
+                {% if other_roles %}
+                <section class="profile-card">
+
+                    <h2 class="section-heading">
+                        <span class="section-icon">
+                            <i class="fa-solid fa-briefcase"></i>
+                        </span>
+                        Additional Responsibilities
+                    </h2>
+
+                    <div class="role-list">
+                        {% for role in other_roles %}
+                            <span class="role-chip">
+                                <i class="fa-solid fa-check-circle"></i>
+                                {{ role.get_role_display }}
+                            </span>
+                        {% endfor %}
+                    </div>
+
+                </section>
+                {% endif %}
+
+            </main>
+
+
+            <!-- CONTACT SIDEBAR -->
+            <aside class="profile-sidebar">
+
+                <section class="contact-card">
+
+                    <div class="contact-header">
+                        <h2>Get in Touch</h2>
+                        <p>Official contact information</p>
+                    </div>
+
+                    <div class="contact-body">
+
+                        <!-- EMAIL -->
+                        <div class="contact-item">
+
+                            <div class="contact-icon">
+                                <i class="fa-solid fa-envelope"></i>
+                            </div>
+
+                            <div>
+                                <div class="contact-label">Email Address</div>
+                                <div class="contact-value">
+                                    {% if member.email %}
+                                        <a href="mailto:{{ member.email }}">
+                                            {{ member.email }}
+                                        </a>
+                                    {% else %}
+                                        Not provided
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        <!-- PHONE -->
+                        <div class="contact-item">
+
+                            <div class="contact-icon">
+                                <i class="fa-solid fa-phone"></i>
+                            </div>
+
+                            <div>
+                                <div class="contact-label">Telephone</div>
+
+                                <div class="contact-value">
+
+                                    {% if show_phone and member.phone_number %}
+
+                                        <a href="tel:{{ member.phone_number }}">
+                                            {{ member.phone_number }}
+                                        </a>
+
+                                    {% elif show_phone %}
+
+                                        <span style="color:#91A0B5;">
+                                            Not provided
+                                        </span>
+
+                                    {% else %}
+
+                                        <span style="color:#91A0B5;">
+                                            <i class="fa-solid fa-lock"></i>
+                                            Protected information
+                                        </span>
+
+                                    {% endif %}
+
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                        {% if not show_phone %}
+                        <div class="privacy-note">
+                            <i class="fa-solid fa-shield-halved"></i>
+                            Phone numbers are protected to maintain member privacy.
+
+                            <a href="{% url 'login' %}"
+                               style="color:#FDBA91;font-weight:800;text-decoration:none;">
+                                Log in
+                            </a>
+                            as a KUSS member to view available contact details.
                         </div>
                         {% endif %}
 
                     </div>
+                </section>
 
-                    <!-- Right Column: Contact Information -->
-                    <div class="md:col-span-1">
-                        <div class="rounded-xl p-5 sticky top-6" style="background-color: rgb(15, 23, 42);">
-                            <h2 class="text-xl font-semibold mb-4 flex items-center" style="color: rgb(226, 232, 240);">
-                                <i class="fa-solid fa-address-card mr-2" style="color: rgb(129, 140, 248);"></i> Contact
-                            </h2>
-                            
-                            <div class="space-y-6">
-                                <!-- Email (Always Public) -->
-                                <div class="flex items-start">
-                                    <div class="mt-1 mr-3 flex-shrink-0">
-                                        <i class="fa-solid fa-envelope" style="color: rgb(100, 116, 139);"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-medium" style="color: rgb(100, 116, 139);">Email</p>
-                                        <a href="mailto:{{ member.email }}" class="text-base break-all hover:underline transition-colors" style="color: rgb(129, 140, 248);">{{ member.email }}</a>
-                                    </div>
-                                </div>
 
-                                <!-- Phone Number (Protected) -->
-                                <div class="flex items-start">
-                                    <div class="mt-1 mr-3 flex-shrink-0">
-                                        <i class="fa-solid fa-phone" style="color: rgb(100, 116, 139);"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-medium" style="color: rgb(100, 116, 139);">Phone</p>
-                                        
-                                        {% if show_phone and member.phone_number %}
-                                            <!-- Logged in AND phone exists -->
-                                            <a href="tel:{{ member.phone_number }}" class="text-base font-semibold hover:underline transition-colors" style="color: rgb(34, 197, 94);">
-                                                {{ member.phone_number }}
-                                            </a>
-                                        
-                                        {% elif show_phone %}
-                                            <!-- Logged in BUT no phone provided -->
-                                            <p class="text-base italic" style="color: rgb(100, 116, 139);">Not provided</p>
-                                        
-                                        {% else %}
-                                            <!-- NOT logged in -->
-                                            <div class="flex items-center mb-1">
-                                                <span class="text-base font-medium mr-2" style="color: rgb(100, 116, 139);">Hidden</span>
-                                                <i class="fa-solid fa-lock text-xs" style="color: rgb(100, 116, 139);"></i>
-                                            </div>
-                                            <p class="text-xs leading-relaxed" style="color: rgb(100, 116, 139);">
+                <!-- SOCIETY IDENTITY -->
+                <section class="profile-card" style="margin-top:20px;">
+
+                    <div style="text-align:center;">
+
+                        <div style="
+                            width:52px;
+                            height:52px;
+                            margin:0 auto 15px;
+                            border-radius:15px;
+                            background:rgba(240,99,30,.12);
+                            display:flex;
+                            align-items:center;
+                            justify-content:center;
+                            color:#FF8A47;
+                            font-size:21px;">
+                            <i class="fa-solid fa-user-doctor"></i>
+                        </div>
+
+                        <div style="
+                            font-size:12px;
+                            color:white;
+                            font-weight:850;
+                            letter-spacing:1px;
+                            margin-bottom:7px;">
+                            KABELE UNIVERSITY
+                        </div>
+
+                        <div style="
+                            color:#91A0B5;
+                            font-size:10px;
+                            line-height:1.7;">
+                            Surgical Society
+                        </div>
+
+                        <div style="
+                            height:2px;
+                            width:45px;
+                            background:#F0631E;
+                            margin:17px auto;">
+                        </div>
+
+                        <div style="
+                            font-size:11px;
+                            color:#FDBA91;
+                            font-weight:800;
+                            font-style:italic;">
+                            Supra et Ultra
+                        </div>
+
+                        <div style="
+                            font-size:9px;
+                            color:#91A0B5;
+                            margin-top:4px;">
+                            Above and Beyond
+                        </div>
+
+                    </div>
+
+                </section>
+
+            </aside>
+
+        </div>
+
+
+        <!-- FOOTER -->
+        <footer class="profile-footer">
+
+            <div class="footer-brand">
+                KUSS <span style="color:#F0631E;">/</span>
+                LEADERSHIP
+            </div>
+
+            <div class="footer-motto">
+                Nurturing future holistic surgeons —
+                <strong>Supra et Ultra.</strong>
+            </div>
+
+        </footer>
+
+    </div>
+</div>
+
+{% endblock %}                         <p class="text-xs leading-relaxed" style="color: rgb(100, 116, 139);">
                                                 <a href="{% url 'login' %}" class="font-semibold hover:underline transition-colors" style="color: rgb(129, 140, 248);">Log in</a> as a KUSS member to view contact details.
                                             </p>
                                         {% endif %}
