@@ -1,24 +1,40 @@
+
 # core/urls.py
 
 from django.urls import path
 from . import views
 
 urlpatterns = [
+
     # ==========================================
     # PUBLIC VIEWS
     # ==========================================
+
     path("", views.home_view, name="home"),
     path("about/", views.about_view, name="about"),
+
     path("news/", views.news_view, name="news"),
     path("news/<int:news_id>/", views.news_detail_view, name="news_detail"),
+
     path("announcements/", views.announcements_view, name="announcements"),
+
+    # Leadership directory
     path("leadership/", views.leadership_view, name="leadership"),
+
+    # Individual leadership profiles
+    path(
+        "leadership/<int:leader_id>/",
+        views.leader_detail_view,
+        name="leader_detail"
+    ),
+
     path("event/<int:event_id>/", views.event_detail_view, name="event_detail"),
     path("research/", views.research_links_view, name="research_links"),
 
     # ==========================================
     # MEMBERSHIP & AUTH
     # ==========================================
+
     path("join/", views.join_view, name="join"),
     path("join/success/", views.join_success_view, name="join_success"),
     path("login/", views.login_view, name="login"),
@@ -27,12 +43,14 @@ urlpatterns = [
     # ==========================================
     # MEMBER PORTAL
     # ==========================================
+
     path("dashboard/", views.dashboard_view, name="dashboard"),
     path("profile/", views.profile_view, name="profile"),
 
     # ==========================================
     # TREASURER PORTAL
     # ==========================================
+
     path("treasurer/dashboard/", views.treasurer_dashboard, name="treasurer_dashboard"),
     path("treasurer/transactions/", views.transaction_list, name="transaction_list"),
     path("treasurer/transactions/add/", views.add_transaction, name="add_transaction"),
@@ -43,6 +61,7 @@ urlpatterns = [
     # ==========================================
     # LEADERSHIP PORTAL
     # ==========================================
+
     path("leadership/portal/", views.leadership_portal, name="leadership_portal"),
     path("leadership/news/create/", views.create_news_post, name="create_news_post"),
     path("leadership/announcement/create/", views.create_announcement, name="create_announcement"),
@@ -53,6 +72,7 @@ urlpatterns = [
     # ==========================================
     # CLASS REP PORTAL
     # ==========================================
+
     path("class-rep/dashboard/", views.class_rep_dashboard, name="class_rep_dashboard"),
     path("class-rep/announcement/create/", views.create_class_announcement, name="create_class_announcement"),
     path("class-rep/event/create/", views.create_class_event, name="create_class_event"),
@@ -61,6 +81,7 @@ urlpatterns = [
     # ==========================================
     # MARKETPLACE
     # ==========================================
+
     path("marketplace/", views.marketplace_view, name="marketplace"),
     path("marketplace/product/<int:product_id>/", views.product_detail_view, name="product_detail"),
     path("marketplace/cart/", views.view_cart, name="view_cart"),
@@ -74,9 +95,11 @@ urlpatterns = [
     # ==========================================
     # API ENDPOINTS
     # ==========================================
+
     path("api/recipients/", views.api_get_recipients, name="api_get_recipients"),
     path("api/new-member-info/", views.api_get_new_member_info, name="api_get_new_member_info"),
     path("api/news/<int:news_id>/", views.api_get_news_content, name="api_get_news_content"),
     path("api/announcement/<int:announcement_id>/", views.api_get_announcement_content, name="api_get_announcement_content"),
     path("api/event/<int:event_id>/", views.api_get_event_content, name="api_get_event_content"),
+
 ]
