@@ -715,6 +715,48 @@ def leadership_view(request):
 
 
 # ==========================================
+# INDIVIDUAL LEADERSHIP PROFILE
+# ==========================================
+
+def leader_detail_view(request, leader_id):
+    """
+    Display an individual KUSS executive or
+    Board of Governors profile.
+    """
+    leadership = get_object_or_404(
+        Leadership.objects.select_related('member'),
+        pk=leader_id,
+        is_current=True
+    )
+
+    member = leadership.member
+    settings = SiteSettings.load()
+
+    # Only authenticated KUSS members can see the leader's telephone number.
+    logged_in_member = get_member_from_session(request)
+    show_phone = bool(logged_in_member)
+
+    # Retrieve the leader's other current roles using the related_name 'leadership_roles'
+    other_roles = (
+        member.leadership_roles
+        .filter(is_current=True)
+        .exclude(pk=leadership.pk)
+        .order_by('role')
+    )
+
+    context = {
+        'leadership': leadership,
+        'member': member,
+        'settings': settings,
+        'other_roles': other_roles,
+        'show_phone': show_phone,
+        'logged_in_member': logged_in_member,
+    }
+
+    return render(request, 'leader_detail.html', context)
+
+
+# ==========================================
 # EVENT DETAIL
 # ==========================================
 
@@ -3321,4 +3363,4 @@ def my_orders(request):
             'orders': orders,
             'settings': settings
         }
-        )
+    )
