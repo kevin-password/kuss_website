@@ -1,0 +1,173 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ member.first_name }} {{ member.last_name }} - {{ leadership.get_role_display }} | KUSS{% endblock %}
+
+{% block content %}
+<div class="min-h-screen" style="background-color: rgb(15, 23, 42);">
+    <div class="max-w-4xl mx-auto px-4 py-12">
+        
+        <!-- Back to Directory Link -->
+        <a href="{% url 'leadership' %}" class="inline-flex items-center mb-8 transition-opacity duration-200 hover:opacity-80" style="color: rgb(129, 140, 248);">
+            <i class="fa-solid fa-arrow-left mr-2"></i>
+            <span class="font-medium">Back to Leadership Directory</span>
+        </a>
+
+        <!-- Main Profile Card -->
+        <div class="rounded-2xl shadow-2xl overflow-hidden" style="background-color: rgb(30, 41, 59);">
+            
+            <!-- Header Banner -->
+            <div class="h-32 md:h-48 w-full" style="background: linear-gradient(135deg, rgb(15, 23, 42) 0%, rgb(30, 41, 59) 100%);"></div>
+            
+            <div class="px-6 md:px-10 pb-10">
+                <div class="relative flex flex-col md:flex-row items-start md:items-end -mt-16 mb-6">
+                    
+                    <!-- Profile Photograph -->
+                    <div class="w-32 h-32 md:w-40 md:h-40 rounded-full border-4 shadow-lg overflow-hidden flex-shrink-0" style="border-color: rgb(30, 41, 59); background-color: rgb(100, 116, 139);">
+                        {% if member.profile_picture %}
+                            <img src="{{ member.profile_picture.url }}" alt="{{ member.first_name }} {{ member.last_name }}" class="w-full h-full object-cover">
+                        {% else %}
+                            <div class="w-full h-full flex items-center justify-center text-4xl font-bold" style="color: rgb(226, 232, 240);">
+                                {{ member.first_name|first }}{{ member.last_name|first }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Name, Role & Term -->
+                    <div class="mt-4 md:mt-0 md:ml-6 flex-1 text-center md:text-left">
+                        <h1 class="text-3xl md:text-4xl font-bold" style="color: rgb(226, 232, 240);">
+                            {{ member.first_name }} {{ member.last_name }}
+                        </h1>
+                        <p class="text-lg md:text-xl font-medium mt-1" style="color: rgb(129, 140, 248);">
+                            {{ leadership.get_role_display }}
+                        </p>
+                        <p class="text-sm mt-2 flex items-center justify-center md:justify-start" style="color: rgb(100, 116, 139);">
+                            <i class="fa-regular fa-calendar mr-2"></i> 
+                            Term: {{ leadership.term_start|date:"M Y" }} – {% if leadership.term_end %}{{ leadership.term_end|date:"M Y" }}{% else %}Present{% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    
+                    <!-- Left Column: Biography & Details -->
+                    <div class="md:col-span-2 space-y-6">
+                        
+                        <!-- Biography -->
+                        {% if member.bio %}
+                        <div>
+                            <h2 class="text-xl font-semibold mb-3 flex items-center" style="color: rgb(226, 232, 240);">
+                                <i class="fa-solid fa-user-pen mr-2" style="color: rgb(129, 140, 248);"></i> Biography
+                            </h2>
+                            <div class="rounded-xl p-5" style="background-color: rgb(15, 23, 42);">
+                                <p class="leading-relaxed" style="color: rgb(226, 232, 240);">
+                                    {{ member.bio|linebreaks }}
+                                </p>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- Membership Details -->
+                        <div class="rounded-xl p-5" style="background-color: rgb(15, 23, 42);">
+                            <h2 class="text-xl font-semibold mb-4 flex items-center" style="color: rgb(226, 232, 240);">
+                                <i class="fa-solid fa-id-card mr-2" style="color: rgb(129, 140, 248);"></i> Member Details
+                            </h2>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-y-4 gap-x-6">
+                                <div>
+                                    <p class="text-sm font-medium mb-1" style="color: rgb(100, 116, 139);">Registration Number</p>
+                                    <p class="text-base font-semibold" style="color: rgb(226, 232, 240);">{{ member.registration_number|default:"N/A" }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium mb-1" style="color: rgb(100, 116, 139);">Membership Type</p>
+                                    <p class="text-base font-semibold" style="color: rgb(226, 232, 240);">{{ member.get_membership_type_display }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium mb-1" style="color: rgb(100, 116, 139);">Member Since</p>
+                                    <p class="text-base font-semibold" style="color: rgb(226, 232, 240);">{{ member.date_joined|date:"F Y" }}</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Other Current Roles -->
+                        {% if other_roles %}
+                        <div>
+                            <h2 class="text-xl font-semibold mb-3 flex items-center" style="color: rgb(226, 232, 240);">
+                                <i class="fa-solid fa-briefcase mr-2" style="color: rgb(129, 140, 248);"></i> Other Current Responsibilities
+                            </h2>
+                            <div class="flex flex-wrap gap-2">
+                                {% for role in other_roles %}
+                                    <span class="px-3 py-1.5 rounded-full text-sm font-medium" style="background-color: rgba(129, 140, 248, 0.15); color: rgb(129, 140, 248); border: 1px solid rgb(129, 140, 248);">
+                                        {{ role.get_role_display }}
+                                    </span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
+
+                    </div>
+
+                    <!-- Right Column: Contact Information -->
+                    <div class="md:col-span-1">
+                        <div class="rounded-xl p-5 sticky top-6" style="background-color: rgb(15, 23, 42);">
+                            <h2 class="text-xl font-semibold mb-4 flex items-center" style="color: rgb(226, 232, 240);">
+                                <i class="fa-solid fa-address-card mr-2" style="color: rgb(129, 140, 248);"></i> Contact
+                            </h2>
+                            
+                            <div class="space-y-6">
+                                <!-- Email (Always Public) -->
+                                <div class="flex items-start">
+                                    <div class="mt-1 mr-3 flex-shrink-0">
+                                        <i class="fa-solid fa-envelope" style="color: rgb(100, 116, 139);"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium" style="color: rgb(100, 116, 139);">Email</p>
+                                        <a href="mailto:{{ member.email }}" class="text-base break-all hover:underline transition-colors" style="color: rgb(129, 140, 248);">{{ member.email }}</a>
+                                    </div>
+                                </div>
+
+                                <!-- Phone Number (Protected) -->
+                                <div class="flex items-start">
+                                    <div class="mt-1 mr-3 flex-shrink-0">
+                                        <i class="fa-solid fa-phone" style="color: rgb(100, 116, 139);"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm font-medium" style="color: rgb(100, 116, 139);">Phone</p>
+                                        
+                                        {% if show_phone and member.phone_number %}
+                                            <!-- Logged in AND phone exists -->
+                                            <a href="tel:{{ member.phone_number }}" class="text-base font-semibold hover:underline transition-colors" style="color: rgb(34, 197, 94);">
+                                                {{ member.phone_number }}
+                                            </a>
+                                        
+                                        {% elif show_phone %}
+                                            <!-- Logged in BUT no phone provided -->
+                                            <p class="text-base italic" style="color: rgb(100, 116, 139);">Not provided</p>
+                                        
+                                        {% else %}
+                                            <!-- NOT logged in -->
+                                            <div class="flex items-center mb-1">
+                                                <span class="text-base font-medium mr-2" style="color: rgb(100, 116, 139);">Hidden</span>
+                                                <i class="fa-solid fa-lock text-xs" style="color: rgb(100, 116, 139);"></i>
+                                            </div>
+                                            <p class="text-xs leading-relaxed" style="color: rgb(100, 116, 139);">
+                                                <a href="{% url 'login' %}" class="font-semibold hover:underline transition-colors" style="color: rgb(129, 140, 248);">Log in</a> as a KUSS member to view contact details.
+                                            </p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- Optional: Divider -->
+                                <div class="border-t pt-4" style="border-color: rgb(30, 41, 59);">
+                                    <p class="text-xs text-center" style="color: rgb(100, 116, 139);">
+                                        Kabale University Surgical Society
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
