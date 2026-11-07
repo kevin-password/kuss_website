@@ -1,3 +1,4 @@
+
 {% extends 'base.html' %}
 
 {% block title %}Leadership | KUSS{% endblock %}
@@ -5,521 +6,499 @@
 {% block content %}
 
 <style>
-    /* =========================================================
-       KUSS LEADERSHIP PAGE
-       ========================================================= */
+/* =========================================================
+   KUSS LEADERSHIP DIRECTORY
+   ========================================================= */
 
-    .leadership-page {
-        --kuss-teal: var(--teal, #0f766e);
-        --kuss-teal-dark: #0b5f59;
-        --kuss-navy: #102a43;
-        --kuss-gold: #c89b3c;
-        --kuss-bg: #f6f9fb;
-        --kuss-card: #ffffff;
-        --kuss-text: #172b4d;
-        --kuss-muted: #6b7c93;
-        --kuss-border: #e5e9ef;
-        --kuss-shadow: 0 12px 35px rgba(16, 42, 67, 0.08);
-        --kuss-shadow-hover: 0 20px 45px rgba(16, 42, 67, 0.14);
+.leadership-page {
+    --kuss-teal: var(--teal, #0f766e);
+    --kuss-teal-dark: #0b5f59;
+    --kuss-navy: #102a43;
+    --kuss-gold: #c89b3c;
+    --kuss-bg: #f6f9fb;
+    --kuss-card: #ffffff;
+    --kuss-text: #172b4d;
+    --kuss-muted: #6b7c93;
+    --kuss-border: #e5e9ef;
+    --kuss-shadow: 0 12px 35px rgba(16,42,67,.08);
+    --kuss-shadow-hover: 0 20px 45px rgba(16,42,67,.14);
 
-        background: var(--kuss-bg);
-        color: var(--kuss-text);
-        min-height: 100vh;
+    background: var(--kuss-bg);
+    color: var(--kuss-text);
+    min-height: 100vh;
+}
+
+/* HERO */
+
+.leadership-hero {
+    position: relative;
+    overflow: hidden;
+    background:
+        radial-gradient(circle at 85% 20%, rgba(200,155,60,.16), transparent 28%),
+        radial-gradient(circle at 10% 80%, rgba(15,118,110,.18), transparent 32%),
+        linear-gradient(135deg,#0b2638 0%,#103d4a 52%,#0f766e 100%);
+    color: white;
+    padding: clamp(55px,8vw,95px) 20px;
+}
+
+.leadership-hero::before,
+.leadership-hero::after {
+    content: "";
+    position: absolute;
+    border: 1px solid rgba(255,255,255,.09);
+    border-radius: 50%;
+}
+
+.leadership-hero::before {
+    width: 320px;
+    height: 320px;
+    right: -110px;
+    top: -120px;
+}
+
+.leadership-hero::after {
+    width: 220px;
+    height: 220px;
+    right: -30px;
+    bottom: -140px;
+}
+
+.leadership-hero-inner {
+    position: relative;
+    z-index: 2;
+    max-width: 1150px;
+    margin: auto;
+    text-align: center;
+}
+
+.hero-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 14px;
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 999px;
+    background: rgba(255,255,255,.08);
+    backdrop-filter: blur(8px);
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+}
+
+.hero-kicker i {
+    color: #f2ca6b;
+}
+
+.leadership-hero h1 {
+    margin: 0;
+    font-size: clamp(2.3rem,6vw,4.5rem);
+    line-height: 1.05;
+    font-weight: 800;
+    letter-spacing: -.04em;
+}
+
+.leadership-hero p {
+    max-width: 680px;
+    margin: 20px auto 0;
+    color: rgba(255,255,255,.82);
+    font-size: clamp(.98rem,2vw,1.12rem);
+    line-height: 1.75;
+}
+
+/* MAIN CONTENT */
+
+.leadership-content {
+    max-width: 1200px;
+    margin: auto;
+    padding: clamp(35px,6vw,75px) 20px;
+}
+
+.section-heading {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.section-heading h2 {
+    margin: 0 0 10px;
+    color: var(--kuss-navy);
+    font-size: clamp(1.6rem,3vw,2.2rem);
+    font-weight: 800;
+}
+
+.section-heading p {
+    margin: 0 auto;
+    max-width: 650px;
+    color: var(--kuss-muted);
+    line-height: 1.7;
+}
+
+.heading-line {
+    width: 55px;
+    height: 4px;
+    border-radius: 10px;
+    background: linear-gradient(90deg,var(--kuss-teal),var(--kuss-gold));
+    margin: 16px auto 0;
+}
+
+/* LEADERS GRID */
+
+.leaders-grid {
+    display: grid;
+    grid-template-columns: repeat(3,minmax(0,1fr));
+    gap: 26px;
+    align-items: stretch;
+}
+
+/* LEADER CARD */
+
+.leader-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: var(--kuss-card);
+    border: 1px solid var(--kuss-border);
+    border-radius: 22px;
+    overflow: hidden;
+    box-shadow: var(--kuss-shadow);
+    transition: transform .28s ease,box-shadow .28s ease,border-color .28s ease;
+}
+
+.leader-card:hover {
+    transform: translateY(-7px);
+    box-shadow: var(--kuss-shadow-hover);
+    border-color: rgba(15,118,110,.2);
+}
+
+.leader-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg,var(--kuss-teal),var(--kuss-gold));
+    z-index: 2;
+}
+
+/* PROFILE IMAGE */
+
+.leader-photo-area {
+    display: flex;
+    justify-content: center;
+    padding: 32px 25px 20px;
+    background: radial-gradient(circle at 50% 0%,rgba(15,118,110,.09),transparent 60%);
+}
+
+.leader-img {
+    width: 145px;
+    height: 145px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 5px solid white;
+    box-shadow: 0 0 0 2px rgba(15,118,110,.18),0 12px 25px rgba(16,42,67,.15);
+    background: linear-gradient(135deg,var(--kuss-teal),var(--kuss-navy));
+    color: white;
+    font-size: 2rem;
+    font-weight: 800;
+}
+
+/* INFORMATION */
+
+.leader-info {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    padding: 8px 27px 27px;
+    text-align: center;
+}
+
+.leader-name {
+    margin: 5px 0 8px;
+    color: var(--kuss-navy);
+    font-size: 1.18rem;
+    line-height: 1.3;
+    font-weight: 800;
+}
+
+.leader-role {
+    display: inline-flex;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    margin: 0 0 16px;
+    padding: 6px 13px;
+    border-radius: 999px;
+    background: rgba(15,118,110,.09);
+    color: var(--kuss-teal-dark);
+    font-size: .76rem;
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+}
+
+.leader-bio {
+    margin: 0 auto;
+    max-width: 400px;
+    color: var(--kuss-muted);
+    font-size: .9rem;
+    line-height: 1.7;
+}
+
+/* VIEW PROFILE BUTTON */
+
+.leader-profile-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    align-self: center;
+    margin-top: 20px;
+    padding: 11px 19px;
+    border-radius: 10px;
+    background: var(--kuss-teal);
+    color: white !important;
+    font-size: .82rem;
+    font-weight: 800;
+    text-decoration: none !important;
+    transition: all .25s ease;
+}
+
+.leader-profile-link:hover {
+    background: var(--kuss-teal-dark);
+    transform: translateY(-2px);
+    box-shadow: 0 7px 16px rgba(15,118,110,.2);
+}
+
+.leader-profile-link i {
+    transition: transform .25s ease;
+}
+
+.leader-profile-link:hover i {
+    transform: translateX(4px);
+}
+
+/* CONTACT INFORMATION */
+
+.leader-contact {
+    margin-top: auto;
+    padding-top: 20px;
+}
+
+.contact-divider {
+    height: 1px;
+    background: var(--kuss-border);
+    margin-bottom: 15px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+    margin-bottom: 10px;
+    min-width: 0;
+}
+
+.contact-icon {
+    flex: 0 0 31px;
+    width: 31px;
+    height: 31px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9px;
+    background: rgba(15,118,110,.08);
+    color: var(--kuss-teal);
+    font-size: .8rem;
+}
+
+.contact-item a,
+.contact-item span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    color: var(--kuss-muted);
+    font-size: .82rem;
+    line-height: 1.4;
+}
+
+.contact-item a {
+    color: var(--kuss-teal);
+    text-decoration: none;
+}
+
+.contact-item a:hover {
+    color: var(--kuss-teal-dark);
+    text-decoration: underline;
+}
+
+.login-message {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: #f7f8fa;
+    color: var(--kuss-muted);
+    font-size: .78rem;
+    text-align: left;
+}
+
+.login-message a {
+    color: var(--kuss-teal);
+    font-weight: 800;
+    text-decoration: none;
+}
+
+/* EMPTY STATE */
+
+.empty-state {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 55px 25px;
+    background: white;
+    border: 1px solid var(--kuss-border);
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: var(--kuss-shadow);
+}
+
+.empty-state-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    background: rgba(15,118,110,.08);
+    color: var(--kuss-teal);
+    font-size: 1.4rem;
+}
+
+.empty-state h3 {
+    margin: 0 0 8px;
+    color: var(--kuss-navy);
+}
+
+.empty-state p {
+    margin: 0;
+    color: var(--kuss-muted);
+}
+
+/* TABLET */
+
+@media(max-width:1000px) {
+    .leaders-grid {
+        grid-template-columns: repeat(2,minmax(0,1fr));
     }
+}
 
-    /* =========================================================
-       HERO
-       ========================================================= */
+/* MOBILE */
 
+@media(max-width:650px) {
     .leadership-hero {
-        position: relative;
-        overflow: hidden;
-        background:
-            radial-gradient(circle at 85% 20%, rgba(200, 155, 60, 0.16), transparent 28%),
-            radial-gradient(circle at 10% 80%, rgba(15, 118, 110, 0.18), transparent 32%),
-            linear-gradient(135deg, #0b2638 0%, #103d4a 52%, #0f766e 100%);
-        color: white;
-        padding: clamp(55px, 8vw, 95px) 20px;
-    }
-
-    .leadership-hero::before {
-        content: "";
-        position: absolute;
-        width: 320px;
-        height: 320px;
-        border: 1px solid rgba(255,255,255,.09);
-        border-radius: 50%;
-        right: -110px;
-        top: -120px;
-    }
-
-    .leadership-hero::after {
-        content: "";
-        position: absolute;
-        width: 220px;
-        height: 220px;
-        border: 1px solid rgba(255,255,255,.07);
-        border-radius: 50%;
-        right: -30px;
-        bottom: -140px;
-    }
-
-    .leadership-hero-inner {
-        position: relative;
-        z-index: 2;
-        max-width: 1150px;
-        margin: auto;
-        text-align: center;
-    }
-
-    .hero-kicker {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 7px 14px;
-        border: 1px solid rgba(255,255,255,.2);
-        border-radius: 999px;
-        background: rgba(255,255,255,.08);
-        backdrop-filter: blur(8px);
-        font-size: .78rem;
-        font-weight: 700;
-        letter-spacing: .12em;
-        text-transform: uppercase;
-        margin-bottom: 20px;
-    }
-
-    .hero-kicker i {
-        color: #f2ca6b;
+        padding: 48px 18px 55px;
     }
 
     .leadership-hero h1 {
-        margin: 0;
-        font-size: clamp(2.3rem, 6vw, 4.5rem);
-        line-height: 1.05;
-        font-weight: 800;
-        letter-spacing: -0.04em;
+        font-size: 2.35rem;
     }
 
     .leadership-hero p {
-        max-width: 680px;
-        margin: 20px auto 0;
-        color: rgba(255,255,255,.82);
-        font-size: clamp(.98rem, 2vw, 1.12rem);
-        line-height: 1.75;
+        font-size: .92rem;
+        line-height: 1.65;
     }
 
-    /* =========================================================
-       CONTENT
-       ========================================================= */
-
     .leadership-content {
-        max-width: 1200px;
-        margin: auto;
-        padding: clamp(35px, 6vw, 75px) 20px;
+        padding: 38px 14px 55px;
     }
 
     .section-heading {
-        text-align: center;
-        margin-bottom: 40px;
+        margin-bottom: 28px;
     }
 
     .section-heading h2 {
-        margin: 0 0 10px;
-        color: var(--kuss-navy);
-        font-size: clamp(1.6rem, 3vw, 2.2rem);
-        font-weight: 800;
+        font-size: 1.55rem;
     }
-
-    .section-heading p {
-        margin: 0 auto;
-        max-width: 650px;
-        color: var(--kuss-muted);
-        line-height: 1.7;
-    }
-
-    .heading-line {
-        width: 55px;
-        height: 4px;
-        border-radius: 10px;
-        background: linear-gradient(
-            90deg,
-            var(--kuss-teal),
-            var(--kuss-gold)
-        );
-        margin: 16px auto 0;
-    }
-
-    /* =========================================================
-       LEADERS GRID
-       ========================================================= */
 
     .leaders-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 26px;
-        align-items: stretch;
+        grid-template-columns: 1fr;
+        gap: 18px;
     }
-
-    /* =========================================================
-       LEADER CARD
-       ========================================================= */
 
     .leader-card {
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        background: var(--kuss-card);
-        border: 1px solid var(--kuss-border);
-        border-radius: 22px;
-        overflow: hidden;
-        box-shadow: var(--kuss-shadow);
-        transition:
-            transform .28s ease,
-            box-shadow .28s ease,
-            border-color .28s ease;
+        border-radius: 18px;
     }
-
-    .leader-card:hover {
-        transform: translateY(-7px);
-        box-shadow: var(--kuss-shadow-hover);
-        border-color: rgba(15,118,110,.2);
-    }
-
-    /* top accent */
-    .leader-card::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 4px;
-        background: linear-gradient(
-            90deg,
-            var(--kuss-teal),
-            var(--kuss-gold)
-        );
-        z-index: 2;
-    }
-
-    /* =========================================================
-       PHOTO
-       ========================================================= */
 
     .leader-photo-area {
-        position: relative;
-        display: flex;
-        justify-content: center;
-        padding: 32px 25px 20px;
-        background:
-            radial-gradient(
-                circle at 50% 0%,
-                rgba(15,118,110,.09),
-                transparent 60%
-            );
+        padding-top: 28px;
     }
 
     .leader-img {
-        width: 145px;
-        height: 145px;
-        border-radius: 50%;
-        object-fit: cover;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 5px solid white;
-        box-shadow:
-            0 0 0 2px rgba(15,118,110,.18),
-            0 12px 25px rgba(16,42,67,.15);
-        background: linear-gradient(
-            135deg,
-            var(--kuss-teal),
-            var(--kuss-navy)
-        );
-        color: white;
-        font-size: 2rem;
-        font-weight: 800;
-        letter-spacing: .03em;
+        width: 125px;
+        height: 125px;
     }
 
-    /* =========================================================
-       INFO
-       ========================================================= */
-
     .leader-info {
-        display: flex;
-        flex-direction: column;
-        flex: 1;
-        padding: 8px 27px 27px;
-        text-align: center;
+        padding: 5px 20px 22px;
     }
 
     .leader-name {
-        margin: 5px 0 8px;
-        color: var(--kuss-navy);
-        font-size: 1.18rem;
-        line-height: 1.3;
-        font-weight: 800;
+        font-size: 1.08rem;
     }
 
     .leader-role {
-        display: inline-flex;
-        align-self: center;
-        align-items: center;
-        justify-content: center;
-        margin: 0 0 16px;
-        padding: 6px 13px;
-        border-radius: 999px;
-        background: rgba(15,118,110,.09);
-        color: var(--kuss-teal-dark);
-        font-size: .76rem;
-        font-weight: 800;
-        letter-spacing: .04em;
-        text-transform: uppercase;
+        font-size: .7rem;
     }
 
     .leader-bio {
-        margin: 0 auto;
-        max-width: 400px;
-        color: var(--kuss-muted);
-        font-size: .9rem;
-        line-height: 1.7;
+        font-size: .84rem;
+    }
+}
+
+/* VERY SMALL PHONES */
+
+@media(max-width:380px) {
+    .leadership-hero h1 {
+        font-size: 2rem;
     }
 
-    /* =========================================================
-       CONTACT
-       ========================================================= */
-
-    .leader-contact {
-        margin-top: auto;
-        padding-top: 20px;
+    .hero-kicker {
+        font-size: .68rem;
     }
 
-    .contact-divider {
-        height: 1px;
-        background: var(--kuss-border);
-        margin-bottom: 15px;
+    .leader-img {
+        width: 110px;
+        height: 110px;
     }
 
-    .contact-item {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        text-align: left;
-        margin-bottom: 10px;
-        min-width: 0;
+    .leader-info {
+        padding-left: 16px;
+        padding-right: 16px;
     }
+}
 
-    .contact-icon {
-        flex: 0 0 31px;
-        width: 31px;
-        height: 31px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border-radius: 9px;
-        background: rgba(15,118,110,.08);
-        color: var(--kuss-teal);
-        font-size: .8rem;
+/* ACCESSIBILITY */
+
+@media(prefers-reduced-motion:reduce) {
+    .leader-card,
+    .leader-profile-link,
+    .leader-profile-link i {
+        transition: none;
     }
-
-    .contact-item a,
-    .contact-item span {
-        min-width: 0;
-        overflow-wrap: anywhere;
-        color: var(--kuss-muted);
-        font-size: .82rem;
-        line-height: 1.4;
-    }
-
-    .contact-item a {
-        color: var(--kuss-teal);
-        text-decoration: none;
-        transition: color .2s ease;
-    }
-
-    .contact-item a:hover {
-        color: var(--kuss-teal-dark);
-        text-decoration: underline;
-    }
-
-    .login-message {
-        display: flex;
-        align-items: center;
-        gap: 9px;
-        padding: 10px 12px;
-        border-radius: 10px;
-        background: #f7f8fa;
-        color: var(--kuss-muted);
-        font-size: .78rem;
-        text-align: left;
-    }
-
-    .login-message i {
-        color: #8b98a9;
-    }
-
-    .login-message a {
-        color: var(--kuss-teal);
-        font-weight: 800;
-        text-decoration: none;
-    }
-
-    /* =========================================================
-       EMPTY STATE
-       ========================================================= */
-
-    .empty-state {
-        max-width: 600px;
-        margin: 20px auto;
-        padding: 55px 25px;
-        background: white;
-        border: 1px solid var(--kuss-border);
-        border-radius: 20px;
-        text-align: center;
-        box-shadow: var(--kuss-shadow);
-    }
-
-    .empty-state-icon {
-        width: 60px;
-        height: 60px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto 18px;
-        border-radius: 50%;
-        background: rgba(15,118,110,.08);
-        color: var(--kuss-teal);
-        font-size: 1.4rem;
-    }
-
-    .empty-state h3 {
-        margin: 0 0 8px;
-        color: var(--kuss-navy);
-    }
-
-    .empty-state p {
-        margin: 0;
-        color: var(--kuss-muted);
-    }
-
-    /* =========================================================
-       TABLET
-       ========================================================= */
-
-    @media (max-width: 1000px) {
-        .leaders-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-    }
-
-    /* =========================================================
-       MOBILE
-       ========================================================= */
-
-    @media (max-width: 650px) {
-
-        .leadership-hero {
-            padding: 48px 18px 55px;
-        }
-
-        .leadership-hero h1 {
-            font-size: 2.35rem;
-        }
-
-        .leadership-hero p {
-            font-size: .92rem;
-            line-height: 1.65;
-        }
-
-        .leadership-content {
-            padding: 38px 14px 55px;
-        }
-
-        .section-heading {
-            margin-bottom: 28px;
-        }
-
-        .section-heading h2 {
-            font-size: 1.55rem;
-        }
-
-        .leaders-grid {
-            grid-template-columns: 1fr;
-            gap: 18px;
-        }
-
-        .leader-card {
-            border-radius: 18px;
-        }
-
-        .leader-photo-area {
-            padding-top: 28px;
-        }
-
-        .leader-img {
-            width: 125px;
-            height: 125px;
-        }
-
-        .leader-info {
-            padding: 5px 20px 22px;
-        }
-
-        .leader-name {
-            font-size: 1.08rem;
-        }
-
-        .leader-role {
-            font-size: .7rem;
-        }
-
-        .leader-bio {
-            font-size: .84rem;
-        }
-    }
-
-    /* =========================================================
-       VERY SMALL PHONES
-       ========================================================= */
-
-    @media (max-width: 380px) {
-
-        .leadership-hero h1 {
-            font-size: 2rem;
-        }
-
-        .hero-kicker {
-            font-size: .68rem;
-        }
-
-        .leader-img {
-            width: 110px;
-            height: 110px;
-        }
-
-        .leader-info {
-            padding-left: 16px;
-            padding-right: 16px;
-        }
-    }
-
-    /* =========================================================
-       REDUCED MOTION ACCESSIBILITY
-       ========================================================= */
-
-    @media (prefers-reduced-motion: reduce) {
-        .leader-card {
-            transition: none;
-        }
-    }
+}
 </style>
 
 
 <div class="leadership-page">
 
-    <!-- =====================================================
-         HERO
-         ===================================================== -->
+    <!-- HERO -->
+
     <section class="leadership-hero">
 
         <div class="leadership-hero-inner">
@@ -542,9 +521,8 @@
     </section>
 
 
-    <!-- =====================================================
-         MAIN CONTENT
-         ===================================================== -->
+    <!-- MAIN CONTENT -->
+
     <main class="leadership-content">
 
         <div class="section-heading">
@@ -571,6 +549,7 @@
                     <article class="leader-card">
 
                         <!-- PROFILE IMAGE -->
+
                         <div class="leader-photo-area">
 
                             {% if leadership.member.profile_picture %}
@@ -589,7 +568,7 @@
                                     role="img"
                                     aria-label="Initials of {{ leadership.member.first_name }} {{ leadership.member.last_name }}"
                                 >
-                                    {{ leadership.member.first_name.0 }}{{ leadership.member.last_name.0 }}
+                                    {{ leadership.member.first_name.0|upper }}{{ leadership.member.last_name.0|upper }}
                                 </div>
 
                             {% endif %}
@@ -597,7 +576,8 @@
                         </div>
 
 
-                        <!-- INFORMATION -->
+                        <!-- LEADER INFORMATION -->
+
                         <div class="leader-info">
 
                             <h3 class="leader-name">
@@ -605,24 +585,35 @@
                                 {{ leadership.member.last_name }}
                             </h3>
 
-
                             <div class="leader-role">
                                 {{ leadership.get_role_display }}
                             </div>
-
 
                             <p class="leader-bio">
                                 {{ leadership.member.bio|default:"Dedicated member of the KUSS Executive, committed to serving students and advancing the mission of the society." }}
                             </p>
 
 
-                            <!-- CONTACT -->
+                            <!-- INDIVIDUAL PROFILE LINK -->
+
+                            <a
+                                href="{% url 'leader_detail' leadership.pk %}"
+                                class="leader-profile-link"
+                                aria-label="View full profile of {{ leadership.member.first_name }} {{ leadership.member.last_name }}"
+                            >
+                                View Full Profile
+                                <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+
+
+                            <!-- CONTACT INFORMATION -->
+
                             <div class="leader-contact">
 
                                 <div class="contact-divider"></div>
 
-
                                 <!-- EMAIL -->
+
                                 {% if leadership.member.email %}
 
                                     <div class="contact-item">
@@ -644,6 +635,7 @@
 
 
                                 <!-- PHONE -->
+
                                 {% if request.session.member_id %}
 
                                     {% if leadership.member.phone_number %}
@@ -703,9 +695,7 @@
                     <i class="fa-solid fa-users"></i>
                 </div>
 
-                <h3>
-                    Leadership information coming soon
-                </h3>
+                <h3>Leadership information coming soon</h3>
 
                 <p>
                     KUSS leadership profiles will appear here once they
